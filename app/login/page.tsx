@@ -51,7 +51,8 @@ export default function LoginPage() {
     const validUsers = [
       { email: "demo@retailer.com", password: "demo", redirect: "/retailer/dashboard" },
       { email: "demo@salesrep.com", password: "demo", redirect: "/rep/dashboard" },
-      { email: "buyer@sportinggoods.com", password: "demo", redirect: "/retailer/dashboard" }
+      { email: "buyer@sportinggoods.com", password: "demo", redirect: "/retailer/dashboard" },
+      { email: "admin@company.com", password: "demo", redirect: "/admin/dashboard" }
     ]
     
     const user = validUsers.find(u => u.email.toLowerCase() === email.toLowerCase())
@@ -103,7 +104,8 @@ export default function LoginPage() {
               <div className="space-y-1 text-sm text-blue-700">
                 <p><strong>Retailer:</strong> demo@retailer.com</p>
                 <p><strong>Sales Rep:</strong> demo@salesrep.com</p>
-                <p className="text-xs pt-1">Password: Any password works</p>
+                <p><strong>Admin:</strong> admin@company.com</p>
+                <p className="text-xs pt-1">Password: demo</p>
               </div>
             </div>
             
@@ -178,6 +180,9 @@ export default function LoginPage() {
                 </p>
                 <p>
                   <span className="font-mono bg-gray-100 px-1 py-0.5 rounded">demo@salesrep.com</span> / demo
+                </p>
+                <p>
+                  <span className="font-mono bg-gray-100 px-1 py-0.5 rounded">admin@company.com</span> / demo
                 </p>
               </div>
             </div>

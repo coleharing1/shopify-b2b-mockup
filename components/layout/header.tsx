@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/lib/cart-context"
 import { NotificationDropdown, type Notification } from "@/components/features/notification-dropdown"
+import { GlobalSearch } from "@/components/features/global-search"
 
 /**
  * @description Navigation items configuration
@@ -136,8 +137,13 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
             </div>
           </div>
 
-          {/* Right side - User menu and mobile toggle */}
+          {/* Right side - Search, User menu and mobile toggle */}
           <div className="flex items-center space-x-4">
+            {/* Global Search - Desktop only */}
+            <div className="hidden md:block flex-1 max-w-md">
+              <GlobalSearch />
+            </div>
+            
             {/* Cart Icon - Show only for retailers */}
             {!isRepPortal && (
               <Link href="/retailer/cart" className="relative">

@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { ProgressSteps, MobileProgressSteps } from "@/components/ui/progress-steps"
 import { CompanyInfoStep } from "@/components/features/onboarding/CompanyInfoStep"
 import { DocumentUploadStep } from "@/components/features/onboarding/DocumentUploadStep"
+import { CreditApplicationStep } from "@/components/features/onboarding/CreditApplicationStep"
+import { ReviewSubmitStep } from "@/components/features/onboarding/ReviewSubmitStep"
 import { AlertWithIcon } from "@/components/ui/alert"
 import { ArrowLeft, ArrowRight, Save, Send } from "lucide-react"
 import Link from "next/link"
@@ -103,6 +105,32 @@ export default function ApplyPage() {
       if (!docs['resale-certificate']?.file) {
         newErrors['resale-certificate'] = "Resale certificate is required"
       }
+    }
+    
+    if (step === 3 && formData.creditApplication?.requestCredit) {
+      // Credit application validation
+      const credit = formData.creditApplication as any
+      if (!credit.creditAmount) newErrors.creditAmount = "Credit amount is required"
+      if (!credit.bankingInfo?.bankName) newErrors['bankingInfo.bankName'] = "Bank name is required"
+      if (!credit.bankingInfo?.accountName) newErrors['bankingInfo.accountName'] = "Account name is required"
+      if (!credit.bankingInfo?.accountNumber) newErrors['bankingInfo.accountNumber'] = "Account number is required"
+      if (!credit.bankingInfo?.routingNumber) newErrors['bankingInfo.routingNumber'] = "Routing number is required"
+      
+      // Validate at least 3 trade references
+      const refs = credit.tradeReferences || []
+      const validRefs = refs.filter((ref: any) => ref.companyName && ref.phone)
+      if (validRefs.length < 3) {
+        newErrors.tradeReferences = "Please provide at least 3 trade references"
+      }
+      
+      if (!credit.authorizedSignature?.name) newErrors['authorizedSignature.name'] = "Signer name is required"
+      if (!credit.authorizedSignature?.title) newErrors['authorizedSignature.title'] = "Signer title is required"
+      if (!credit.authorizedSignature?.agreed) newErrors['authorizedSignature.agreed'] = "You must agree to the terms"
+    }
+    
+    if (step === 4) {
+      // Final validation - check terms agreement
+      // This would be tracked in the ReviewSubmitStep component
     }
     
     setErrors(newErrors)
@@ -205,38 +233,19 @@ export default function ApplyPage() {
             )}
             
             {currentStep === 3 && (
-              <div className="space-y-6">
-                <AlertWithIcon
-                  variant="info"
-                  title="Optional Credit Application"
-                  description="Apply for NET payment terms to purchase on account. You can skip this step and pay by credit card."
-                />
-                <div className="text-center py-12">
-                  <p className="text-gray-600 mb-4">Credit application form would go here</p>
-                  <Button variant="outline" onClick={() => setCurrentStep(4)}>
-                    Skip for Now
-                  </Button>
-                </div>
-              </div>
+              <CreditApplicationStep
+                data={formData.creditApplication}
+                onChange={(data) => updateFormData('creditApplication', data)}
+                errors={errors}
+              />
             )}
             
             {currentStep === 4 && (
-              <div className="space-y-6">
-                <AlertWithIcon
-                  variant="success"
-                  title="Ready to Submit"
-                  description="Please review your application before submitting. You'll receive a confirmation email with your application ID."
-                />
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="font-medium mb-4">Application Summary</h3>
-                  <div className="space-y-2 text-sm">
-                    <p><strong>Business Name:</strong> {(formData.companyInfo as any).businessName || 'Not provided'}</p>
-                    <p><strong>EIN:</strong> {(formData.companyInfo as any).ein || 'Not provided'}</p>
-                    <p><strong>Contact:</strong> {(formData.companyInfo as any).primaryContact?.email || 'Not provided'}</p>
-                    <p><strong>Documents:</strong> {Object.keys(formData.documents).length} uploaded</p>
-                  </div>
-                </div>
-              </div>
+              <ReviewSubmitStep
+                formData={formData}
+                onEdit={(step) => setCurrentStep(step)}
+                errors={errors}
+              />
             )}
 
             {/* Navigation */}
