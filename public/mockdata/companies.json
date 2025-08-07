@@ -1,0 +1,73 @@
+{
+  "companies": [
+    {
+      "id": "company-1",
+      "name": "Mountain Gear Outfitters",
+      "type": "preferred_dealer",
+      "accountNumber": "MGO-10234",
+      "taxId": "12-3456789",
+      "creditLimit": 50000,
+      "creditUsed": 12500,
+      "paymentTerms": "Net 30",
+      "yearToDatePurchases": 125000,
+      "lastOrderDate": "2024-12-15",
+      "status": "active",
+      "pricingTier": "tier-2",
+      "primaryContact": {
+        "name": "John Smith",
+        "email": "john@mountaingear.com",
+        "phone": "(555) 123-4567"
+      },
+      "shippingAddresses": [
+        {
+          "id": "addr-1",
+          "label": "Main Store",
+          "address1": "123 Mountain View Dr",
+          "address2": "Suite 100",
+          "city": "Denver",
+          "state": "CO",
+          "zip": "80202",
+          "isDefault": true
+        },
+        {
+          "id": "addr-2",
+          "label": "Warehouse",
+          "address1": "456 Industrial Pkwy",
+          "city": "Aurora",
+          "state": "CO",
+          "zip": "80010",
+          "isDefault": false
+        }
+      ],
+      "assignedRepId": "rep-1"
+    },
+    {
+      "id": "company-2",
+      "name": "Elite Sporting Goods",
+      "type": "distributor",
+      "accountNumber": "ESG-20567",
+      "creditLimit": 100000,
+      "creditUsed": 45000,
+      "paymentTerms": "Net 45",
+      "yearToDatePurchases": 350000,
+      "lastOrderDate": "2024-12-20",
+      "status": "active",
+      "pricingTier": "tier-3",
+      "assignedRepId": "rep-1"
+    },
+    {
+      "id": "company-3",
+      "name": "City Sports Plus",
+      "type": "buy_group",
+      "accountNumber": "CSP-30890",
+      "creditLimit": 25000,
+      "creditUsed": 5000,
+      "paymentTerms": "Net 30",
+      "yearToDatePurchases": 75000,
+      "lastOrderDate": "2024-11-28",
+      "status": "active",
+      "pricingTier": "tier-1",
+      "assignedRepId": "rep-1"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "resources": [
+    { "id": "res-1", "title": "2025 Spring Catalog", "description": "Complete product lineup for Spring 2025 season", "category": "Product Catalogs", "fileType": "PDF", "fileSize": "15.2 MB", "thumbnailUrl": "/images/catalog-thumb.jpg", "downloadUrl": "/files/spring-2025-catalog.pdf", "updatedDate": "2024-12-01", "accessLevel": ["all"] },
+    { "id": "res-2", "title": "Dealer Price List - Tier 2", "description": "Confidential pricing for preferred dealers", "category": "Price Lists", "fileType": "PDF", "fileSize": "2.1 MB", "updatedDate": "2024-12-15", "accessLevel": ["tier-2", "tier-3"] },
+    { "id": "res-3", "title": "POP Display Guide", "description": "Point of purchase display setup instructions", "category": "Marketing Materials", "fileType": "PDF", "fileSize": "8.5 MB", "updatedDate": "2024-11-20", "accessLevel": ["all"] },
+    { "id": "res-4", "title": "Brand Guidelines", "description": "Logo usage and brand standards", "category": "Marketing Materials", "fileType": "ZIP", "fileSize": "45.3 MB", "updatedDate": "2024-10-01", "accessLevel": ["preferred_dealer", "distributor"] }
+  ]
+}

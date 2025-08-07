@@ -1,0 +1,21 @@
+{
+  "retailerMetrics": {
+    "company-1": {
+      "recentActivity": [
+        { "date": "2024-12-20", "type": "shipment", "description": "Order #1001 shipped via FedEx", "trackingNumber": "1234567890" },
+        { "date": "2024-12-15", "type": "order", "description": "Order #1001 placed", "amount": 2699.78 }
+      ],
+      "recommendations": [
+        "Running low on Alpine Jackets - Size L",
+        "New Spring collection now available",
+        "You qualify for free shipping on orders over $2,500"
+      ]
+    }
+  },
+  "repMetrics": {
+    "topAccounts": [
+      { "companyName": "Elite Sporting Goods", "ytdPurchases": 350000, "trend": "up" },
+      { "companyName": "Mountain Gear Outfitters", "ytdPurchases": 125000, "trend": "stable" }
+    ]
+  }
+}

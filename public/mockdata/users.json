@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "email": "demo@retailer.com",
+      "password": "demo",
+      "name": "John Smith",
+      "role": "retailer",
+      "companyId": "company-1"
+    },
+    {
+      "id": "user-2",
+      "email": "demo@salesrep.com", 
+      "password": "demo",
+      "name": "Sarah Johnson",
+      "role": "sales_rep",
+      "repId": "rep-1"
+    },
+    {
+      "id": "user-3",
+      "email": "buyer@sportinggoods.com",
+      "password": "demo",
+      "name": "Mike Chen",
+      "role": "retailer",
+      "companyId": "company-2"
+    }
+  ]
+}

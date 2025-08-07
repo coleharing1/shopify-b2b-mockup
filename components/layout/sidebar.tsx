@@ -1,0 +1,66 @@
+'use client'
+
+import Link from 'next/link'
+import { Home, Package, Users, BarChart2, LifeBuoy, LogOut } from 'lucide-react'
+
+/**
+ * @fileoverview Sidebar component.
+ * @description Provides the main sidebar navigation for authenticated users.
+ */
+export function Sidebar({ isOpen }: { isOpen: boolean; toggleSidebar: () => void }) {
+  return (
+    <div
+      className={`bg-white border-r border-gray-200 transition-all duration-300 ease-in-out ${
+        isOpen ? 'w-64' : 'w-20'
+      }`}
+    >
+      <div className="flex items-center justify-between h-16 p-4 border-b border-gray-200">
+        <span className={`font-bold text-primary ${!isOpen && 'hidden'}`}>B2B Portal</span>
+      </div>
+      <nav className="mt-4">
+        <ul>
+          <li>
+            <Link href="/retailer/dashboard" className="flex items-center p-4 text-gray-600 hover:bg-gray-50 hover:text-primary">
+              <Home className="h-6 w-6" />
+              <span className={`ml-4 ${!isOpen && 'hidden'}`}>Dashboard</span>
+            </Link>
+          </li>
+          <li>
+            <Link href="/retailer/products" className="flex items-center p-4 text-gray-600 hover:bg-gray-50 hover:text-primary">
+              <Package className="h-6 w-6" />
+              <span className={`ml-4 ${!isOpen && 'hidden'}`}>Products</span>
+            </Link>
+          </li>
+          <li>
+            <Link href="/retailer/orders" className="flex items-center p-4 text-gray-600 hover:bg-gray-50 hover:text-primary">
+              <Users className="h-6 w-6" />
+              <span className={`ml-4 ${!isOpen && 'hidden'}`}>Orders</span>
+            </Link>
+          </li>
+          <li>
+            <Link href="#" className="flex items-center p-4 text-gray-600 hover:bg-gray-50 hover:text-primary">
+              <BarChart2 className="h-6 w-6" />
+              <span className={`ml-4 ${!isOpen && 'hidden'}`}>Reports</span>
+            </Link>
+          </li>
+        </ul>
+      </nav>
+      <div className="absolute bottom-0 w-full">
+        <ul>
+          <li>
+            <Link href="#" className="flex items-center p-4 text-gray-600 hover:bg-gray-50 hover:text-primary">
+              <LifeBuoy className="h-6 w-6" />
+              <span className={`ml-4 ${!isOpen && 'hidden'}`}>Support</span>
+            </Link>
+          </li>
+          <li>
+            <Link href="/login" className="flex items-center p-4 text-gray-600 hover:bg-gray-50 hover:text-primary">
+              <LogOut className="h-6 w-6" />
+              <span className={`ml-4 ${!isOpen && 'hidden'}`}>Logout</span>
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </div>
+  )
+}

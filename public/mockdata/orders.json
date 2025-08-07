@@ -1,0 +1,22 @@
+{
+  "orders": [
+    {
+      "id": "order-1001",
+      "companyId": "company-1",
+      "orderDate": "2024-12-15",
+      "poNumber": "MGO-PO-2024-1215",
+      "requestedShipDate": "2024-12-20",
+      "status": "shipped",
+      "subtotal": 2499.80,
+      "tax": 199.98,
+      "shipping": 0,
+      "total": 2699.78,
+      "items": [
+        { "productId": "prod-1", "variantId": "var-1-2", "name": "Alpine Performance Jacket - Black/M", "sku": "JKT-ALPINE-001-BLK-M", "quantity": 10, "unitPrice": 134.99, "lineTotal": 1349.90 },
+        { "productId": "prod-2", "name": "Trail Runner Pants", "quantity": 20, "unitPrice": 49.99, "lineTotal": 999.80 }
+      ]
+    },
+    { "id": "order-1002", "companyId": "company-1", "orderDate": "2024-11-28", "poNumber": "MGO-PO-2024-1128", "status": "delivered", "total": 4567.89 },
+    { "id": "order-1003", "companyId": "company-1", "orderDate": "2024-10-15", "poNumber": "MGO-PO-2024-1015", "status": "delivered", "total": 3234.56 }
+  ]
+}

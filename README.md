@@ -1,36 +1,172 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# B2B Portal - Wholesale Management Platform
 
-## Getting Started
+A modern, responsive B2B wholesale portal built with Next.js 14, TypeScript, and Tailwind CSS. This demo showcases a comprehensive wholesale management system with separate interfaces for retailers and sales representatives.
 
-First, run the development server:
+## 🚀 Demo Access
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Visit the live demo at: [Coming Soon - Deploy to Vercel]
+
+### Demo Credentials
+
+**Retailer Account:**
+- Email: `demo@retailer.com`
+- Password: Any password
+
+**Sales Rep Account:**
+- Email: `demo@salesrep.com`
+- Password: Any password
+
+## 🎯 Key Features
+
+### For Retailers
+- **Personalized Dashboard** - View metrics, recent orders, and recommendations
+- **Tiered Pricing** - Automatic pricing based on account tier (30%, 40%, 50% discounts)
+- **Product Catalog** - Browse products with real-time inventory and tier-specific pricing
+- **Quick Ordering** - Bulk order matrix, variant selection, and quick reorder
+- **Order Management** - Track orders, download invoices, and view order history
+- **Shopping Cart** - Persistent cart with variant management
+- **B2B Checkout** - PO numbers, requested ship dates, and special instructions
+
+### For Sales Representatives
+- **Performance Dashboard** - Track sales metrics, accounts, and activity
+- **Customer Management** - View and manage all assigned accounts
+- **Order on Behalf** - Place orders for customers with their pricing
+- **Customer Insights** - Detailed profiles with order history and activity
+- **Resource Library** - Access sales materials, price sheets, and training
+
+### Platform Features
+- **Responsive Design** - Optimized for desktop, tablet, and mobile
+- **Real-time Notifications** - Stock alerts, order updates, and announcements
+- **Advanced Search** - Search with filters and visual feedback
+- **Role Switching** - Switch between retailer and sales rep views
+- **Mock Data** - Realistic demo data for all scenarios
+
+## 🛠️ Technology Stack
+
+- **Frontend**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **UI Components**: Shadcn/ui + Custom components
+- **State Management**: React Context API
+- **Icons**: Lucide React
+- **Animations**: Tailwind animations + CSS transitions
+
+## 📁 Project Structure
+
+```
+b2b-portal/
+├── app/                    # Next.js app router pages
+│   ├── login/             # Authentication
+│   ├── retailer/          # Retailer portal pages
+│   ├── rep/               # Sales rep portal pages
+│   └── api/               # API routes
+├── components/            # React components
+│   ├── ui/               # Base UI components
+│   ├── features/         # Feature-specific components
+│   └── layout/           # Layout components
+├── lib/                   # Utilities and helpers
+├── public/               # Static assets
+│   └── mockdata/         # JSON mock data
+└── styles/               # Global styles
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚦 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
+- Node.js 18+ and npm
+- Git
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Installation
 
-## Learn More
+1. Clone the repository:
+```bash
+git clone [repository-url]
+cd b2b-portal
+```
 
-To learn more about Next.js, take a look at the following resources:
+2. Install dependencies:
+```bash
+npm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Deploy on Vercel
+### Available Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run test` - Run tests
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎨 Design System
+
+The portal uses a consistent design system with:
+- **Colors**: Primary blue (#1e40af), success green, warning yellow, error red
+- **Typography**: System font stack with consistent sizing
+- **Spacing**: 4px base unit with Tailwind spacing scale
+- **Components**: Reusable components following shadcn/ui patterns
+
+## 📱 Responsive Design
+
+The portal is fully responsive with:
+- Mobile-first approach
+- Bottom navigation for mobile
+- Slide-out navigation drawer
+- Responsive tables that convert to cards
+- Touch-friendly interactions (44px minimum touch targets)
+
+## 🔒 Known Limitations
+
+This is a demo/mockup with the following limitations:
+- No real authentication (mock login only)
+- No backend API (uses static JSON data)
+- No data persistence (cart resets on refresh)
+- No real payment processing
+- No email sending functionality
+- Mock search and filtering only
+
+## 🚀 Deployment
+
+### Deploy to Vercel (Recommended)
+
+1. Push code to GitHub
+2. Import project in Vercel
+3. Deploy with default settings
+
+### Environment Variables
+
+No environment variables required for the demo.
+
+## 📝 Demo Flow Script
+
+1. **Login** - Show role-based access
+2. **Retailer Flow**:
+   - Dashboard with personalized metrics
+   - Browse catalog with tier pricing
+   - Add items to cart with variants
+   - Complete B2B checkout
+   - View order history
+3. **Switch to Sales Rep**:
+   - Rep dashboard with performance metrics
+   - Customer list with search/filter
+   - Customer detail view
+   - Order on behalf of customer
+   - Access sales resources
+
+## 🤝 Contributing
+
+This is a demo project. For the production version, please contact the development team.
+
+## 📄 License
+
+Proprietary - All rights reserved
+
+---
+
+Built with ❤️ for modern B2B wholesale operations
