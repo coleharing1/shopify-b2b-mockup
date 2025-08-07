@@ -5,9 +5,11 @@ import { AuthenticatedLayout } from "@/components/layout/authenticated-layout"
 import { ProductCard } from "@/components/features/product-card"
 import { CategoryFilter } from "@/components/features/category-filter"
 import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react"
+import { SearchBar } from "@/components/ui/search-bar"
+import { EmptyState } from "@/components/ui/empty-state"
+import { ProductCardSkeleton } from "@/components/ui/skeleton"
+import { Search, Filter, ChevronLeft, ChevronRight, Package } from "lucide-react"
 import { Product, getCompanyById } from "@/lib/mock-data"
 import { useCart } from "@/lib/cart-context"
 
@@ -25,6 +27,7 @@ export default function ProductCatalogPage() {
   const [pricingTier, setPricingTier] = useState("tier-1")
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSearching, setIsSearching] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   
   const productsPerPage = 12
@@ -71,11 +74,14 @@ export default function ProductCatalogPage() {
 
     // Search filter
     if (searchTerm) {
+      setIsSearching(true)
       filtered = filtered.filter(p => 
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.description.toLowerCase().includes(searchTerm.toLowerCase())
       )
+      // Simulate search delay
+      setTimeout(() => setIsSearching(false), 300)
     }
 
     setFilteredProducts(filtered)
@@ -137,13 +143,13 @@ export default function ProductCatalogPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input
+              <div className="flex-1">
+                <SearchBar
                   placeholder="Search products by name, SKU, or description..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  onChange={setSearchTerm}
+                  isLoading={isSearching}
+                  className="w-full"
                 />
               </div>
               <Button
@@ -178,22 +184,25 @@ export default function ProductCatalogPage() {
             </div>
 
             {/* Products */}
-            {currentProducts.length === 0 ? (
-              <Card>
-                <CardContent className="py-12 text-center">
-                  <p className="text-gray-500">No products found matching your criteria.</p>
-                  <Button
-                    variant="link"
-                    onClick={() => {
-                      setSearchTerm("")
-                      setSelectedCategories([])
-                    }}
-                    className="mt-2"
-                  >
-                    Clear all filters
-                  </Button>
-                </CardContent>
-              </Card>
+            {isLoading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : currentProducts.length === 0 ? (
+              <EmptyState
+                icon={<Package className="h-12 w-12 text-gray-400" />}
+                title="No products found"
+                description={searchTerm || selectedCategories.length > 0 ? "Try adjusting your search or filters" : "No products available"}
+                action={searchTerm || selectedCategories.length > 0 ? {
+                  label: "Clear all filters",
+                  onClick: () => {
+                    setSearchTerm("")
+                    setSelectedCategories([])
+                  }
+                } : undefined}
+              />
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {currentProducts.map((product) => (

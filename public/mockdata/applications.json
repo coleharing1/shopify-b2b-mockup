@@ -1,0 +1,360 @@
+{
+  "applications": [
+    {
+      "id": "APP-2025-001",
+      "status": "pending",
+      "companyInfo": {
+        "businessName": "Outdoor Adventures LLC",
+        "dba": "Adventure Gear Store",
+        "ein": "12-3456789",
+        "businessType": "LLC",
+        "yearEstablished": "2018",
+        "website": "www.adventuregearstore.com",
+        "physicalAddress": {
+          "street": "123 Mountain View Dr",
+          "city": "Denver",
+          "state": "CO",
+          "zip": "80202"
+        },
+        "billingAddress": {
+          "sameAsPhysical": true
+        },
+        "primaryContact": {
+          "firstName": "John",
+          "lastName": "Smith",
+          "title": "Owner",
+          "email": "john@adventuregearstore.com",
+          "phone": "303-555-0123"
+        },
+        "accountsPayableContact": {
+          "firstName": "Jane",
+          "lastName": "Smith",
+          "email": "accounting@adventuregearstore.com",
+          "phone": "303-555-0124"
+        }
+      },
+      "documents": [
+        {
+          "id": "doc-001",
+          "type": "resale-certificate",
+          "fileName": "CO_Resale_Certificate.pdf",
+          "uploadedAt": "2025-08-01T10:30:00Z",
+          "status": "verified",
+          "expiryDate": "2026-12-31"
+        },
+        {
+          "id": "doc-002",
+          "type": "business-license",
+          "fileName": "Business_License_2025.pdf",
+          "uploadedAt": "2025-08-01T10:32:00Z",
+          "status": "verified"
+        }
+      ],
+      "creditApplication": {
+        "requestedCreditLimit": 25000,
+        "currentBankName": "First National Bank",
+        "bankAccountYears": 5,
+        "tradeReferences": [
+          {
+            "companyName": "Wholesale Sports Supplier",
+            "contactName": "Mike Johnson",
+            "phone": "800-555-0200",
+            "accountNumber": "WSS-4567"
+          },
+          {
+            "companyName": "Premium Outdoor Brands",
+            "contactName": "Sarah Williams",
+            "phone": "888-555-0300",
+            "accountNumber": "POB-8901"
+          }
+        ],
+        "creditCheckResult": {
+          "score": 720,
+          "rating": "A",
+          "recommendedLimit": 20000,
+          "checkedAt": "2025-08-02T14:00:00Z"
+        }
+      },
+      "submittedAt": "2025-08-01T10:45:00Z",
+      "lastUpdatedAt": "2025-08-02T14:00:00Z",
+      "notes": [],
+      "internalComments": []
+    },
+    {
+      "id": "APP-2025-002",
+      "status": "reviewing",
+      "companyInfo": {
+        "businessName": "Coastal Sporting Goods Inc",
+        "dba": "Coastal Sports",
+        "ein": "98-7654321",
+        "businessType": "Corporation",
+        "yearEstablished": "2015",
+        "website": "www.coastalsports.com",
+        "physicalAddress": {
+          "street": "456 Beach Blvd",
+          "city": "San Diego",
+          "state": "CA",
+          "zip": "92109"
+        },
+        "billingAddress": {
+          "sameAsPhysical": false,
+          "street": "789 Corporate Center",
+          "city": "San Diego",
+          "state": "CA",
+          "zip": "92121"
+        },
+        "primaryContact": {
+          "firstName": "Maria",
+          "lastName": "Garcia",
+          "title": "Purchasing Manager",
+          "email": "maria@coastalsports.com",
+          "phone": "619-555-0200"
+        },
+        "accountsPayableContact": {
+          "firstName": "Robert",
+          "lastName": "Chen",
+          "email": "rchen@coastalsports.com",
+          "phone": "619-555-0201"
+        }
+      },
+      "documents": [
+        {
+          "id": "doc-003",
+          "type": "resale-certificate",
+          "fileName": "CA_Resale_Certificate.pdf",
+          "uploadedAt": "2025-07-30T15:20:00Z",
+          "status": "verified",
+          "expiryDate": "2025-12-31"
+        },
+        {
+          "id": "doc-004",
+          "type": "w9",
+          "fileName": "W9_Coastal_Sports.pdf",
+          "uploadedAt": "2025-07-30T15:22:00Z",
+          "status": "verified"
+        }
+      ],
+      "creditApplication": {
+        "requestedCreditLimit": 50000,
+        "currentBankName": "Wells Fargo",
+        "bankAccountYears": 8,
+        "dunsNumber": "123456789",
+        "tradeReferences": [
+          {
+            "companyName": "Pacific Wholesale",
+            "contactName": "David Lee",
+            "phone": "714-555-0400",
+            "accountNumber": "PW-2345"
+          },
+          {
+            "companyName": "West Coast Distributors",
+            "contactName": "Jennifer Brown",
+            "phone": "858-555-0500",
+            "accountNumber": "WCD-6789"
+          },
+          {
+            "companyName": "Sports Equipment Direct",
+            "contactName": "Tom Wilson",
+            "phone": "760-555-0600",
+            "accountNumber": "SED-3456"
+          }
+        ],
+        "creditCheckResult": {
+          "score": 680,
+          "rating": "B+",
+          "recommendedLimit": 35000,
+          "checkedAt": "2025-07-31T10:00:00Z"
+        }
+      },
+      "submittedAt": "2025-07-30T15:30:00Z",
+      "lastUpdatedAt": "2025-07-31T10:00:00Z",
+      "assignedTo": "admin@company.com",
+      "notes": [
+        {
+          "id": "note-001",
+          "author": "System",
+          "content": "Credit check completed. Score within acceptable range.",
+          "createdAt": "2025-07-31T10:00:00Z",
+          "type": "system"
+        }
+      ],
+      "internalComments": [
+        {
+          "id": "comment-001",
+          "author": "admin@company.com",
+          "content": "Good credit score, established business. Recommend approval with 35k limit.",
+          "createdAt": "2025-07-31T14:30:00Z"
+        }
+      ]
+    },
+    {
+      "id": "APP-2025-003",
+      "status": "approved",
+      "companyInfo": {
+        "businessName": "Mountain Peak Outfitters",
+        "dba": "Mountain Peak",
+        "ein": "45-6789012",
+        "businessType": "LLC",
+        "yearEstablished": "2010",
+        "website": "www.mountainpeak.com",
+        "physicalAddress": {
+          "street": "789 Summit Ave",
+          "city": "Boulder",
+          "state": "CO",
+          "zip": "80301"
+        },
+        "billingAddress": {
+          "sameAsPhysical": true
+        },
+        "primaryContact": {
+          "firstName": "Alex",
+          "lastName": "Thompson",
+          "title": "CEO",
+          "email": "alex@mountainpeak.com",
+          "phone": "303-555-0300"
+        },
+        "accountsPayableContact": {
+          "firstName": "Lisa",
+          "lastName": "Anderson",
+          "email": "lisa@mountainpeak.com",
+          "phone": "303-555-0301"
+        }
+      },
+      "documents": [
+        {
+          "id": "doc-005",
+          "type": "resale-certificate",
+          "fileName": "CO_Resale_Cert_MountainPeak.pdf",
+          "uploadedAt": "2025-07-25T09:00:00Z",
+          "status": "verified",
+          "expiryDate": "2026-06-30"
+        },
+        {
+          "id": "doc-006",
+          "type": "signed-agreement",
+          "fileName": "Dealer_Agreement_Signed.pdf",
+          "uploadedAt": "2025-07-26T11:00:00Z",
+          "status": "completed"
+        }
+      ],
+      "creditApplication": {
+        "requestedCreditLimit": 75000,
+        "currentBankName": "Chase Bank",
+        "bankAccountYears": 12,
+        "dunsNumber": "987654321",
+        "tradeReferences": [
+          {
+            "companyName": "Rocky Mountain Wholesale",
+            "contactName": "Brad Stevens",
+            "phone": "720-555-0700",
+            "accountNumber": "RMW-1234"
+          },
+          {
+            "companyName": "Adventure Brands Direct",
+            "contactName": "Michelle Davis",
+            "phone": "303-555-0800",
+            "accountNumber": "ABD-5678"
+          }
+        ],
+        "creditCheckResult": {
+          "score": 780,
+          "rating": "A+",
+          "recommendedLimit": 75000,
+          "checkedAt": "2025-07-25T14:00:00Z"
+        }
+      },
+      "submittedAt": "2025-07-25T09:30:00Z",
+      "approvedAt": "2025-07-26T11:30:00Z",
+      "approvedBy": "admin@company.com",
+      "lastUpdatedAt": "2025-07-26T11:30:00Z",
+      "accountCreated": {
+        "accountId": "ACC-1234567",
+        "createdAt": "2025-07-26T11:45:00Z",
+        "pricingTier": "tier-2",
+        "paymentTerms": "net-30"
+      },
+      "notes": [
+        {
+          "id": "note-002",
+          "author": "System",
+          "content": "Application approved. Account created successfully.",
+          "createdAt": "2025-07-26T11:45:00Z",
+          "type": "system"
+        }
+      ]
+    },
+    {
+      "id": "APP-2025-004",
+      "status": "rejected",
+      "companyInfo": {
+        "businessName": "Quick Sports Shop",
+        "dba": "Quick Sports",
+        "ein": "11-2233445",
+        "businessType": "Sole Proprietorship",
+        "yearEstablished": "2024",
+        "website": "www.quicksports.shop",
+        "physicalAddress": {
+          "street": "321 Main St",
+          "city": "Phoenix",
+          "state": "AZ",
+          "zip": "85001"
+        },
+        "billingAddress": {
+          "sameAsPhysical": true
+        },
+        "primaryContact": {
+          "firstName": "James",
+          "lastName": "Wilson",
+          "title": "Owner",
+          "email": "james@quicksports.shop",
+          "phone": "602-555-0100"
+        }
+      },
+      "documents": [
+        {
+          "id": "doc-007",
+          "type": "resale-certificate",
+          "fileName": "AZ_Resale_Temp.jpg",
+          "uploadedAt": "2025-07-20T16:00:00Z",
+          "status": "invalid",
+          "rejectionReason": "Certificate expired"
+        }
+      ],
+      "creditApplication": {
+        "requestedCreditLimit": 15000,
+        "currentBankName": "Local Credit Union",
+        "bankAccountYears": 1,
+        "tradeReferences": [],
+        "creditCheckResult": {
+          "score": 580,
+          "rating": "D",
+          "recommendedLimit": 0,
+          "checkedAt": "2025-07-21T09:00:00Z"
+        }
+      },
+      "submittedAt": "2025-07-20T16:15:00Z",
+      "rejectedAt": "2025-07-21T10:00:00Z",
+      "rejectedBy": "admin@company.com",
+      "rejectionReason": "Credit score below minimum requirement. Expired resale certificate.",
+      "lastUpdatedAt": "2025-07-21T10:00:00Z",
+      "notes": [
+        {
+          "id": "note-003",
+          "author": "System",
+          "content": "Credit check failed. Score: 580 (minimum required: 650)",
+          "createdAt": "2025-07-21T09:00:00Z",
+          "type": "system"
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "total": 4,
+    "pending": 1,
+    "reviewing": 1,
+    "approved": 1,
+    "rejected": 1,
+    "averageProcessingTime": "1.5 days",
+    "approvalRate": "75%"
+  }
+}

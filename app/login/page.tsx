@@ -184,6 +184,15 @@ export default function LoginPage() {
           </CardContent>
         </Card>
         
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            Don't have an account?{" "}
+            <Link href="/apply" className="text-primary hover:underline font-medium">
+              Apply to become a dealer
+            </Link>
+          </p>
+        </div>
+        
         <div className="mt-8 text-center">
           <Link 
             href="/" 
