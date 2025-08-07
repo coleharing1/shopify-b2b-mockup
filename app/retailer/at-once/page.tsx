@@ -11,18 +11,32 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAtOnceCart } from "@/lib/contexts/at-once-cart-context"
 import { EnhancedProduct, AtOnceMetadata, ORDER_TYPE_COLORS } from "@/types/order-types"
 import { toast } from "sonner"
-import { formatCurrency } from "@/lib/mock-data"
+import { formatCurrency, getCompanyById } from "@/lib/mock-data"
+import { useAuth } from "@/lib/contexts/auth-context"
 
 export default function AtOncePage() {
   const [products, setProducts] = useState<EnhancedProduct[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState("all")
   const [sortBy, setSortBy] = useState("name")
+  const [pricingTier, setPricingTier] = useState("tier-1")
   const { addToCart, getItemCount } = useAtOnceCart()
+  const { user } = useAuth()
 
   useEffect(() => {
+    loadCompanyAndProducts()
+  }, [filter, user])
+
+  const loadCompanyAndProducts = async () => {
+    // Get user's company pricing tier
+    if (user?.companyId) {
+      const company = await getCompanyById(user.companyId)
+      if (company) {
+        setPricingTier(company.pricingTier)
+      }
+    }
     fetchAtOnceProducts()
-  }, [filter])
+  }
 
   const fetchAtOnceProducts = async () => {
     try {
@@ -33,7 +47,7 @@ export default function AtOncePage() {
       
       const response = await fetch(`/api/products/at-once?${params}`)
       const data = await response.json()
-      setProducts(data.products)
+      setProducts(Array.isArray(data.products) ? data.products : [])
     } catch (error) {
       console.error("Error fetching products:", error)
       toast.error("Failed to load products")
@@ -47,7 +61,7 @@ export default function AtOncePage() {
     if (!firstVariant) return
 
     const metadata = product.orderTypeMetadata?.['at-once'] as AtOnceMetadata
-    const price = product.pricing["Silver"]?.price || product.msrp
+    const price = product.pricing[pricingTier]?.price || product.msrp
     
     addToCart({
       productId: product.id,
@@ -79,9 +93,9 @@ export default function AtOncePage() {
       case "name":
         return sorted.sort((a, b) => a.name.localeCompare(b.name))
       case "price-low":
-        return sorted.sort((a, b) => (a.pricing["Silver"]?.price || 0) - (b.pricing["Silver"]?.price || 0))
+        return sorted.sort((a, b) => (a.pricing[pricingTier]?.price || 0) - (b.pricing[pricingTier]?.price || 0))
       case "price-high":
-        return sorted.sort((a, b) => (b.pricing["Silver"]?.price || 0) - (a.pricing["Silver"]?.price || 0))
+        return sorted.sort((a, b) => (b.pricing[pricingTier]?.price || 0) - (a.pricing[pricingTier]?.price || 0))
       case "stock":
         return sorted.sort((a, b) => {
           const aStock = (a.orderTypeMetadata?.['at-once'] as AtOnceMetadata)?.atsInventory || 0
@@ -210,7 +224,7 @@ export default function AtOncePage() {
             {sortProducts(products).map(product => {
               const metadata = product.orderTypeMetadata?.['at-once'] as AtOnceMetadata
               const stockStatus = getStockStatus(product)
-              const price = product.pricing["Silver"]?.price || product.msrp
+              const price = product.pricing[pricingTier]?.price || product.msrp
               
               return (
                 <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -247,7 +261,7 @@ export default function AtOncePage() {
                       <div className="flex justify-between items-center">
                         <div>
                           <p className="text-2xl font-bold">{formatCurrency(price)}</p>
-                          <p className="text-xs text-muted-foreground">Silver tier pricing</p>
+                          <p className="text-xs text-muted-foreground">{pricingTier.replace('-', ' ')} tier pricing</p>
                         </div>
                         {metadata?.quickReorderEligible && (
                           <Badge variant="outline" className="text-xs">
@@ -307,7 +321,7 @@ export default function AtOncePage() {
                     <Package className="h-8 w-8 mb-2 text-muted-foreground" />
                     <span className="text-xs text-center">{product.name}</span>
                     <span className="text-xs font-bold mt-1">
-                      {formatCurrency(product.pricing["Silver"]?.price || product.msrp)}
+                      {formatCurrency(product.pricing[pricingTier]?.price || product.msrp)}
                     </span>
                   </Button>
                 ))}

@@ -35,7 +35,7 @@ export function AuthenticatedLayout({ children }: { children: React.ReactNode })
           <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         </div>
         
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col">
           <Header toggleSidebar={toggleSidebar} />
           <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 pb-16 lg:pb-0">
             <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">

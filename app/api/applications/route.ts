@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json()
-    const { id, status, rejectionReason } = body
+    const { id, status, notes, reviewedBy, rejectionReason } = body
     const applications = await readApplications()
     
     const appIndex = applications.findIndex((app: any) => app.id === id)
@@ -99,6 +99,8 @@ export async function PATCH(request: NextRequest) {
       ...applications[appIndex],
       status,
       reviewedAt: new Date().toISOString(),
+      ...(notes && { notes }),
+      ...(reviewedBy && { reviewedBy }),
       ...(rejectionReason && { rejectionReason })
     }
     

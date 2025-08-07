@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     
     // Get company data to determine pricing tier
     const company = await getCompanyById(companyId)
-    const pricingTier = (company as any)?.priceTier || 1
+    const pricingTier = (company as any)?.pricingTier || 'tier-1'
 
     // Filter products based on search and category
     let filteredProducts = allProducts

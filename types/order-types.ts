@@ -3,8 +3,15 @@
  * @fileoverview Core interfaces for At-Once, Prebook, and Closeout order types
  */
 
+// Order Type Constants
+export const ORDER_TYPES = {
+  AT_ONCE: 'at-once',
+  PREBOOK: 'prebook', 
+  CLOSEOUT: 'closeout'
+} as const
+
 // Core Order Type Definition
-export type OrderTypeValue = 'at-once' | 'prebook' | 'closeout'
+export type OrderTypeValue = typeof ORDER_TYPES[keyof typeof ORDER_TYPES]
 
 export interface OrderType {
   type: OrderTypeValue
@@ -134,6 +141,30 @@ export interface EnhancedProduct {
       minQuantity: number
     }
   }
+}
+
+// Filter Interfaces for each order type
+export interface AtOnceFilters {
+  category?: string
+  inStockOnly?: boolean
+  evergreenOnly?: boolean
+  minInventory?: number
+  stockLocation?: string
+}
+
+export interface PrebookFilters {
+  season?: string
+  collection?: string
+  status?: 'planning' | 'confirmed' | 'in-production' | 'complete'
+  requiresFullSizeRun?: boolean
+}
+
+export interface CloseoutFilters {
+  urgentOnly?: boolean
+  finalSaleOnly?: boolean
+  listId?: string
+  tierFilter?: string
+  minDiscount?: number
 }
 
 // Season Management

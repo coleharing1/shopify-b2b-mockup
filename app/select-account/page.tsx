@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ShoppingBag, Users } from "lucide-react"
+import { useAuth } from "@/lib/contexts/auth-context"
+import { toast } from "sonner"
 
 /**
  * @description Account type selection page
@@ -11,12 +13,19 @@ import { ShoppingBag, Users } from "lucide-react"
  */
 export default function SelectAccountPage() {
   const router = useRouter()
+  const { login } = useAuth()
 
-  const handleRetailerSelect = () => {
+  const handleRetailerSelect = async () => {
+    // Login as retailer demo user
+    await login("john@outdoorretailers.com", "demo123")
+    toast.success("Logged in as retailer")
     router.push("/retailer/dashboard")
   }
 
-  const handleRepSelect = () => {
+  const handleRepSelect = async () => {
+    // Login as sales rep demo user
+    await login("rep@company.com", "demo123")
+    toast.success("Logged in as sales rep")
     router.push("/rep/dashboard")
   }
 

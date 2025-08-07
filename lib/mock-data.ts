@@ -158,9 +158,39 @@ export interface Resource {
   updatedAt: string
 }
 
+function getServerBaseUrl(): string {
+  // Prefer explicit base URL when provided
+  if (process.env.NEXT_PUBLIC_BASE_URL) {
+    return process.env.NEXT_PUBLIC_BASE_URL
+  }
+  // Vercel/hosted env
+  if (process.env.NEXT_PUBLIC_VERCEL_URL) {
+    return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  }
+  // Local dev fallback; Next exposes PORT
+  const devDefaultPort = process.env.NODE_ENV === 'development' 
+    ? (process.env.NEXT_PUBLIC_DEV_PORT || '3002')
+    : '3000'
+  const port = process.env.PORT || devDefaultPort
+  return `http://localhost:${port}`
+}
+
+function resolveDataUrl(pathOrUrl: string): string {
+  // In the browser, relative paths are fine
+  if (typeof window !== 'undefined') {
+    return pathOrUrl
+  }
+  // On the server, make absolute URLs for fetch
+  if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) {
+    return pathOrUrl
+  }
+  const base = getServerBaseUrl()
+  return `${base}${pathOrUrl}`
+}
+
 async function fetchData(url: string, key: string) {
   try {
-    const response = await fetch(url)
+    const response = await fetch(resolveDataUrl(url))
     const data = await response.json()
     return data[key]
   } catch (error) {

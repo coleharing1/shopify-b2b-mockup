@@ -23,6 +23,8 @@ import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/contexts/auth-context"
+import { usePrebookCart } from "@/lib/contexts/prebook-cart-context"
+import { useCloseoutCart } from "@/lib/contexts/closeout-cart-context"
 import { NotificationDropdown, type Notification } from "@/components/features/notification-dropdown"
 import { GlobalSearch } from "@/components/features/global-search"
 
@@ -43,13 +45,21 @@ const repNavItems = [
   { href: "/rep/resources", label: "Resources" },
 ]
 
+const adminNavItems = [
+  { href: "/admin/dashboard", label: "Dashboard" },
+  { href: "/admin/applications", label: "Applications" },
+  { href: "/admin/order-settings", label: "Order Settings" },
+]
+
 /**
  * @description Header navigation component with responsive menu
  * @fileoverview Main navigation header for B2B portal
  */
 export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
   const pathname = usePathname()
-  const { getItemCount } = useCart()
+  const { getItemCount, clearCart } = useCart()
+  const { clearCart: clearPrebookCart } = usePrebookCart()
+  const { clearCart: clearCloseoutCart } = useCloseoutCart()
   const { user, logout, login } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = React.useState(false)
@@ -85,8 +95,9 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
   
   // Determine which navigation to show based on current path
   const isRepPortal = pathname.startsWith("/rep")
-  const navItems = isRepPortal ? repNavItems : retailerNavItems
-  const userRole = isRepPortal ? "Sales Rep" : "Retailer"
+  const isAdminPortal = pathname.startsWith("/admin")
+  const navItems = isRepPortal ? repNavItems : isAdminPortal ? adminNavItems : retailerNavItems
+  const userRole = isRepPortal ? "Sales Rep" : isAdminPortal ? "Administrator" : "Retailer"
   const itemCount = getItemCount()
   
   /**
@@ -126,9 +137,16 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
   const quickDemoLogin = async (email: string, name: string, role: string) => {
     setIsLoading(true)
     try {
+      // Clear all carts when switching roles to prevent cross-account data leakage
+      clearCart()
+      clearPrebookCart()
+      clearCloseoutCart()
+      
       const result = await login(email, 'demo')
       if (result.success) {
         toast.success(`Switched to ${name} (${role})`)
+        // Set session cookie for API authentication
+        document.cookie = `session=demo_${result.user?.id || 'user-1'}; path=/`
       } else {
         toast.error('Failed to switch role')
       }
@@ -144,10 +162,11 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
     if (!user) return { name: 'Guest', role: 'Not logged in', icon: User }
     
     const email = user.email
-    if (email === 'john@outdoorco.com') return { name: 'John (Outdoor Co)', role: 'Retailer', icon: Users }
+    if (email === 'john@outdoorretailers.com') return { name: 'John (Outdoor Co)', role: 'Retailer', icon: Users }
     if (email === 'sarah@urbanstyle.com') return { name: 'Sarah (Urban Style)', role: 'Retailer', icon: Users }
-    if (email === 'alex@b2b.com') return { name: 'Alex', role: 'Sales Rep', icon: UserCheck }
-    if (email === 'admin@b2b.com') return { name: 'Admin', role: 'Administrator', icon: Shield }
+    if (email === 'mike@westcoastsports.com') return { name: 'Mike (West Coast)', role: 'Retailer', icon: Users }
+    if (email === 'rep@company.com') return { name: 'Sales Rep', role: 'Sales Representative', icon: UserCheck }
+    if (email === 'admin@company.com') return { name: 'Admin', role: 'Administrator', icon: Shield }
     
     return { name: user.name || 'User', role: userRole, icon: User }
   }
@@ -197,7 +216,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
             </div>
             
             {/* Cart Icon - Show only for retailers */}
-            {!isRepPortal && (
+            {!isRepPortal && !isAdminPortal && (
               <Link href="/retailer/cart" className="relative">
                 <Button variant="ghost" size="sm" className="relative">
                   <ShoppingCart className="h-5 w-5" />
@@ -259,14 +278,14 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                     </CollapsibleTrigger>
                     <CollapsibleContent className="pl-4">
                       <DropdownMenuItem 
-                        onClick={() => quickDemoLogin('john@outdoorco.com', 'John', 'Retailer')}
+                        onClick={() => quickDemoLogin('john@outdoorretailers.com', 'John', 'Retailer')}
                         className="cursor-pointer"
                       >
                         <div className="flex-1 ml-4">
                           <div className="font-medium">John @ Outdoor Co</div>
-                          <div className="text-xs text-gray-500">Premium Account</div>
+                          <div className="text-xs text-gray-500">Premium Account (Tier 3)</div>
                         </div>
-                        {user?.email === 'john@outdoorco.com' && (
+                        {user?.email === 'john@outdoorretailers.com' && (
                           <Check className="h-4 w-4 text-primary" />
                         )}
                       </DropdownMenuItem>
@@ -276,9 +295,21 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                       >
                         <div className="flex-1 ml-4">
                           <div className="font-medium">Sarah @ Urban Style</div>
-                          <div className="text-xs text-gray-500">Standard Account</div>
+                          <div className="text-xs text-gray-500">Silver Account (Tier 2)</div>
                         </div>
                         {user?.email === 'sarah@urbanstyle.com' && (
+                          <Check className="h-4 w-4 text-primary" />
+                        )}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => quickDemoLogin('mike@westcoastsports.com', 'Mike', 'Retailer')}
+                        className="cursor-pointer"
+                      >
+                        <div className="flex-1 ml-4">
+                          <div className="font-medium">Mike @ West Coast</div>
+                          <div className="text-xs text-gray-500">Bronze Account (Tier 1)</div>
+                        </div>
+                        {user?.email === 'mike@westcoastsports.com' && (
                           <Check className="h-4 w-4 text-primary" />
                         )}
                       </DropdownMenuItem>
@@ -286,29 +317,29 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                   </Collapsible>
                   
                   <DropdownMenuItem 
-                    onClick={() => quickDemoLogin('alex@b2b.com', 'Alex', 'Sales Rep')}
+                    onClick={() => quickDemoLogin('rep@company.com', 'Sales Rep', 'Sales Rep')}
                     className="cursor-pointer"
                   >
                     <UserCheck className="h-4 w-4 mr-2" />
                     <div className="flex-1">
-                      <div className="font-medium">Alex @ B2B</div>
+                      <div className="font-medium">Sales Rep</div>
                       <div className="text-xs text-gray-500">Sales Representative</div>
                     </div>
-                    {user?.email === 'alex@b2b.com' && (
+                    {user?.email === 'rep@company.com' && (
                       <Check className="h-4 w-4 text-primary" />
                     )}
                   </DropdownMenuItem>
                   
                   <DropdownMenuItem 
-                    onClick={() => quickDemoLogin('admin@b2b.com', 'Admin', 'Administrator')}
+                    onClick={() => quickDemoLogin('admin@company.com', 'Admin', 'Administrator')}
                     className="cursor-pointer"
                   >
                     <Shield className="h-4 w-4 mr-2" />
                     <div className="flex-1">
-                      <div className="font-medium">Admin @ B2B</div>
+                      <div className="font-medium">Admin User</div>
                       <div className="text-xs text-gray-500">System Administrator</div>
                     </div>
-                    {user?.email === 'admin@b2b.com' && (
+                    {user?.email === 'admin@company.com' && (
                       <Check className="h-4 w-4 text-primary" />
                     )}
                   </DropdownMenuItem>

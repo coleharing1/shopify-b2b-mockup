@@ -17,7 +17,7 @@ interface User {
 interface AuthContextType {
   user: User | null
   isLoading: boolean
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; user?: User }>
   logout: () => void
   switchRole: (role: UserRole) => void
 }
@@ -118,12 +118,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user, isLoading, pathname, router])
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string; user?: User }> => {
     // Mock authentication - in production, this would call an API
     const mockUsers: Record<string, User> = {
-      'john@outdoorco.com': {
+      'john@outdoorretailers.com': {
         id: 'user-1',
-        email: 'john@outdoorco.com',
+        email: 'john@outdoorretailers.com',
         name: 'John Smith',
         role: 'retailer',
         companyId: 'company-1',
@@ -137,26 +137,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         companyId: 'company-2',
         companyName: 'Urban Style Boutique'
       },
-      'mike@westcoast.com': {
+      'mike@westcoastsports.com': {
         id: 'user-3',
-        email: 'mike@westcoast.com',
+        email: 'mike@westcoastsports.com',
         name: 'Mike Wilson',
         role: 'retailer',
         companyId: 'company-3',
         companyName: 'West Coast Sports'
       },
-      'alex@b2b.com': {
+      'rep@company.com': {
         id: 'user-4',
-        email: 'alex@b2b.com',
-        name: 'Alex Chen',
-        role: 'rep',
+        email: 'rep@company.com',
+        name: 'Sales Rep',
+        role: 'sales_rep',
         companyId: 'b2b-internal',
         companyName: 'B2B Portal'
       },
-      'admin@b2b.com': {
+      'admin@company.com': {
         id: 'user-5',
-        email: 'admin@b2b.com',
-        name: 'System Admin',
+        email: 'admin@company.com',
+        name: 'Admin User',
         role: 'admin',
         companyId: 'b2b-internal',
         companyName: 'B2B Portal'
@@ -176,13 +176,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(foundUser)
     localStorage.setItem('b2b-user', JSON.stringify(foundUser))
     
-    return { success: true }
+    // Set session cookie for API authentication
+    document.cookie = `session=demo_${foundUser.id}; path=/`
+    
+    return { success: true, user: foundUser }
   }
 
   const logout = () => {
     setUser(null)
     localStorage.removeItem('b2b-user')
     localStorage.removeItem('b2b-cart') // Clear cart on logout
+    localStorage.removeItem('b2b-prebook-cart') // Clear prebook cart
+    localStorage.removeItem('b2b-closeout-cart') // Clear closeout cart
+    // Clear session cookie
+    document.cookie = 'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
     router.push('/')
   }
 

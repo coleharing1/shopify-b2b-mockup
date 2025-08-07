@@ -396,11 +396,11 @@ export default function AdminApplicationsPage() {
                               Score: <span className="font-medium">{app.creditScore}</span>
                             </p>
                             <p className="text-xs text-gray-500">
-                              Requested: ${app.requestedCredit.toLocaleString()}
+                              Requested: ${(Number(app.requestedCredit) || 0).toLocaleString()}
                             </p>
-                            {app.approvedCredit && (
+                            {app.approvedCredit != null && (
                               <p className="text-xs text-green-600">
-                                Approved: ${app.approvedCredit.toLocaleString()}
+                                Approved: {(Number(app.approvedCredit) || 0).toLocaleString()}
                               </p>
                             )}
                           </div>

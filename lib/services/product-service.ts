@@ -4,17 +4,37 @@
  */
 
 import { Product, getProducts } from '@/lib/mock-data'
-import { EnhancedProduct, AtOnceMetadata, PrebookMetadata, CloseoutMetadata } from '@/types/order-types'
-
-export type OrderTypeValue = 'at-once' | 'prebook' | 'closeout'
+import { 
+  EnhancedProduct, 
+  AtOnceMetadata, 
+  PrebookMetadata, 
+  CloseoutMetadata,
+  OrderTypeValue,
+  ORDER_TYPES,
+  AtOnceFilters,
+  PrebookFilters,
+  CloseoutFilters
+} from '@/types/order-types'
 
 export class ProductService {
   /**
    * Get products filtered by order type with appropriate metadata
    */
   static async getProductsByOrderType(
+    orderType: typeof ORDER_TYPES.AT_ONCE,
+    filters?: AtOnceFilters
+  ): Promise<EnhancedProduct[]>
+  static async getProductsByOrderType(
+    orderType: typeof ORDER_TYPES.PREBOOK,
+    filters?: PrebookFilters
+  ): Promise<EnhancedProduct[]>
+  static async getProductsByOrderType(
+    orderType: typeof ORDER_TYPES.CLOSEOUT,
+    filters?: CloseoutFilters
+  ): Promise<EnhancedProduct[]>
+  static async getProductsByOrderType(
     orderType: OrderTypeValue,
-    filters?: Record<string, any>
+    filters?: AtOnceFilters | PrebookFilters | CloseoutFilters
   ): Promise<EnhancedProduct[]> {
     const allProducts = await getProducts()
     
@@ -25,23 +45,23 @@ export class ProductService {
     
     // Apply order-type specific filtering and enhancement
     switch (orderType) {
-      case 'at-once':
-        return this.enhanceAtOnceProducts(filteredProducts, filters)
-      case 'prebook':
-        return this.enhancePrebookProducts(filteredProducts, filters)
-      case 'closeout':
-        return this.enhanceCloseoutProducts(filteredProducts, filters)
+      case ORDER_TYPES.AT_ONCE:
+        return this.enhanceAtOnceProducts(filteredProducts, filters as AtOnceFilters)
+      case ORDER_TYPES.PREBOOK:
+        return this.enhancePrebookProducts(filteredProducts, filters as PrebookFilters)
+      case ORDER_TYPES.CLOSEOUT:
+        return this.enhanceCloseoutProducts(filteredProducts, filters as CloseoutFilters)
       default:
         return []
     }
   }
 
   /**
-   * Enhance products with at-once specific metadata
+   * Enhance products with at-once specific metadata and display properties
    */
   private static enhanceAtOnceProducts(
     products: Product[],
-    filters?: any
+    filters?: AtOnceFilters
   ): EnhancedProduct[] {
     let enhanced = products.map(product => {
       const atOnceMetadata = product.orderTypeMetadata?.['at-once'] || {}
@@ -70,12 +90,15 @@ export class ProductService {
         })
       }
       
-      const enhanced: EnhancedProduct = {
+      const enhanced: EnhancedProduct & { stockStatus: string; estimatedShipDate: string } = {
         ...product,
-        orderTypes: ['at-once'],
+        orderTypes: [ORDER_TYPES.AT_ONCE],
         orderTypeMetadata: {
           'at-once': enhancedMetadata
-        }
+        },
+        // Add display properties here (moved from API route)
+        stockStatus,
+        estimatedShipDate: this.calculateShipDate(enhancedMetadata.shipWithin)
       }
       
       return enhanced
@@ -98,8 +121,22 @@ export class ProductService {
     
     if (filters?.category) {
       enhanced = enhanced.filter(p => 
-        p.category.toLowerCase() === filters.category.toLowerCase()
+        p.category.toLowerCase() === filters.category!.toLowerCase()
       )
+    }
+    
+    if (filters?.minInventory) {
+      enhanced = enhanced.filter(p => {
+        const metadata = p.orderTypeMetadata?.['at-once'] as AtOnceMetadata
+        return (metadata?.atsInventory || 0) >= filters.minInventory!
+      })
+    }
+    
+    if (filters?.stockLocation) {
+      enhanced = enhanced.filter(p => {
+        const metadata = p.orderTypeMetadata?.['at-once'] as AtOnceMetadata
+        return metadata?.stockLocation?.includes(filters.stockLocation!)
+      })
     }
     
     return enhanced
@@ -110,7 +147,7 @@ export class ProductService {
    */
   private static enhancePrebookProducts(
     products: Product[],
-    filters?: any
+    filters?: PrebookFilters
   ): EnhancedProduct[] {
     let enhanced = products.map(product => {
       const prebookMetadata = product.orderTypeMetadata?.['prebook'] || {}
@@ -137,7 +174,7 @@ export class ProductService {
       
       const enhanced: EnhancedProduct = {
         ...product,
-        orderTypes: ['prebook'],
+        orderTypes: [ORDER_TYPES.PREBOOK],
         orderTypeMetadata: {
           'prebook': enhancedMetadata
         }
@@ -161,15 +198,29 @@ export class ProductService {
       })
     }
     
+    if (filters?.status) {
+      enhanced = enhanced.filter(p => {
+        const metadata = p.orderTypeMetadata?.['prebook'] as PrebookMetadata
+        return metadata?.productionStatus === filters.status
+      })
+    }
+    
+    if (filters?.requiresFullSizeRun !== undefined) {
+      enhanced = enhanced.filter(p => {
+        const metadata = p.orderTypeMetadata?.['prebook'] as PrebookMetadata
+        return metadata?.requiresFullSizeRun === filters.requiresFullSizeRun
+      })
+    }
+    
     return enhanced
   }
 
   /**
-   * Enhance products with closeout specific metadata
+   * Enhance products with closeout specific metadata and display properties
    */
   private static enhanceCloseoutProducts(
     products: Product[],
-    filters?: any
+    filters?: CloseoutFilters
   ): EnhancedProduct[] {
     let enhanced = products.map(product => {
       const closeoutMetadata = product.orderTypeMetadata?.['closeout'] || {}
@@ -181,10 +232,13 @@ export class ProductService {
       // Calculate available quantity from variants
       const totalInventory = product.variants?.reduce((sum, v) => sum + v.inventory, 0) || 0
       
+      const expiresAt = new Date(closeoutMetadata.expiresAt || Date.now() + 48 * 60 * 60 * 1000)
+      const startedAt = new Date()
+      
       const enhancedMetadata: CloseoutMetadata = {
         listId: 'closeout-default',
-        expiresAt: new Date(closeoutMetadata.expiresAt || Date.now() + 48 * 60 * 60 * 1000),
-        startedAt: new Date(),
+        expiresAt,
+        startedAt,
         availableQuantity: closeoutMetadata.availableQuantity || totalInventory,
         originalQuantity: totalInventory * 2, // Assume original was double
         discountPercent: discountPercent,
@@ -193,9 +247,29 @@ export class ProductService {
         tierRestrictions: []
       }
       
-      const enhanced: EnhancedProduct = {
+      // Calculate current discount based on progressive discounting
+      let currentDiscount = enhancedMetadata.discountPercent
+      if (enhancedMetadata.progressiveDiscounts) {
+        const hoursElapsed = (Date.now() - enhancedMetadata.startedAt.getTime()) / (1000 * 60 * 60)
+        const applicable = enhancedMetadata.progressiveDiscounts
+          .filter(pd => pd.timeElapsed <= hoursElapsed)
+          .sort((a, b) => b.timeElapsed - a.timeElapsed)[0]
+        
+        if (applicable) {
+          currentDiscount = applicable.discountPercent
+        }
+      }
+      
+      // Calculate time remaining
+      const timeRemaining = Math.max(0, expiresAt.getTime() - Date.now())
+      
+      const enhanced: EnhancedProduct & { 
+        currentDiscount: number; 
+        timeRemaining: number; 
+        urgency: string 
+      } = {
         ...product,
-        orderTypes: ['closeout'],
+        orderTypes: [ORDER_TYPES.CLOSEOUT],
         orderTypeMetadata: {
           'closeout': enhancedMetadata
         },
@@ -204,7 +278,12 @@ export class ProductService {
           'tier-1': { price: closeoutPrice, minQuantity: enhancedMetadata.minimumOrderQuantity },
           'tier-2': { price: closeoutPrice, minQuantity: enhancedMetadata.minimumOrderQuantity },
           'tier-3': { price: closeoutPrice, minQuantity: enhancedMetadata.minimumOrderQuantity }
-        }
+        },
+        // Add display properties
+        currentDiscount,
+        timeRemaining,
+        urgency: timeRemaining < 6 * 60 * 60 * 1000 ? 'critical' :
+                 timeRemaining < 24 * 60 * 60 * 1000 ? 'high' : 'normal'
       }
       
       return enhanced
@@ -212,11 +291,7 @@ export class ProductService {
     
     // Apply filters
     if (filters?.urgentOnly) {
-      enhanced = enhanced.filter(p => {
-        const metadata = p.orderTypeMetadata?.['closeout'] as CloseoutMetadata
-        const hoursRemaining = (metadata?.expiresAt.getTime() - Date.now()) / (1000 * 60 * 60)
-        return hoursRemaining < 24
-      })
+      enhanced = enhanced.filter(p => p.urgency === 'critical' || p.urgency === 'high')
     }
     
     if (filters?.finalSaleOnly) {
@@ -226,7 +301,44 @@ export class ProductService {
       })
     }
     
+    if (filters?.minDiscount) {
+      enhanced = enhanced.filter(p => p.currentDiscount >= filters.minDiscount!)
+    }
+    
+    if (filters?.listId) {
+      enhanced = enhanced.filter(p => {
+        const metadata = p.orderTypeMetadata?.['closeout'] as CloseoutMetadata
+        return metadata?.listId === filters.listId
+      })
+    }
+    
+    if (filters?.tierFilter) {
+      enhanced = enhanced.filter(p => {
+        const metadata = p.orderTypeMetadata?.['closeout'] as CloseoutMetadata
+        return !metadata?.tierRestrictions?.length || 
+               metadata.tierRestrictions.includes(filters.tierFilter!)
+      })
+    }
+    
     return enhanced
+  }
+
+  /**
+   * Calculate estimated ship date based on business days
+   */
+  private static calculateShipDate(daysToShip: number): string {
+    const date = new Date()
+    let businessDays = 0
+    
+    while (businessDays < daysToShip) {
+      date.setDate(date.getDate() + 1)
+      // Skip weekends
+      if (date.getDay() !== 0 && date.getDay() !== 6) {
+        businessDays++
+      }
+    }
+    
+    return date.toISOString().split('T')[0]
   }
 
   /**
@@ -247,7 +359,10 @@ export class ProductService {
     }
     
     // Return with specific order type metadata
-    const filtered = await this.getProductsByOrderType(orderType)
+    const filtered = await this.getProductsByOrderType(
+      orderType as any,
+      {} as any
+    )
     return filtered.find(p => p.id === productId) || null
   }
 
@@ -269,7 +384,7 @@ export class ProductService {
     const seasons = new Set<string>()
     
     products.forEach(product => {
-      if (product.orderTypes?.includes('prebook')) {
+      if (product.orderTypes?.includes(ORDER_TYPES.PREBOOK)) {
         const season = product.orderTypeMetadata?.['prebook']?.season
         if (season) seasons.add(season)
       }

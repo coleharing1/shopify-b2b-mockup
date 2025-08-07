@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Package, ShoppingCart, FileText, Users, Menu } from "lucide-react"
+import { Home, Package, ShoppingCart, FileText, Users, Menu, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useCart } from "@/lib/cart-context"
 
@@ -34,7 +34,16 @@ export function MobileBottomNav({ isRepPortal = false, onMenuClick }: MobileBott
     { href: "/rep/resources", label: "Resources", icon: FileText, badge: 0 },
   ]
 
-  const navItems = isRepPortal ? repNavItems : retailerNavItems
+  const adminNavItems = [
+    { href: "/admin/dashboard", label: "Home", icon: Home, badge: 0 },
+    { href: "/admin/applications", label: "Apps", icon: FileText, badge: 0 },
+    { href: "/admin/order-settings", label: "Settings", icon: Settings, badge: 0 },
+    { href: "/admin/dashboard", label: "More", icon: FileText, badge: 0 },
+  ]
+
+  const isAdminPortal = pathname.startsWith('/admin')
+  const isRep = isRepPortal || pathname.startsWith('/rep')
+  const navItems = isAdminPortal ? adminNavItems : isRep ? repNavItems : retailerNavItems
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 lg:hidden z-40">

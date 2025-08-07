@@ -109,9 +109,9 @@ export function SearchResultCard({ result, viewMode, searchQuery }: SearchResult
           msrp: result.metadata.price,
           images: result.image ? [result.image] : [],
           pricing: {
-            tier1: { price: result.metadata.price * 0.7, minQuantity: 1 },
-            tier2: { price: result.metadata.price * 0.6, minQuantity: 1 },
-            tier3: { price: result.metadata.price * 0.5, minQuantity: 1 }
+            'tier-1': { price: result.metadata.price * 0.7, minQuantity: 1 },
+            'tier-2': { price: result.metadata.price * 0.6, minQuantity: 1 },
+            'tier-3': { price: result.metadata.price * 0.5, minQuantity: 1 }
           }
         },
         variantId: variant.id,

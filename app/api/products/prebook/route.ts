@@ -1,27 +1,38 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { ProductService } from '@/lib/services/product-service'
-import { PrebookMetadata } from '@/types/order-types'
+import { PrebookMetadata, ORDER_TYPES, PrebookFilters } from '@/types/order-types'
+import { verifySession } from '@/lib/api-auth'
 
 /**
  * @description API route for fetching prebook (future season) products
  * @fileoverview Returns products available for advance ordering with delivery windows
  */
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
+    // Verify user session
+    const user = await verifySession(request)
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+    
     const { searchParams } = new URL(request.url)
     
-    // Filter parameters
-    const season = searchParams.get('season') // e.g., "Spring 2025", "Fall 2025"
-    const collection = searchParams.get('collection') // e.g., "Core", "Fashion", "Limited"
-    const status = searchParams.get('status') // e.g., "planning", "confirmed", "in-production"
+    // Build filters from query parameters
+    const filters: PrebookFilters = {
+      season: searchParams.get('season') || undefined,
+      collection: searchParams.get('collection') || undefined,
+      status: searchParams.get('status') as PrebookFilters['status'] || undefined,
+      requiresFullSizeRun: searchParams.has('requiresFullSizeRun')
+        ? searchParams.get('requiresFullSizeRun') === 'true'
+        : undefined
+    }
     
     // Get products from unified service
-    const products = await ProductService.getProductsByOrderType('prebook', {
-      season,
-      collection,
-      status
-    })
+    const products = await ProductService.getProductsByOrderType(ORDER_TYPES.PREBOOK, filters)
     
     // Group by season for easy navigation
     const seasonGroups = products.reduce((acc, product) => {
@@ -46,11 +57,11 @@ export async function GET(request: Request) {
     const availableSeasons = await ProductService.getAvailableSeasons()
     
     return NextResponse.json({
-      products: products,
+      products,
       seasonGroups,
       total: products.length,
       filters: {
-        seasons: availableSeasons.length > 0 ? availableSeasons : ["Spring 2025", "Summer 2025", "Fall 2025", "Holiday 2025"],
+        seasons: availableSeasons.length > 0 ? availableSeasons : ["Spring 2025", "Summer 2025", "Fall 2025"],
         collections: ["Core", "Fashion", "Limited"],
         statuses: ["planning", "confirmed", "in-production", "complete"]
       }
