@@ -1,6 +1,8 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { AuthenticatedLayout } from "@/components/layout/authenticated-layout"
+import { Breadcrumb } from "@/components/ui/breadcrumb"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -154,7 +156,7 @@ export default function RepOrdersPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'delivered':
-        return <Badge variant="success">Delivered</Badge>
+        return <Badge variant="secondary">Delivered</Badge>
       case 'shipped':
         return <Badge variant="default">Shipped</Badge>
       case 'processing':
@@ -176,104 +178,41 @@ export default function RepOrdersPage() {
     return counts
   }, [])
 
-  const columns = [
-    { 
-      key: "order", 
-      label: "Order", 
-      sortable: true,
-      render: (order: typeof mockOrders[0]) => (
-        <div className="flex items-center gap-2">
-          {getStatusIcon(order.status)}
-          <div>
-            <Link href={`/retailer/orders/${order.orderId}`} className="font-medium text-primary hover:underline">
-              {order.id}
-            </Link>
-            <p className="text-xs text-gray-500">{order.poNumber}</p>
-          </div>
-        </div>
-      )
-    },
-    { 
-      key: "customer", 
-      label: "Customer",
-      sortable: true,
-      render: (order: typeof mockOrders[0]) => (
-        <div>
-          <Link href={`/rep/customers/${order.companyId}`} className="text-sm font-medium hover:text-primary">
-            {order.companyName}
-          </Link>
-          <p className="text-xs text-gray-500">{order.items} items</p>
-        </div>
-      )
-    },
-    {
-      key: "date",
-      label: "Date",
-      sortable: true,
-      render: (order: typeof mockOrders[0]) => (
-        <span className="text-sm">{new Date(order.orderDate).toLocaleDateString()}</span>
-      )
-    },
-    {
-      key: "total",
-      label: "Total",
-      sortable: true,
-      render: (order: typeof mockOrders[0]) => (
-        <div>
-          <p className="font-medium">${order.total.toLocaleString()}</p>
-          <p className="text-xs text-gray-500">Comm: ${order.commission.toFixed(2)}</p>
-        </div>
-      )
-    },
-    {
-      key: "status",
-      label: "Status",
-      render: (order: typeof mockOrders[0]) => getStatusBadge(order.status)
-    },
-    {
-      key: "actions",
-      label: "Actions",
-      render: (order: typeof mockOrders[0]) => (
-        <div className="flex gap-2">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href={`/retailer/orders/${order.orderId}`}>
-              View
-              <ChevronRight className="ml-1 h-3 w-3" />
-            </Link>
-          </Button>
-        </div>
-      )
-    }
-  ]
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Order Management</h1>
-        <p className="text-gray-600 mt-1">Track and manage all customer orders</p>
-      </div>
+    <AuthenticatedLayout>
+      <div className="space-y-6">
+        <Breadcrumb items={[
+          { label: "Dashboard", href: "/rep/dashboard" },
+          { label: "Order Management" }
+        ]} />
+        
+        <div>
+          <h1 className="text-3xl font-bold">Order Management</h1>
+          <p className="text-gray-600 mt-1">Track and manage all customer orders</p>
+        </div>
 
       {/* Metrics Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Total Orders"
-          value={metrics.totalOrders}
+          value={metrics.totalOrders.toString()}
           icon={Package}
-          trend="+12%"
+          trend={{ value: 12, isPositive: true }}
           description="This month"
         />
         <StatCard
           title="Total Revenue"
           value={`$${metrics.totalRevenue.toLocaleString()}`}
           icon={DollarSign}
-          trend="+18%"
+          trend={{ value: 18, isPositive: true }}
           description="From all customers"
         />
         <StatCard
           title="Commission Earned"
           value={`$${metrics.totalCommission.toLocaleString()}`}
           icon={TrendingUp}
-          trend="+15%"
+          trend={{ value: 15, isPositive: true }}
           description="This month"
         />
         <StatCard
@@ -315,7 +254,7 @@ export default function RepOrdersPage() {
                 <SelectContent>
                   <SelectItem value="all">All Customers</SelectItem>
                   {mockCustomers.map(customer => (
-                    <SelectItem key={customer.id} value={customer.id}>
+                    <SelectItem key={customer.id} value={customer.id.toString()}>
                       {customer.name} ({customer.orderCount})
                     </SelectItem>
                   ))}
@@ -396,12 +335,66 @@ export default function RepOrdersPage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-0">
-              <ResponsiveTable
-                columns={columns}
-                data={filteredOrders}
-                mobileColumns={["order", "customer", "total"]}
-              />
+            <CardContent>
+              <ResponsiveTable>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left font-medium text-gray-600 pb-2">Order</th>
+                      <th className="text-left font-medium text-gray-600 pb-2">Customer</th>
+                      <th className="text-left font-medium text-gray-600 pb-2">Date</th>
+                      <th className="text-left font-medium text-gray-600 pb-2">Total</th>
+                      <th className="text-left font-medium text-gray-600 pb-2">Status</th>
+                      <th className="text-left font-medium text-gray-600 pb-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredOrders.map((order) => (
+                      <tr key={order.id} className="border-b hover:bg-gray-50">
+                        <td className="py-3">
+                          <div className="flex items-center gap-2">
+                            {getStatusIcon(order.status)}
+                            <div>
+                              <Link href={`/retailer/orders/${order.orderId}`} className="font-medium text-primary hover:underline">
+                                {order.id}
+                              </Link>
+                              <p className="text-xs text-gray-500">{order.poNumber}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3">
+                          <div>
+                            <Link href={`/rep/customers/${order.companyId}`} className="text-sm font-medium hover:text-primary">
+                              {order.companyName}
+                            </Link>
+                            <p className="text-xs text-gray-500">{order.items} items</p>
+                          </div>
+                        </td>
+                        <td className="py-3">
+                          <span className="text-sm">{new Date(order.orderDate).toLocaleDateString()}</span>
+                        </td>
+                        <td className="py-3">
+                          <div>
+                            <p className="font-medium">${order.total.toLocaleString()}</p>
+                            <p className="text-xs text-gray-500">Comm: ${order.commission.toFixed(2)}</p>
+                          </div>
+                        </td>
+                        <td className="py-3">
+                          {getStatusBadge(order.status)}
+                        </td>
+                        <td className="py-3">
+                          <Button variant="ghost" size="sm" asChild>
+                            <Link href={`/retailer/orders/${order.orderId}`}>
+                              View
+                              <ChevronRight className="ml-1 h-3 w-3" />
+                            </Link>
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </ResponsiveTable>
             </CardContent>
           </Card>
         </TabsContent>
@@ -444,6 +437,7 @@ export default function RepOrdersPage() {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </AuthenticatedLayout>
   )
 }

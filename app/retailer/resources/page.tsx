@@ -10,6 +10,7 @@ import { EmptyState } from "@/components/ui/empty-state"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
 
 interface Resource {
   id: string
@@ -181,7 +182,7 @@ export default function ResourceCenterPage() {
 
   const handleDownload = (resource: Resource) => {
     // In production, this would trigger actual download
-    console.log(`Downloading: ${resource.title}`)
+    toast.success(`${resource.title} (${resource.fileSize}) is being downloaded.`)
   }
 
   return (

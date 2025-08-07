@@ -86,7 +86,7 @@ export function ReviewSubmitStep({ formData, onEdit, errors = {} }: ReviewSubmit
             </div>
             <div className="flex items-center gap-2">
               {getSectionStatus('companyInfo').complete ? (
-                <Badge variant="success" className="gap-1">
+                <Badge variant="secondary" className="gap-1">
                   <CheckCircle className="h-3 w-3" />
                   Complete
                 </Badge>
@@ -151,7 +151,7 @@ export function ReviewSubmitStep({ formData, onEdit, errors = {} }: ReviewSubmit
             </div>
             <div className="flex items-center gap-2">
               {getSectionStatus('documents').complete ? (
-                <Badge variant="success" className="gap-1">
+                <Badge variant="secondary" className="gap-1">
                   <CheckCircle className="h-3 w-3" />
                   Complete
                 </Badge>
@@ -221,7 +221,7 @@ export function ReviewSubmitStep({ formData, onEdit, errors = {} }: ReviewSubmit
             </div>
             <div className="flex items-center gap-2">
               {getSectionStatus('creditApplication').complete ? (
-                <Badge variant="success" className="gap-1">
+                <Badge variant="secondary" className="gap-1">
                   <CheckCircle className="h-3 w-3" />
                   Complete
                 </Badge>

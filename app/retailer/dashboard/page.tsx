@@ -25,12 +25,14 @@ import {
   type Company,
   type Order
 } from "@/lib/mock-data"
+import { useAuth } from "@/lib/contexts/auth-context"
 
 /**
  * @description Retailer dashboard with metrics and quick actions
  * @fileoverview Main dashboard page showing company stats and recent activity
  */
 export default function RetailerDashboardPage() {
+  const { user } = useAuth()
   const [company, setCompany] = useState<Company | null>(null)
   const [orders, setOrders] = useState<Order[]>([])
   const [metrics, setMetrics] = useState<{
@@ -47,8 +49,13 @@ export default function RetailerDashboardPage() {
 
   useEffect(() => {
     const loadDashboardData = async () => {
-      // In a real app, we'd get the company ID from auth context
-      const companyId = "company-1"
+      // Use company ID from authenticated user context
+      if (!user?.companyId) {
+        setIsLoading(false)
+        return
+      }
+      
+      const companyId = user.companyId
       
       const [companyData, ordersData, metricsData] = await Promise.all([
         getCompanyById(companyId),
@@ -63,7 +70,7 @@ export default function RetailerDashboardPage() {
     }
 
     loadDashboardData()
-  }, [])
+  }, [user])
 
   if (isLoading) {
     return (

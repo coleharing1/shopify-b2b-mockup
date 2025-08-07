@@ -19,12 +19,18 @@ import {
   ChevronUp
 } from "lucide-react"
 import { Order, getOrdersByCompanyId, formatCurrency, formatDate } from "@/lib/mock-data"
+import { useCart, CartItem } from "@/lib/cart-context"
+import { useAuth } from "@/lib/contexts/auth-context"
+import { toast } from "sonner"
 
 /**
  * @description Order history page with search and filters
  * @fileoverview Displays past orders with status tracking and reorder functionality
  */
 export default function OrderHistoryPage() {
+  const { user } = useAuth()
+  const { addToCart } = useCart()
+
   const [orders, setOrders] = useState<Order[]>([])
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -35,8 +41,13 @@ export default function OrderHistoryPage() {
 
   useEffect(() => {
     const loadOrders = async () => {
+      if (!user?.companyId) {
+        setIsLoading(false)
+        return
+      }
+      
       try {
-        const ordersData = await getOrdersByCompanyId("company-1")
+        const ordersData = await getOrdersByCompanyId(user.companyId)
         setOrders(ordersData)
         setFilteredOrders(ordersData)
         setIsLoading(false)
@@ -47,7 +58,7 @@ export default function OrderHistoryPage() {
     }
 
     loadOrders()
-  }, [])
+  }, [user])
 
   useEffect(() => {
     let filtered = [...orders]
@@ -97,22 +108,63 @@ export default function OrderHistoryPage() {
   }
 
   const handleReorder = async (order: Order) => {
-    // In a real app, this would fetch full order details and add all items
-    // For demo, we'll simulate adding items
-    if (order.items) {
+    // Add all items from the order to the cart
+    if (order.items && order.items.length > 0) {
+      let itemsAdded = 0
+      
       order.items.forEach(item => {
-        // Mock implementation - in real app would fetch product details
-        console.log("Reordering item:", item)
+        // Create a proper CartItem from the order item
+        const unitPrice = item.lineTotal / item.quantity
+        const cartItem: CartItem = {
+          productId: item.sku || `product-${Date.now()}-${Math.random()}`,
+          product: {
+            id: item.sku || `product-${Date.now()}-${Math.random()}`,
+            sku: item.sku || '',
+            name: item.name,
+            category: 'Reorder',
+            subcategory: '',
+            description: '',
+            msrp: unitPrice,
+            images: ['/placeholder.svg'],
+            pricing: {
+              tier1: { price: unitPrice, minQuantity: 1 },
+              tier2: { price: unitPrice, minQuantity: 1 },
+              tier3: { price: unitPrice, minQuantity: 1 }
+            }
+          },
+          variantId: `variant-${Date.now()}-${Math.random()}`,
+          variant: {
+            id: `variant-${Date.now()}-${Math.random()}`,
+            color: '',
+            size: '',
+            inventory: 100,
+            sku: item.sku || ''
+          },
+          quantity: item.quantity,
+          unitPrice: unitPrice
+        }
+        
+        addToCart(cartItem)
+        itemsAdded++
+      })
+      
+      // Show success toast
+      toast.success("Items Added to Cart", {
+        description: `Successfully added ${itemsAdded} item${itemsAdded > 1 ? 's' : ''} from order #${order.id} to your cart.`,
+      })
+      
+      setShowReorderSuccess(true)
+      setTimeout(() => setShowReorderSuccess(false), 3000)
+    } else {
+      toast.error("No Items to Reorder", {
+        description: "This order doesn't contain any items to reorder.",
       })
     }
-    
-    setShowReorderSuccess(true)
-    setTimeout(() => setShowReorderSuccess(false), 3000)
   }
 
   const handleDownloadInvoice = (orderId: string) => {
-    // Mock invoice download
-    console.log("Downloading invoice for order:", orderId)
+    // Mock invoice download - in production would generate PDF
+    toast.success(`Invoice for order ${orderId} would be downloaded here.`)
   }
 
   if (isLoading) {

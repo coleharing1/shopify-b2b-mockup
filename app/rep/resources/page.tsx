@@ -349,7 +349,7 @@ export default function SalesResourcesPage() {
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
                 {categories.map((category) => (
-                  <option key={category.value} value={category.value}>
+                  <option key={category.value} value={category.value.toString()}>
                     {category.label}
                   </option>
                 ))}

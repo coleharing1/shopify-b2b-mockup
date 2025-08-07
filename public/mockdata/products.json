@@ -65,6 +65,30 @@
           "price": 34.199999999999996,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "made-in-usa",
+        "merino-wool",
+        "socks",
+        "performance",
+        "winter",
+        "cold-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -229,6 +253,28 @@
         "tier-3": {
           "price": 29.4,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "made-in-usa",
+        "merino-wool",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 1600,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -465,6 +511,28 @@
           "price": 21.599999999999998,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "socks",
+        "performance",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 2500,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -532,6 +600,28 @@
         "tier-3": {
           "price": 21.599999999999998,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "socks",
+        "performance",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -642,6 +732,28 @@
           "price": 21.599999999999998,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "socks",
+        "performance",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 900,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -708,6 +820,26 @@
         "tier-3": {
           "price": 31.2,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "made-in-usa",
+        "merino-wool"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -780,6 +912,24 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -842,6 +992,24 @@
         "tier-3": {
           "price": 6,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -972,6 +1140,24 @@
           "price": 41.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 1200,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -1038,6 +1224,24 @@
         "tier-3": {
           "price": 13.77,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -1110,6 +1314,24 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -1178,6 +1400,24 @@
         "tier-3": {
           "price": 11.969999999999999,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -1281,6 +1521,24 @@
           "price": 9.9,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 800,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -1335,6 +1593,24 @@
           "price": 3.9,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 300,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -1386,6 +1662,24 @@
         "tier-3": {
           "price": 5.3999999999999995,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 300,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -1514,6 +1808,24 @@
         "tier-3": {
           "price": 9.569999999999999,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 1200,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -1644,6 +1956,38 @@
           "price": 4.2,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 1200,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -1738,6 +2082,24 @@
           "price": 10.77,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 800,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -1810,6 +2172,24 @@
           "price": 6.8999999999999995,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -1847,6 +2227,24 @@
         "tier-3": {
           "price": 11.969999999999999,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 100,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -1904,6 +2302,24 @@
           "price": 3.3,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 300,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -1949,6 +2365,24 @@
           "price": 3.9,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 200,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -1993,6 +2427,24 @@
         "tier-3": {
           "price": 3.3,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 200,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -2052,6 +2504,26 @@
           "price": 20.970000000000002,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "winter",
+        "cold-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 300,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -2109,6 +2581,26 @@
           "price": 17.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "winter",
+        "cold-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 300,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -2165,6 +2657,26 @@
         "tier-3": {
           "price": 17.97,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "winter",
+        "cold-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 300,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -2239,6 +2751,40 @@
           "price": 14.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -2284,6 +2830,26 @@
         "tier-3": {
           "price": 10.77,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 200,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -2350,6 +2916,40 @@
           "price": 13.77,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -2397,6 +2997,24 @@
         "tier-3": {
           "price": 17.97,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 200,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -2477,6 +3095,24 @@
           "price": 41.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 600,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -2542,6 +3178,38 @@
         "tier-3": {
           "price": 17.97,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -2700,6 +3368,38 @@
           "price": 29.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 1500,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -2782,6 +3482,24 @@
           "price": 19.2,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 600,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -2852,6 +3570,38 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -2887,6 +3637,24 @@
         "tier-3": {
           "price": 2.394,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 100,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -2959,6 +3727,24 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -3021,6 +3807,24 @@
         "tier-3": {
           "price": 15,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 300,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -3161,6 +3965,38 @@
           "price": 21.57,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 1300,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -3287,6 +4123,24 @@
           "price": 9,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 1200,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -3352,6 +4206,38 @@
           "price": 16.77,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -3398,6 +4284,38 @@
         "tier-3": {
           "price": 4.194,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 200,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -3446,6 +4364,38 @@
         "tier-3": {
           "price": 8.994,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 100,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -3872,6 +4822,24 @@
           "price": 17.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 4800,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -3970,6 +4938,42 @@
         "tier-3": {
           "price": 18,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable",
+        "made-in-usa",
+        "merino-wool",
+        "winter",
+        "cold-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 800,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -4070,6 +5074,42 @@
           "price": 19.8,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable",
+        "made-in-usa",
+        "merino-wool",
+        "winter",
+        "cold-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 800,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -4139,6 +5179,38 @@
         "tier-3": {
           "price": 11.969999999999999,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -4210,6 +5282,24 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -4280,6 +5370,24 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -4315,6 +5423,24 @@
         "tier-3": {
           "price": 2.394,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 100,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -4386,6 +5512,24 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -4456,6 +5600,24 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -4523,6 +5685,24 @@
         "tier-3": {
           "price": 19.2,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -4654,6 +5834,24 @@
           "price": 26.970000000000002,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 1200,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -4725,6 +5923,38 @@
           "price": 19.2,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -4791,6 +6021,28 @@
         "tier-3": {
           "price": 15.6,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "made-in-usa",
+        "merino-wool",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -4968,6 +6220,28 @@
           "price": 13.2,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "socks",
+        "performance",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 1700,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -5034,6 +6308,28 @@
         "tier-3": {
           "price": 16.8,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "made-in-usa",
+        "merino-wool",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 400,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -5211,6 +6507,28 @@
           "price": 10.799999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "socks",
+        "performance",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 1700,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -5281,6 +6599,38 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once",
+        "prebook"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "pre-orderable"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        },
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 12,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -5350,6 +6700,24 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -5418,6 +6786,24 @@
         "tier-3": {
           "price": 11.969999999999999,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 500,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -5508,6 +6894,26 @@
           "price": 16.8,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "made-in-usa",
+        "merino-wool"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 700,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -5596,6 +7002,26 @@
         "tier-3": {
           "price": 17.4,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller",
+        "made-in-usa",
+        "merino-wool"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 700,
+          "shipWithin": 3,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
         }
       }
     },
@@ -5818,6 +7244,24 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "at-once"
+      ],
+      "tags": [
+        "evergreen",
+        "bestseller"
+      ],
+      "orderTypeMetadata": {
+        "at-once": {
+          "atsInventory": 2300,
+          "shipWithin": 2,
+          "evergreenItem": true,
+          "stockLocation": [
+            "Main Warehouse"
+          ],
+          "backorderAvailable": false
+        }
       }
     },
     {
@@ -5873,6 +7317,27 @@
         "tier-3": {
           "price": 14.969999999999999,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Summer 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-06-01",
+            "end": "2025-06-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-05-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -6007,6 +7472,27 @@
           "price": 14.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Summer 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-06-01",
+            "end": "2025-06-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-05-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -6070,6 +7556,27 @@
         "tier-3": {
           "price": 17.97,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Spring 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-03-01",
+            "end": "2025-03-31"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-02-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -6143,6 +7650,27 @@
         "tier-3": {
           "price": 19.2,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Spring 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-03-01",
+            "end": "2025-03-31"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-02-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -6335,6 +7863,27 @@
         "tier-3": {
           "price": 13.77,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -6602,6 +8151,27 @@
         "tier-3": {
           "price": 17.97,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Spring 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-03-01",
+            "end": "2025-03-31"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-02-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -7069,6 +8639,27 @@
           "price": 17.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -7167,6 +8758,27 @@
         "tier-3": {
           "price": 23.37,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Summer 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-06-01",
+            "end": "2025-06-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-05-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -7298,6 +8910,27 @@
           "price": 9.569999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Summer 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-06-01",
+            "end": "2025-06-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-05-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -7365,6 +8998,27 @@
         "tier-3": {
           "price": 19.2,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Summer 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-06-01",
+            "end": "2025-06-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-05-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -7456,6 +9110,27 @@
         "tier-3": {
           "price": 19.2,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Summer 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-06-01",
+            "end": "2025-06-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-05-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -7587,6 +9262,27 @@
           "price": 17.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -7659,6 +9355,27 @@
           "price": 35.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Summer 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-06-01",
+            "end": "2025-06-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-05-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -7726,6 +9443,29 @@
         "tier-3": {
           "price": 41.97,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal",
+        "winter",
+        "cold-weather"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Summer 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-06-01",
+            "end": "2025-06-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-05-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -7890,6 +9630,27 @@
           "price": 35.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Spring 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-03-01",
+            "end": "2025-03-31"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-02-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -7955,6 +9716,29 @@
         "tier-3": {
           "price": 41.97,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal",
+        "winter",
+        "cold-weather"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -8438,6 +10222,27 @@
           "price": 17.369999999999997,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -8507,6 +10312,27 @@
           "price": 16.77,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Spring 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-03-01",
+            "end": "2025-03-31"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-02-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -8564,6 +10390,27 @@
         "tier-3": {
           "price": 41.97,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Summer 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-06-01",
+            "end": "2025-06-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-05-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -8643,6 +10490,27 @@
           "price": 17.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Spring 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-03-01",
+            "end": "2025-03-31"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-02-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -8707,6 +10575,27 @@
         "tier-3": {
           "price": 21.57,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Summer 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-06-01",
+            "end": "2025-06-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-05-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -8867,6 +10756,27 @@
           "price": 35.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Spring 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-03-01",
+            "end": "2025-03-31"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-02-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -8930,6 +10840,27 @@
           "price": 17.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Spring 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-03-01",
+            "end": "2025-03-31"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-02-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -8992,6 +10923,27 @@
         "tier-3": {
           "price": 17.97,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Fall 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-09-01",
+            "end": "2025-09-30"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-08-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
         }
       }
     },
@@ -9057,6 +11009,27 @@
           "price": 17.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Spring 2025",
+          "collection": "Fashion",
+          "deliveryWindow": {
+            "start": "2025-03-01",
+            "end": "2025-03-31"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-02-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -9120,6 +11093,27 @@
           "price": 33.57,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "prebook"
+      ],
+      "tags": [
+        "new-arrival",
+        "seasonal"
+      ],
+      "orderTypeMetadata": {
+        "prebook": {
+          "season": "Spring 2025",
+          "collection": "Core",
+          "deliveryWindow": {
+            "start": "2025-03-01",
+            "end": "2025-03-31"
+          },
+          "depositPercent": 30,
+          "cancellationDeadline": "2025-02-01",
+          "minimumUnits": 6,
+          "requiresFullSizeRun": false
+        }
       }
     },
     {
@@ -9182,6 +11176,23 @@
           "price": 12.6,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 75.95,
+          "discountPercent": 50,
+          "availableQuantity": 120,
+          "expiresAt": "2025-08-09T16:22:34.032Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 1
+        }
       }
     },
     {
@@ -9243,6 +11254,23 @@
         "tier-3": {
           "price": 14.399999999999999,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 85.95,
+          "discountPercent": 50,
+          "availableQuantity": 120,
+          "expiresAt": "2025-08-09T05:21:00.576Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 1
         }
       }
     },
@@ -9335,6 +11363,27 @@
           "price": 13.2,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale",
+        "socks",
+        "performance",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 33,
+          "discountPercent": 40,
+          "availableQuantity": 210,
+          "expiresAt": "2025-08-08T04:11:12.656Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 1
+        }
       }
     },
     {
@@ -9424,6 +11473,27 @@
         "tier-3": {
           "price": 10.799999999999999,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale",
+        "socks",
+        "performance",
+        "summer",
+        "warm-weather"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 27,
+          "discountPercent": 40,
+          "availableQuantity": 210,
+          "expiresAt": "2025-08-09T10:37:49.208Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 1
         }
       }
     },
@@ -9523,6 +11593,23 @@
           "price": 14.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 37.425,
+          "discountPercent": 70,
+          "availableQuantity": 240,
+          "expiresAt": "2025-08-09T11:49:36.296Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 3
+        }
       }
     },
     {
@@ -9568,6 +11655,23 @@
         "tier-3": {
           "price": 16.169999999999998,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 40.425,
+          "discountPercent": 40,
+          "availableQuantity": 60,
+          "expiresAt": "2025-08-10T11:01:59.587Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 1
         }
       }
     },
@@ -9617,6 +11721,23 @@
         "tier-3": {
           "price": 16.169999999999998,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 40.425,
+          "discountPercent": 50,
+          "availableQuantity": 60,
+          "expiresAt": "2025-08-08T10:37:39.188Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 1
         }
       }
     },
@@ -9718,6 +11839,23 @@
           "price": 16.169999999999998,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 40.425,
+          "discountPercent": 70,
+          "availableQuantity": 240,
+          "expiresAt": "2025-08-07T23:41:53.084Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 3
+        }
       }
     },
     {
@@ -9774,6 +11912,23 @@
           "price": 20.970000000000002,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 52.425000000000004,
+          "discountPercent": 70,
+          "availableQuantity": 90,
+          "expiresAt": "2025-08-07T22:29:46.571Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 3
+        }
       }
     },
     {
@@ -9818,6 +11973,23 @@
           "price": 11.969999999999999,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 29.924999999999997,
+          "discountPercent": 50,
+          "availableQuantity": 30,
+          "expiresAt": "2025-08-09T13:03:12.228Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 1
+        }
       }
     },
     {
@@ -9858,6 +12030,23 @@
         "tier-3": {
           "price": 10.17,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 25.424999999999997,
+          "discountPercent": 60,
+          "availableQuantity": 30,
+          "expiresAt": "2025-08-08T17:12:51.940Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 3
         }
       }
     },
@@ -9929,6 +12118,25 @@
           "price": 57.57,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale",
+        "winter",
+        "cold-weather"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 85.95,
+          "discountPercent": 40,
+          "availableQuantity": 120,
+          "expiresAt": "2025-08-10T06:06:24.522Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 1
+        }
       }
     },
     {
@@ -9984,6 +12192,23 @@
         "tier-3": {
           "price": 53.97,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 134.925,
+          "discountPercent": 60,
+          "availableQuantity": 90,
+          "expiresAt": "2025-08-08T17:38:14.418Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 3
         }
       }
     },
@@ -10056,6 +12281,23 @@
           "price": 53.97,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 134.925,
+          "discountPercent": 70,
+          "availableQuantity": 150,
+          "expiresAt": "2025-08-09T06:31:56.806Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 3
+        }
       }
     },
     {
@@ -10092,6 +12334,23 @@
           "price": 4.194,
           "minQuantity": 1
         }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 10.485,
+          "discountPercent": 40,
+          "availableQuantity": 30,
+          "expiresAt": "2025-08-09T00:03:08.212Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 1
+        }
       }
     },
     {
@@ -10127,6 +12386,23 @@
         "tier-3": {
           "price": 4.194,
           "minQuantity": 1
+        }
+      },
+      "orderTypes": [
+        "closeout"
+      ],
+      "tags": [
+        "clearance",
+        "final-sale"
+      ],
+      "orderTypeMetadata": {
+        "closeout": {
+          "originalPrice": 10.485,
+          "discountPercent": 40,
+          "availableQuantity": 30,
+          "expiresAt": "2025-08-09T08:03:17.499Z",
+          "finalSale": true,
+          "minimumOrderQuantity": 1
         }
       }
     }

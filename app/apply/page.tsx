@@ -11,6 +11,7 @@ import { CreditApplicationStep } from "@/components/features/onboarding/CreditAp
 import { ReviewSubmitStep } from "@/components/features/onboarding/ReviewSubmitStep"
 import { AlertWithIcon } from "@/components/ui/alert"
 import { ArrowLeft, ArrowRight, Save, Send } from "lucide-react"
+import { useAppState } from "@/lib/contexts/app-state-context"
 import Link from "next/link"
 
 const STEPS = [
@@ -26,6 +27,7 @@ const STEPS = [
  */
 export default function ApplyPage() {
   const router = useRouter()
+  const { addActivity, incrementApplications } = useAppState()
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSavedMessage, setShowSavedMessage] = useState(false)
@@ -154,12 +156,43 @@ export default function ApplyPage() {
     
     setIsSubmitting(true)
     
-    // Simulate API submission
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    // Clear draft and redirect
-    localStorage.removeItem('dealer-application-draft')
-    router.push('/apply/submitted')
+    try {
+      // Submit to API
+      const response = await fetch('/api/applications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+      
+      const result = await response.json()
+      
+      if (result.success) {
+        // Track in app state
+        incrementApplications()
+        addActivity({
+          type: 'application',
+          description: `New dealer application submitted: ${(formData.companyInfo as any).businessName || 'Unknown'}`,
+          metadata: {
+            applicationId: result.applicationId,
+            businessName: (formData.companyInfo as any).businessName,
+            contactEmail: (formData.companyInfo as any).primaryContact?.email
+          }
+        })
+        
+        // Clear draft and redirect with application ID
+        localStorage.removeItem('dealer-application-draft')
+        localStorage.setItem('application-id', result.applicationId)
+        router.push('/apply/submitted')
+      } else {
+        alert('Failed to submit application. Please try again.')
+        setIsSubmitting(false)
+      }
+    } catch (error) {
+      alert('An error occurred while submitting. Please try again.')
+      setIsSubmitting(false)
+    }
   }
 
   const updateFormData = (section: string, data: any) => {

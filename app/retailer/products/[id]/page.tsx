@@ -21,8 +21,9 @@ import {
   ChevronRight 
 } from "lucide-react"
 import Link from "next/link"
-import { Product, getCompanyById, formatCurrency } from "@/lib/mock-data"
+import { getProducts, getCompanyById, formatCurrency, type Product } from "@/lib/mock-data"
 import { useCart } from "@/lib/cart-context"
+import { useAuth } from "@/lib/contexts/auth-context"
 
 /**
  * @description Product detail page with variants and bulk ordering
@@ -32,6 +33,7 @@ export default function ProductDetailPage() {
   const params = useParams()
   const router = useRouter()
   const { addToCart } = useCart()
+  const { user } = useAuth()
   const [product, setProduct] = useState<Product | null>(null)
   const [selectedVariant, setSelectedVariant] = useState<{
     id: string
@@ -52,15 +54,15 @@ export default function ProductDetailPage() {
     const loadProduct = async () => {
       try {
         // Get company pricing tier
-        const company = await getCompanyById("company-1")
+        const companyId = user?.companyId || "company-1"
+        const company = await getCompanyById(companyId)
         if (company) {
           setPricingTier(company.pricingTier)
         }
 
         // Load products and find the one we need
-        const response = await fetch("/mockdata/products.json")
-        const data = await response.json()
-        const foundProduct = data.products.find((p: Product) => p.id === params.id)
+        const allProducts = await getProducts()
+        const foundProduct = allProducts.find((p) => p.id === params.id)
         
         if (foundProduct) {
           setProduct(foundProduct)
@@ -78,7 +80,7 @@ export default function ProductDetailPage() {
     }
 
     loadProduct()
-  }, [params.id])
+  }, [params.id, user])
 
   const handleQuantityChange = (variantId: string, quantity: number) => {
     setQuantities(prev => ({

@@ -6,6 +6,11 @@ import { AuthenticatedLayout } from "@/components/layout/authenticated-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { toast } from "sonner"
 import { 
   ArrowLeft, 
   User, 
@@ -79,6 +84,9 @@ export default function CustomerDetailPage() {
   const router = useRouter()
   const [customer, setCustomer] = useState<CustomerDetail | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [showNoteDialog, setShowNoteDialog] = useState(false)
+  const [newNote, setNewNote] = useState("")
+  const [notes, setNotes] = useState<Array<{id: string, text: string, author: string, date: string}>>([])
   const [activeTab, setActiveTab] = useState("overview")
 
   useEffect(() => {
@@ -199,6 +207,10 @@ export default function CustomerDetailPage() {
         }
         
         setCustomer(mockCustomer)
+        // Initialize notes
+        setNotes([
+          { id: '1', text: mockCustomer.notes, author: 'John Smith', date: '2024-01-20' }
+        ])
         setIsLoading(false)
       } catch (error) {
         console.error("Error loading customer:", error)
@@ -230,6 +242,21 @@ export default function CustomerDetailPage() {
   }
 
   const creditPercentage = (customer.creditUsed / customer.creditLimit) * 100
+  
+  const handleAddNote = () => {
+    if (newNote.trim()) {
+      const note = {
+        id: Date.now().toString(),
+        text: newNote,
+        author: 'John Smith', // In real app, get from auth context
+        date: new Date().toLocaleDateString()
+      }
+      setNotes([note, ...notes])
+      setNewNote('')
+      setShowNoteDialog(false)
+      toast.success('Note added successfully')
+    }
+  }
 
   return (
     <AuthenticatedLayout>
@@ -401,16 +428,28 @@ export default function CustomerDetailPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     Notes
-                    <Button size="sm" variant="outline">
+                    <Button size="sm" variant="outline" onClick={() => setShowNoteDialog(true)}>
                       <Plus className="h-4 w-4 mr-1" />
                       Add Note
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm text-gray-700">{customer.notes}</p>
-                    <p className="text-xs text-gray-500 mt-2">Last updated: Jan 20, 2024</p>
+                  <div className="space-y-3">
+                    {notes.length > 0 ? (
+                      notes.map((note) => (
+                        <div key={note.id} className="bg-gray-50 p-4 rounded-lg">
+                          <p className="text-sm text-gray-700">{note.text}</p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <p className="text-xs text-gray-500">{note.author}</p>
+                            <span className="text-xs text-gray-400">•</span>
+                            <p className="text-xs text-gray-500">{note.date}</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-gray-500">No notes yet</p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -570,6 +609,32 @@ export default function CustomerDetailPage() {
             </Card>
           </TabsContent>
         </Tabs>
+        
+        {/* Add Note Dialog */}
+        <Dialog open={showNoteDialog} onOpenChange={setShowNoteDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Note for {customer.companyName}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Textarea
+                placeholder="Enter your note here..."
+                value={newNote}
+                onChange={(e) => setNewNote(e.target.value)}
+                rows={4}
+                className="w-full"
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowNoteDialog(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleAddNote}>
+                Add Note
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </AuthenticatedLayout>
   )

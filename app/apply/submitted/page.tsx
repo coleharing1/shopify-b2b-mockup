@@ -1,3 +1,6 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,8 +11,20 @@ import { CheckCircle, FileText, Clock, ArrowRight } from "lucide-react"
  * @fileoverview Shows success message and next steps after application
  */
 export default function ApplicationSubmittedPage() {
-  // In production, this would be generated server-side
-  const applicationId = `APP-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
+  const [applicationId, setApplicationId] = useState<string>("")
+  
+  useEffect(() => {
+    // Get the application ID from localStorage (set by the apply page)
+    const storedId = localStorage.getItem('application-id')
+    if (storedId) {
+      setApplicationId(storedId)
+      // Clear it after reading
+      localStorage.removeItem('application-id')
+    } else {
+      // Fallback for direct navigation
+      setApplicationId(`APP-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`)
+    }
+  }, [])
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4">

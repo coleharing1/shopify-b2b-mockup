@@ -1,6 +1,0 @@
-{
-  "reps": [
-    { "id": "rep-1", "name": "Sarah Johnson", "email": "sarah@brand.com", "phone": "(555) 987-6543", "territory": "Mountain West", "title": "Regional Sales Manager", "assignedCompanies": ["company-1", "company-2", "company-3"], "performanceMetrics": { "mtdSales": 125000, "ytdSales": 1500000, "activeAccounts": 24, "newAccountsThisMonth": 2 } },
-    { "id": "rep-2", "name": "Tom Williams", "email": "tom@brand.com", "territory": "Pacific Northwest", "assignedCompanies": [] }
-  ]
-}

@@ -172,7 +172,7 @@ export default function ApplicationStatusPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <Badge variant="success" className="text-lg px-4 py-1">Approved</Badge>
+        return <Badge variant="secondary" className="text-lg px-4 py-1">Approved</Badge>
       case 'rejected':
         return <Badge variant="destructive" className="text-lg px-4 py-1">Rejected</Badge>
       case 'reviewing':
@@ -254,8 +254,8 @@ export default function ApplicationStatusPage() {
                   </p>
                   <p className="font-medium">
                     {application.status === 'pending' ? application.estimatedReviewTime :
-                     application.status === 'approved' ? new Date(application.approvedAt).toLocaleDateString() :
-                     new Date(application.rejectedAt).toLocaleDateString()}
+                     application.status === 'approved' ? new Date(application.approvedAt || '').toLocaleDateString() :
+                     new Date(application.rejectedAt || '').toLocaleDateString()}
                   </p>
                 </div>
               </div>

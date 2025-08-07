@@ -3,10 +3,26 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, ChevronDown, User, LogOut, Settings, ShoppingCart } from "lucide-react"
+import { Menu, X, ChevronDown, User, LogOut, Settings, ShoppingCart, Zap, Users, UserCheck, Shield, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import { Badge } from "@/components/ui/badge"
+import { toast } from "sonner"
 import { useCart } from "@/lib/cart-context"
+import { useAuth } from "@/lib/contexts/auth-context"
 import { NotificationDropdown, type Notification } from "@/components/features/notification-dropdown"
 import { GlobalSearch } from "@/components/features/global-search"
 
@@ -34,8 +50,10 @@ const repNavItems = [
 export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
   const pathname = usePathname()
   const { getItemCount } = useCart()
+  const { user, logout, login } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
   const [notifications, setNotifications] = React.useState<Notification[]>([
     {
       id: "1",
@@ -102,6 +120,40 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
     setNotifications(prev => prev.filter(n => n.id !== id))
   }
 
+  /**
+   * @description Quick demo login function
+   */
+  const quickDemoLogin = async (email: string, name: string, role: string) => {
+    setIsLoading(true)
+    try {
+      const result = await login(email, 'demo')
+      if (result.success) {
+        toast.success(`Switched to ${name} (${role})`)
+      } else {
+        toast.error('Failed to switch role')
+      }
+    } catch (error) {
+      toast.error('Error switching role')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Get display info for current user
+  const getCurrentUserDisplay = () => {
+    if (!user) return { name: 'Guest', role: 'Not logged in', icon: User }
+    
+    const email = user.email
+    if (email === 'john@outdoorco.com') return { name: 'John (Outdoor Co)', role: 'Retailer', icon: Users }
+    if (email === 'sarah@urbanstyle.com') return { name: 'Sarah (Urban Style)', role: 'Retailer', icon: Users }
+    if (email === 'alex@b2b.com') return { name: 'Alex', role: 'Sales Rep', icon: UserCheck }
+    if (email === 'admin@b2b.com') return { name: 'Admin', role: 'Administrator', icon: Shield }
+    
+    return { name: user.name || 'User', role: userRole, icon: User }
+  }
+
+  const currentUserDisplay = getCurrentUserDisplay()
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <nav className="px-4 sm:px-6 lg:px-8">
@@ -166,48 +218,120 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
               onDismiss={handleDismissNotification}
             />
             
-            {/* User Menu - Desktop */}
-            <div className="hidden md:block relative">
-              <Button
-                variant="ghost"
-                className="flex items-center space-x-2"
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              >
-                <User className="h-5 w-5" />
-                <span className="text-sm">John Smith</span>
-                <ChevronDown className="h-4 w-4" />
-              </Button>
+            {/* Demo Role Switcher - Desktop */}
+            <div className="hidden md:flex items-center gap-2">
+              <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                <Zap className="h-3 w-3 mr-1" />
+                Demo Mode
+              </Badge>
               
-              {/* User Dropdown */}
-              {isUserMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50">
-                  <div className="py-1">
-                    <div className="px-4 py-2 text-sm text-gray-500 border-b">
-                      {userRole}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    disabled={isLoading}
+                    className="flex items-center gap-2"
+                  >
+                    <currentUserDisplay.icon className="h-4 w-4" />
+                    <span className="text-sm font-medium">{currentUserDisplay.name}</span>
+                    <ChevronDown className="h-4 w-4 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-64">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <span className="font-medium">{currentUserDisplay.name}</span>
+                      <span className="text-xs text-gray-500 font-normal">{currentUserDisplay.role}</span>
                     </div>
-                    <Link
-                      href="/select-account"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      Switch Account
-                    </Link>
-                    <Link
-                      href="/settings"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      <Settings className="inline h-4 w-4 mr-2" />
-                      Settings
-                    </Link>
-                    <Link
-                      href="/login"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      <LogOut className="inline h-4 w-4 mr-2" />
-                      Logout
-                    </Link>
-                  </div>
-                </div>
-              )}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  
+                  <DropdownMenuLabel className="text-xs text-gray-500">Switch Demo Role</DropdownMenuLabel>
+                  
+                  <Collapsible>
+                    <CollapsibleTrigger className="w-full">
+                      <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer">
+                        <Users className="h-4 w-4 mr-2" />
+                        <span className="font-medium">Retailer Accounts</span>
+                        <ChevronDown className="h-4 w-4 ml-auto" />
+                      </DropdownMenuItem>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="pl-4">
+                      <DropdownMenuItem 
+                        onClick={() => quickDemoLogin('john@outdoorco.com', 'John', 'Retailer')}
+                        className="cursor-pointer"
+                      >
+                        <div className="flex-1 ml-4">
+                          <div className="font-medium">John @ Outdoor Co</div>
+                          <div className="text-xs text-gray-500">Premium Account</div>
+                        </div>
+                        {user?.email === 'john@outdoorco.com' && (
+                          <Check className="h-4 w-4 text-primary" />
+                        )}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => quickDemoLogin('sarah@urbanstyle.com', 'Sarah', 'Retailer')}
+                        className="cursor-pointer"
+                      >
+                        <div className="flex-1 ml-4">
+                          <div className="font-medium">Sarah @ Urban Style</div>
+                          <div className="text-xs text-gray-500">Standard Account</div>
+                        </div>
+                        {user?.email === 'sarah@urbanstyle.com' && (
+                          <Check className="h-4 w-4 text-primary" />
+                        )}
+                      </DropdownMenuItem>
+                    </CollapsibleContent>
+                  </Collapsible>
+                  
+                  <DropdownMenuItem 
+                    onClick={() => quickDemoLogin('alex@b2b.com', 'Alex', 'Sales Rep')}
+                    className="cursor-pointer"
+                  >
+                    <UserCheck className="h-4 w-4 mr-2" />
+                    <div className="flex-1">
+                      <div className="font-medium">Alex @ B2B</div>
+                      <div className="text-xs text-gray-500">Sales Representative</div>
+                    </div>
+                    {user?.email === 'alex@b2b.com' && (
+                      <Check className="h-4 w-4 text-primary" />
+                    )}
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem 
+                    onClick={() => quickDemoLogin('admin@b2b.com', 'Admin', 'Administrator')}
+                    className="cursor-pointer"
+                  >
+                    <Shield className="h-4 w-4 mr-2" />
+                    <div className="flex-1">
+                      <div className="font-medium">Admin @ B2B</div>
+                      <div className="text-xs text-gray-500">System Administrator</div>
+                    </div>
+                    {user?.email === 'admin@b2b.com' && (
+                      <Check className="h-4 w-4 text-primary" />
+                    )}
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuSeparator />
+                  
+                  <DropdownMenuItem 
+                    onClick={() => window.location.href = isRepPortal ? '/rep/settings' : '/retailer/settings'}
+                    className="cursor-pointer"
+                  >
+                    <Settings className="h-4 w-4 mr-2" />
+                    Settings
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem 
+                    onClick={logout}
+                    className="cursor-pointer text-red-600"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Exit Demo
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             {/* Mobile menu button */}
@@ -255,7 +379,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                 Switch Account
               </Link>
               <Link
-                href="/settings"
+                href={isRepPortal ? "/rep/settings" : "/retailer/settings"}
                 className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
               >
                 Settings

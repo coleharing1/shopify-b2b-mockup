@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { AlertCircle, ShoppingBag } from "lucide-react"
+import { AlertCircle, ShoppingBag, Users, UserCheck, Shield, ArrowRight, PlusCircle } from "lucide-react"
+import { useAuth } from "@/lib/contexts/auth-context"
 
 /**
  * @description Login page with mock authentication
@@ -16,14 +17,16 @@ import { AlertCircle, ShoppingBag } from "lucide-react"
  */
 export default function LoginPage() {
   const router = useRouter()
+  const { login } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const [showEmailForm, setShowEmailForm] = useState(false)
 
   /**
-   * @description Mock login function that validates credentials and routes users
+   * @description Login function that uses auth context
    */
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,33 +47,17 @@ export default function LoginPage() {
     
     setIsLoading(true)
     
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Use auth context login
+    const result = await login(email, password)
     
-    // Mock authentication logic
-    const validUsers = [
-      { email: "demo@retailer.com", password: "demo", redirect: "/retailer/dashboard" },
-      { email: "demo@salesrep.com", password: "demo", redirect: "/rep/dashboard" },
-      { email: "buyer@sportinggoods.com", password: "demo", redirect: "/retailer/dashboard" },
-      { email: "admin@company.com", password: "demo", redirect: "/admin/dashboard" }
-    ]
-    
-    const user = validUsers.find(u => u.email.toLowerCase() === email.toLowerCase())
-    
-    if (!user) {
-      setError("Invalid email address")
+    if (!result.success) {
+      setError(result.error || "Login failed")
       setIsLoading(false)
       return
     }
     
-    if (user.password !== password) {
-      setError("Incorrect password")
-      setIsLoading(false)
-      return
-    }
-    
-    // Success - redirect to appropriate dashboard
-    router.push(user.redirect)
+    // Auth context will handle the redirect
+    setIsLoading(false)
   }
 
   return (
@@ -92,20 +79,161 @@ export default function LoginPage() {
         
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl">Sign In</CardTitle>
+            <CardTitle className="text-2xl">Choose Demo Role</CardTitle>
             <CardDescription>
-              Enter your credentials to access the portal
+              Select a role to explore the B2B portal features
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {!showEmailForm ? (
+              <div className="space-y-4">
+                {/* Role Selection Cards */}
+                <div className="grid grid-cols-1 gap-3">
+                  <Card 
+                    className="cursor-pointer hover:shadow-md transition-all border-2 hover:border-primary"
+                    onClick={() => {
+                      setIsLoading(true)
+                      login('john@outdoorco.com', 'demo').then(() => {
+                        setIsLoading(false)
+                      })
+                    }}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-blue-100 rounded-lg">
+                            <Users className="h-5 w-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">John @ Outdoor Co</h3>
+                            <p className="text-sm text-gray-600">Retailer - Premium Account</p>
+                          </div>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-gray-400" />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card 
+                    className="cursor-pointer hover:shadow-md transition-all border-2 hover:border-primary"
+                    onClick={() => {
+                      setIsLoading(true)
+                      login('sarah@urbanstyle.com', 'demo').then(() => {
+                        setIsLoading(false)
+                      })
+                    }}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-green-100 rounded-lg">
+                            <Users className="h-5 w-5 text-green-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">Sarah @ Urban Style</h3>
+                            <p className="text-sm text-gray-600">Retailer - Standard Account</p>
+                          </div>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-gray-400" />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card 
+                    className="cursor-pointer hover:shadow-md transition-all border-2 hover:border-primary"
+                    onClick={() => {
+                      setIsLoading(true)
+                      login('alex@b2b.com', 'demo').then(() => {
+                        setIsLoading(false)
+                      })
+                    }}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-purple-100 rounded-lg">
+                            <UserCheck className="h-5 w-5 text-purple-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">Alex @ B2B</h3>
+                            <p className="text-sm text-gray-600">Sales Representative</p>
+                          </div>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-gray-400" />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card 
+                    className="cursor-pointer hover:shadow-md transition-all border-2 hover:border-primary"
+                    onClick={() => {
+                      setIsLoading(true)
+                      login('admin@b2b.com', 'demo').then(() => {
+                        setIsLoading(false)
+                      })
+                    }}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-red-100 rounded-lg">
+                            <Shield className="h-5 w-5 text-red-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">Admin @ B2B</h3>
+                            <p className="text-sm text-gray-600">System Administrator</p>
+                          </div>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-gray-400" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white px-2 text-gray-500">Or</span>
+                  </div>
+                </div>
+
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setShowEmailForm(true)}
+                >
+                  Sign in with email
+                </Button>
+                
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white px-2 text-gray-500">New to B2B Portal?</span>
+                  </div>
+                </div>
+                
+                <Link href="/apply" className="block">
+                  <Button variant="default" className="w-full bg-green-600 hover:bg-green-700">
+                    <PlusCircle className="h-4 w-4 mr-2" />
+                    Apply for Dealer Account
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+            <>
             {/* Demo Credentials */}
             <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
               <h4 className="text-sm font-medium text-blue-900 mb-2">Demo Credentials</h4>
               <div className="space-y-1 text-sm text-blue-700">
-                <p><strong>Retailer:</strong> demo@retailer.com</p>
-                <p><strong>Sales Rep:</strong> demo@salesrep.com</p>
-                <p><strong>Admin:</strong> admin@company.com</p>
-                <p className="text-xs pt-1">Password: demo</p>
+                <p><strong>Retailer 1:</strong> john@outdoorco.com</p>
+                <p><strong>Retailer 2:</strong> sarah@urbanstyle.com</p>
+                <p><strong>Sales Rep:</strong> alex@b2b.com</p>
+                <p><strong>Admin:</strong> admin@b2b.com</p>
+                <p className="text-xs pt-1">Password: any (demo mode)</p>
               </div>
             </div>
             
@@ -172,20 +300,17 @@ export default function LoginPage() {
               </Button>
             </form>
             
-            <div className="mt-6 text-center text-sm text-gray-600">
-              <p className="font-medium mb-2">Demo Accounts:</p>
-              <div className="space-y-1 text-xs">
-                <p>
-                  <span className="font-mono bg-gray-100 px-1 py-0.5 rounded">demo@retailer.com</span> / demo
-                </p>
-                <p>
-                  <span className="font-mono bg-gray-100 px-1 py-0.5 rounded">demo@salesrep.com</span> / demo
-                </p>
-                <p>
-                  <span className="font-mono bg-gray-100 px-1 py-0.5 rounded">admin@company.com</span> / demo
-                </p>
-              </div>
+            <div className="mt-6 text-center">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setShowEmailForm(false)}
+              >
+                ← Back to role selection
+              </Button>
             </div>
+            </>
+            )}
           </CardContent>
         </Card>
         

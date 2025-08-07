@@ -90,6 +90,39 @@ export interface Product {
       minQuantity: number
     }
   }
+  // Unified order type fields
+  orderTypes?: ('at-once' | 'prebook' | 'closeout')[]
+  tags?: string[]
+  orderTypeMetadata?: {
+    'at-once'?: {
+      atsInventory?: number
+      shipWithin?: number
+      evergreenItem?: boolean
+      stockLocation?: string[]
+      backorderAvailable?: boolean
+      expectedRestockDate?: string
+    }
+    'prebook'?: {
+      season?: string
+      collection?: string
+      deliveryWindow?: {
+        start: string
+        end: string
+      }
+      depositPercent?: number
+      cancellationDeadline?: string
+      minimumUnits?: number
+      requiresFullSizeRun?: boolean
+    }
+    'closeout'?: {
+      originalPrice?: number
+      discountPercent?: number
+      availableQuantity?: number
+      expiresAt?: string
+      finalSale?: boolean
+      minimumOrderQuantity?: number
+    }
+  }
 }
 
 export interface Metrics {
@@ -114,46 +147,54 @@ export interface Metrics {
   }
 }
 
-/**
- * @description Fetch company data by ID
- */
-export async function getCompanyById(companyId: string): Promise<Company | null> {
-  try {
-    const response = await fetch('/mockdata/companies.json')
-    const data = await response.json()
-    return data.companies.find((c: Company) => c.id === companyId) || null
-  } catch (error) {
-    console.error('Error fetching company:', error)
-    return null
-  }
+export interface Resource {
+  id: string
+  title: string
+  description: string
+  category: string
+  type: 'pdf' | 'video' | 'link'
+  url: string
+  size?: string
+  updatedAt: string
 }
 
-/**
- * @description Fetch orders for a specific company
- */
-export async function getOrdersByCompanyId(companyId: string): Promise<Order[]> {
+async function fetchData(url: string, key: string) {
   try {
-    const response = await fetch('/mockdata/orders.json')
+    const response = await fetch(url)
     const data = await response.json()
-    return data.orders.filter((o: Order) => o.companyId === companyId)
+    return data[key]
   } catch (error) {
-    console.error('Error fetching orders:', error)
+    console.error(`Error fetching data from ${url}:`, error)
     return []
   }
 }
 
-/**
- * @description Fetch retailer metrics for a company
- */
+export async function getCompanies(): Promise<Company[]> {
+  return fetchData('/mockdata/companies.json', 'companies')
+}
+
+export async function getCompanyById(companyId: string): Promise<Company | null> {
+  const companies = await getCompanies()
+  return companies.find((c: Company) => c.id === companyId) || null
+}
+
+export async function getOrdersByCompanyId(companyId: string): Promise<Order[]> {
+  const orders = await fetchData('/mockdata/orders.json', 'orders')
+  if (companyId === '*') return orders // Return all orders for reps
+  return orders.filter((o: Order) => o.companyId === companyId)
+}
+
 export async function getRetailerMetrics(companyId: string) {
-  try {
-    const response = await fetch('/mockdata/metrics.json')
-    const data: Metrics = await response.json()
-    return data.retailerMetrics[companyId] || null
-  } catch (error) {
-    console.error('Error fetching metrics:', error)
-    return null
-  }
+  const data = await fetchData('/mockdata/metrics.json', 'metrics')
+  return data?.retailerMetrics?.[companyId] || null
+}
+
+export async function getProducts(): Promise<Product[]> {
+  return fetchData('/mockdata/products.json', 'products')
+}
+
+export async function getResources(): Promise<Resource[]> {
+  return fetchData('/mockdata/resources.json', 'resources')
 }
 
 /**

@@ -7,6 +7,7 @@ import { Footer } from './footer'
 import { Sidebar } from './sidebar'
 import { MobileNavDrawer } from './mobile-nav-drawer'
 import { MobileBottomNav } from './mobile-bottom-nav'
+import { DemoScenarioLauncher } from '@/components/features/demo-scenario-launcher'
 
 /**
  * @fileoverview AuthenticatedLayout component.
@@ -57,6 +58,9 @@ export function AuthenticatedLayout({ children }: { children: React.ReactNode })
         isRepPortal={isRepPortal}
         onMenuClick={toggleMobileNav}
       />
+      
+      {/* Demo Scenario Launcher */}
+      <DemoScenarioLauncher />
     </>
   )
 }

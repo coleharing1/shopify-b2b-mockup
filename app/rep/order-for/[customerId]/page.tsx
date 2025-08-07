@@ -17,7 +17,7 @@ import {
   AlertCircle,
   Building
 } from "lucide-react"
-import { Product, formatCurrency } from "@/lib/mock-data"
+import { getProducts, Product, formatCurrency } from "@/lib/mock-data"
 import Link from "next/link"
 
 interface OrderItem {
@@ -65,11 +65,10 @@ export default function OrderOnBehalfPage() {
         }
         
         // Load products
-        const response = await fetch("/mockdata/products.json")
-        const data = await response.json()
+        const data = await getProducts()
         
         setCompany(mockCompany)
-        setProducts(data.products)
+        setProducts(data)
         setIsLoading(false)
       } catch (error) {
         console.error("Error loading data:", error)

@@ -94,6 +94,14 @@ export function ToastContainer({ toasts, onDismiss }: ToastContainerProps) {
   )
 }
 
+// Additional exports for compatibility with toaster component
+export const Toast = ToastItem as any
+export const ToastClose = () => null
+export const ToastDescription = ({ children }: { children: React.ReactNode }) => <>{children}</>
+export const ToastTitle = ({ children }: { children: React.ReactNode }) => <>{children}</>
+export const ToastProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>
+export const ToastViewport = () => null
+
 /**
  * @description Hook for managing toast notifications
  * @fileoverview Provides functions to show and dismiss toasts

@@ -3,15 +3,24 @@
 import { useEffect, useState } from "react"
 import { AuthenticatedLayout } from "@/components/layout/authenticated-layout"
 import { ProductCard } from "@/components/features/product-card"
-import { CategoryFilter } from "@/components/features/category-filter"
+import { AdvancedFilters, FilterState } from "@/components/features/advanced-filters"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { SearchBar } from "@/components/ui/search-bar"
 import { EmptyState } from "@/components/ui/empty-state"
 import { ProductCardSkeleton } from "@/components/ui/skeleton"
-import { Search, Filter, ChevronLeft, ChevronRight, Package } from "lucide-react"
-import { Product, getCompanyById } from "@/lib/mock-data"
+import { Search, Filter, ChevronLeft, ChevronRight, Package, Grid, List } from "lucide-react"
+import { getProducts, getCompanyById, Product } from "@/lib/mock-data"
 import { useCart } from "@/lib/cart-context"
+import { useAuth } from "@/lib/contexts/auth-context"
+import { useMediaQuery } from "@/lib/hooks/use-media-query"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 /**
  * @description Product catalog with search and filters
@@ -19,39 +28,72 @@ import { useCart } from "@/lib/cart-context"
  */
 export default function ProductCatalogPage() {
   const { addToCart } = useCart()
+  const { user } = useAuth()
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  
   const [products, setProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<string[]>([])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [brands, setBrands] = useState<string[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [pricingTier, setPricingTier] = useState("tier-1")
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [isSearching, setIsSearching] = useState(false)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [sortBy, setSortBy] = useState('featured')
+  const [maxPrice, setMaxPrice] = useState(1000)
   const [showFilters, setShowFilters] = useState(false)
   
-  const productsPerPage = 12
+  const [filters, setFilters] = useState<FilterState>({
+    categories: [],
+    priceRange: { min: 0, max: 1000 },
+    availability: [],
+    sizes: [],
+    colors: [],
+    brands: [],
+    rating: null
+  })
+  
+  const productsPerPage = viewMode === 'grid' ? 12 : 10
 
   useEffect(() => {
     const loadProducts = async () => {
       try {
         // Get company data to determine pricing tier
-        const company = await getCompanyById("company-1")
+        const companyId = user?.companyId || "company-1"
+        const company = await getCompanyById(companyId)
         if (company) {
           setPricingTier(company.pricingTier)
         }
 
         // Load products
-        const response = await fetch("/mockdata/products.json")
-        const data = await response.json()
-        setProducts(data.products)
-        setFilteredProducts(data.products)
+        const data = await getProducts()
+        setProducts(data)
+        setFilteredProducts(data)
         
-        // Extract unique categories
+        // Extract unique categories and brands
         const uniqueCategories = Array.from(
-          new Set(data.products.map((p: Product) => p.category))
+          new Set(data.map((p: Product) => p.category))
         ) as string[]
         setCategories(uniqueCategories)
+        
+        // Extract unique brands (using category as fallback for brands)
+        const uniqueBrands = Array.from(
+          new Set(data.map((p: Product) => p.category || 'Generic').filter(Boolean))
+        ) as string[]
+        setBrands(uniqueBrands)
+        
+        // Calculate max price for slider
+        const prices = data.map((p: Product) => p.msrp)
+        const maxProductPrice = Math.max(...prices)
+        setMaxPrice(Math.ceil(maxProductPrice / 100) * 100) // Round up to nearest 100
+        
+        // Update filters with max price
+        setFilters(prev => ({
+          ...prev,
+          priceRange: { min: 0, max: Math.ceil(maxProductPrice / 100) * 100 }
+        }))
         
         setIsLoading(false)
       } catch (error) {
@@ -61,16 +103,11 @@ export default function ProductCatalogPage() {
     }
 
     loadProducts()
-  }, [])
+  }, [user])
 
   useEffect(() => {
-    // Apply filters
+    // Apply all filters
     let filtered = [...products]
-
-    // Category filter
-    if (selectedCategories.length > 0) {
-      filtered = filtered.filter(p => selectedCategories.includes(p.category))
-    }
 
     // Search filter
     if (searchTerm) {
@@ -80,20 +117,99 @@ export default function ProductCatalogPage() {
         p.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.description.toLowerCase().includes(searchTerm.toLowerCase())
       )
-      // Simulate search delay
       setTimeout(() => setIsSearching(false), 300)
+    }
+
+    // Category filter
+    if (filters.categories.length > 0) {
+      filtered = filtered.filter(p => filters.categories.includes(p.category))
+    }
+
+    // Price range filter
+    filtered = filtered.filter(p => {
+      const price = p.msrp
+      return price >= filters.priceRange.min && price <= filters.priceRange.max
+    })
+
+    // Availability filter
+    if (filters.availability.length > 0) {
+      filtered = filtered.filter(p => {
+        // Use variant inventory to determine stock status
+        const totalStock = p.variants?.reduce((sum, v) => sum + (v.inventory || 0), 0) || 0
+        
+        if (filters.availability.includes('inStock') && totalStock > 10) return true
+        if (filters.availability.includes('lowStock') && totalStock > 0 && totalStock <= 10) return true
+        if (filters.availability.includes('backorder') && totalStock === 0) return true
+        if (filters.availability.includes('newArrival')) {
+          // Check if product was added in last 30 days
+          const thirtyDaysAgo = new Date()
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+          // For demo, randomly assign some products as new
+          return Math.random() > 0.7
+        }
+        return false
+      })
+    }
+
+    // Brand filter (using category as fallback)
+    if (filters.brands.length > 0) {
+      filtered = filtered.filter(p => 
+        filters.brands.includes(p.category || 'Generic')
+      )
+    }
+
+    // Size filter (check variants)
+    if (filters.sizes.length > 0) {
+      filtered = filtered.filter(p => {
+        if (!p.variants) return false
+        return p.variants.some(v => 
+          filters.sizes.includes(v.size || '')
+        )
+      })
+    }
+
+    // Color filter (check variants)
+    if (filters.colors.length > 0) {
+      filtered = filtered.filter(p => {
+        if (!p.variants) return false
+        return p.variants.some(v => 
+          filters.colors.some(color => 
+            v.color?.toLowerCase().includes(color.toLowerCase())
+          )
+        )
+      })
+    }
+
+    // Apply sorting
+    switch (sortBy) {
+      case 'priceAsc':
+        filtered.sort((a, b) => a.msrp - b.msrp)
+        break
+      case 'priceDesc':
+        filtered.sort((a, b) => b.msrp - a.msrp)
+        break
+      case 'nameAsc':
+        filtered.sort((a, b) => a.name.localeCompare(b.name))
+        break
+      case 'nameDesc':
+        filtered.sort((a, b) => b.name.localeCompare(a.name))
+        break
+      case 'newest':
+        // For demo, reverse the array to simulate newest first
+        filtered.reverse()
+        break
+      case 'featured':
+      default:
+        // Keep original order
+        break
     }
 
     setFilteredProducts(filtered)
     setCurrentPage(1)
-  }, [products, selectedCategories, searchTerm])
+  }, [products, filters, searchTerm, sortBy])
 
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategories(prev =>
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
-    )
+  const handleFiltersChange = (newFilters: FilterState) => {
+    setFilters(newFilters)
   }
 
   const handleAddToCart = (product: Product) => {
@@ -132,17 +248,35 @@ export default function ProductCatalogPage() {
     <AuthenticatedLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Product Catalog</h1>
-          <p className="text-gray-600 mt-2">
-            Showing your {pricingTier.replace('-', ' ').toUpperCase()} pricing
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Product Catalog</h1>
+            <p className="text-gray-600 mt-2">
+              Showing your {pricingTier.replace('-', ' ').toUpperCase()} pricing
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('grid')}
+            >
+              <Grid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
-        {/* Search Bar */}
+        {/* Search and Sort Bar */}
         <Card>
           <CardContent className="p-4">
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
                 <SearchBar
                   placeholder="Search products by name, SKU, or description..."
@@ -152,35 +286,82 @@ export default function ProductCatalogPage() {
                   className="w-full"
                 />
               </div>
-              <Button
-                variant="outline"
-                onClick={() => setShowFilters(!showFilters)}
-                className="md:hidden"
-              >
-                <Filter className="h-4 w-4 mr-2" />
-                Filters
-              </Button>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-full sm:w-[200px]">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="featured">Featured</SelectItem>
+                  <SelectItem value="newest">Newest First</SelectItem>
+                  <SelectItem value="priceAsc">Price: Low to High</SelectItem>
+                  <SelectItem value="priceDesc">Price: High to Low</SelectItem>
+                  <SelectItem value="nameAsc">Name: A to Z</SelectItem>
+                  <SelectItem value="nameDesc">Name: Z to A</SelectItem>
+                </SelectContent>
+              </Select>
+              {isMobile && (
+                <AdvancedFilters
+                  filters={filters}
+                  onFiltersChange={handleFiltersChange}
+                  productCount={filteredProducts.length}
+                  isMobile={true}
+                  categories={categories}
+                  brands={brands}
+                  maxPrice={maxPrice}
+                />
+              )}
             </div>
           </CardContent>
         </Card>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar Filters - Desktop */}
-          <div className="hidden md:block space-y-4">
-            <CategoryFilter
-              categories={categories}
-              selectedCategories={selectedCategories}
-              onCategoryChange={handleCategoryChange}
-              onClearAll={() => setSelectedCategories([])}
-            />
-          </div>
+          {!isMobile && (
+            <div className="hidden lg:block">
+              <AdvancedFilters
+                filters={filters}
+                onFiltersChange={handleFiltersChange}
+                productCount={filteredProducts.length}
+                isMobile={false}
+                categories={categories}
+                brands={brands}
+                maxPrice={maxPrice}
+              />
+            </div>
+          )}
 
           {/* Product Grid */}
-          <div className="md:col-span-3">
-            {/* Results Count */}
-            <div className="mb-4 text-sm text-gray-600">
-              Showing {startIndex + 1}-{Math.min(endIndex, filteredProducts.length)} of {filteredProducts.length} products
+          <div className={isMobile ? 'col-span-1' : 'lg:col-span-3'}>
+            {/* Results Count and Active Filters Summary */}
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">
+                  Showing {startIndex + 1}-{Math.min(endIndex, filteredProducts.length)} of {filteredProducts.length} products
+                </span>
+                {(filters.categories.length > 0 || 
+                  filters.availability.length > 0 || 
+                  filters.brands.length > 0 ||
+                  filters.sizes.length > 0 ||
+                  filters.colors.length > 0 ||
+                  (filters.priceRange.min > 0 || filters.priceRange.max < maxPrice)) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setFilters({
+                      categories: [],
+                      priceRange: { min: 0, max: maxPrice },
+                      availability: [],
+                      sizes: [],
+                      colors: [],
+                      brands: [],
+                      rating: null
+                    })}
+                  >
+                    Clear all filters
+                  </Button>
+                )}
+              </div>
             </div>
 
             {/* Products */}
@@ -194,12 +375,12 @@ export default function ProductCatalogPage() {
               <EmptyState
                 icon={<Package className="h-12 w-12 text-gray-400" />}
                 title="No products found"
-                description={searchTerm || selectedCategories.length > 0 ? "Try adjusting your search or filters" : "No products available"}
-                action={searchTerm || selectedCategories.length > 0 ? {
+                description={searchTerm || filters.categories.length > 0 ? "Try adjusting your search or filters" : "No products available"}
+                action={searchTerm || filters.categories.length > 0 ? {
                   label: "Clear all filters",
                   onClick: () => {
                     setSearchTerm("")
-                    setSelectedCategories([])
+                    setFilters(prev => ({ ...prev, categories: [] }))
                   }
                 } : undefined}
               />
@@ -258,11 +439,14 @@ export default function ProductCatalogPage() {
                   Done
                 </Button>
               </div>
-              <CategoryFilter
+              <AdvancedFilters
+                filters={filters}
+                onFiltersChange={handleFiltersChange}
+                productCount={filteredProducts.length}
+                isMobile={true}
                 categories={categories}
-                selectedCategories={selectedCategories}
-                onCategoryChange={handleCategoryChange}
-                onClearAll={() => setSelectedCategories([])}
+                brands={brands}
+                maxPrice={maxPrice}
               />
             </div>
           </div>

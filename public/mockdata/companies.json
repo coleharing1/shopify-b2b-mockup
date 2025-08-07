@@ -2,20 +2,20 @@
   "companies": [
     {
       "id": "company-1",
-      "name": "Mountain Gear Outfitters",
-      "type": "preferred_dealer",
-      "accountNumber": "MGO-10234",
+      "name": "Outdoor Retailers Co.",
+      "type": "premium_dealer",
+      "accountNumber": "ORC-10234",
       "taxId": "12-3456789",
-      "creditLimit": 50000,
-      "creditUsed": 12500,
+      "creditLimit": 75000,
+      "creditUsed": 22500,
       "paymentTerms": "Net 30",
-      "yearToDatePurchases": 125000,
+      "yearToDatePurchases": 285420,
       "lastOrderDate": "2024-12-15",
       "status": "active",
-      "pricingTier": "tier-2",
+      "pricingTier": "tier-3",
       "primaryContact": {
         "name": "John Smith",
-        "email": "john@mountaingear.com",
+        "email": "john@outdoorco.com",
         "phone": "(555) 123-4567"
       },
       "shippingAddresses": [
@@ -43,30 +43,62 @@
     },
     {
       "id": "company-2",
-      "name": "Elite Sporting Goods",
-      "type": "distributor",
-      "accountNumber": "ESG-20567",
-      "creditLimit": 100000,
-      "creditUsed": 45000,
-      "paymentTerms": "Net 45",
-      "yearToDatePurchases": 350000,
+      "name": "Urban Style Boutique",
+      "type": "preferred_dealer",
+      "accountNumber": "USB-20456",
+      "creditLimit": 50000,
+      "creditUsed": 12500,
+      "paymentTerms": "Net 30",
+      "yearToDatePurchases": 189500,
       "lastOrderDate": "2024-12-20",
       "status": "active",
-      "pricingTier": "tier-3",
+      "pricingTier": "tier-2",
+      "primaryContact": {
+        "name": "Sarah Johnson",
+        "email": "sarah@urbanstyle.com",
+        "phone": "(555) 234-5678"
+      },
+      "shippingAddresses": [
+        {
+          "id": "addr-3",
+          "label": "Main Boutique",
+          "address1": "789 Fashion Ave",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94102",
+          "isDefault": true
+        }
+      ],
       "assignedRepId": "rep-1"
     },
     {
       "id": "company-3",
-      "name": "City Sports Plus",
-      "type": "buy_group",
-      "accountNumber": "CSP-30890",
+      "name": "West Coast Sports",
+      "type": "standard_dealer",
+      "accountNumber": "WCS-30789",
       "creditLimit": 25000,
       "creditUsed": 5000,
-      "paymentTerms": "Net 30",
-      "yearToDatePurchases": 75000,
+      "paymentTerms": "Net 15",
+      "yearToDatePurchases": 95250,
       "lastOrderDate": "2024-11-28",
       "status": "active",
       "pricingTier": "tier-1",
+      "primaryContact": {
+        "name": "Mike Wilson",
+        "email": "mike@westcoast.com",
+        "phone": "(555) 345-6789"
+      },
+      "shippingAddresses": [
+        {
+          "id": "addr-4",
+          "label": "Main Store",
+          "address1": "321 Pacific Blvd",
+          "city": "Los Angeles",
+          "state": "CA",
+          "zip": "90028",
+          "isDefault": true
+        }
+      ],
       "assignedRepId": "rep-1"
     }
   ]

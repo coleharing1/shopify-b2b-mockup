@@ -13,6 +13,9 @@ import { AlertCircle, ArrowLeft, Package, CreditCard, Truck } from "lucide-react
 import Link from "next/link"
 import { useCart } from "@/lib/cart-context"
 import { formatCurrency } from "@/lib/mock-data"
+import { useAuth } from "@/lib/contexts/auth-context"
+import { useAppState } from "@/lib/contexts/app-state-context"
+import { toast } from "sonner"
 
 /**
  * @description B2B checkout page
@@ -21,6 +24,8 @@ import { formatCurrency } from "@/lib/mock-data"
 export default function CheckoutPage() {
   const router = useRouter()
   const { items, clearCart, getCartTotal, getItemCount } = useCart()
+  const { user } = useAuth()
+  const { addActivity, incrementOrders } = useAppState()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   
@@ -90,6 +95,28 @@ export default function CheckoutPage() {
     
     // Simulate order submission
     await new Promise(resolve => setTimeout(resolve, 2000))
+    
+    // Generate order ID
+    const orderId = `ORD-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(5, '0')}`
+    const orderTotal = getCartTotal()
+    
+    // Track order in app state
+    incrementOrders()
+    addActivity({
+      type: 'order',
+      description: `Order ${orderId} placed for ${formatCurrency(orderTotal)}`,
+      companyId: user?.companyId,
+      userId: user?.id,
+      metadata: {
+        orderId,
+        poNumber,
+        total: orderTotal,
+        itemCount: getItemCount()
+      }
+    })
+    
+    // Show success toast
+    toast.success(`Order ${orderId} has been successfully placed!`)
     
     // Clear cart and show confirmation
     clearCart()
