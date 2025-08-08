@@ -25,10 +25,20 @@ import {
   Plus,
   Package,
   Activity,
-  Calendar
+  Calendar,
+  Book,
+  TrendingUp,
+  Tag,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle
 } from "lucide-react"
-import { formatCurrency } from "@/lib/mock-data"
+import { formatCurrency, getCompanyById } from "@/lib/mock-data"
 import Link from "next/link"
+import { CatalogBadge } from "@/components/features/catalog-badge"
+import { PricingCalculator } from "@/components/features/pricing-calculator"
+import { loadPriceListForCompany, formatTierLabel, getTierColorClasses } from "@/lib/pricing-helpers"
 
 interface CustomerDetail {
   id: string
@@ -88,10 +98,33 @@ export default function CustomerDetailPage() {
   const [newNote, setNewNote] = useState("")
   const [notes, setNotes] = useState<Array<{id: string, text: string, author: string, date: string}>>([])
   const [activeTab, setActiveTab] = useState("overview")
+  const [catalogInfo, setCatalogInfo] = useState<any>(null)
+  const [priceList, setPriceList] = useState<any>(null)
+  const [quotes, setQuotes] = useState<any[]>([])
+  const [quotesLoading, setQuotesLoading] = useState(false)
 
   useEffect(() => {
     const loadCustomer = async () => {
       try {
+        // Load actual company data
+        const company = await getCompanyById(params.id as string)
+        
+        // Load catalog and pricing info
+        if (company) {
+          // Load price list
+          const customerPriceList = await loadPriceListForCompany(company.id)
+          setPriceList(customerPriceList)
+          
+          // Mock catalog info for the customer
+          setCatalogInfo({
+            id: 'catalog-1',
+            name: company.pricingTier === 'tier-3' ? 'Premium Catalog' : 
+                  company.pricingTier === 'tier-2' ? 'Preferred Catalog' : 'Standard Catalog',
+            productCount: 150,
+            features: company.pricingTier === 'tier-3' ? ['early-access', 'exclusive-products'] : []
+          })
+        }
+        
         // Simulate loading customer details
         await new Promise(resolve => setTimeout(resolve, 500))
         
@@ -211,6 +244,21 @@ export default function CustomerDetailPage() {
         setNotes([
           { id: '1', text: mockCustomer.notes, author: 'John Smith', date: '2024-01-20' }
         ])
+        
+        // Fetch quotes for this customer
+        setQuotesLoading(true)
+        try {
+          const quotesResponse = await fetch(`/api/quotes?companyId=${params.id}`)
+          if (quotesResponse.ok) {
+            const { quotes: customerQuotes } = await quotesResponse.json()
+            setQuotes(customerQuotes || [])
+          }
+        } catch (error) {
+          console.error('Failed to fetch quotes:', error)
+        } finally {
+          setQuotesLoading(false)
+        }
+        
         setIsLoading(false)
       } catch (error) {
         console.error("Error loading customer:", error)
@@ -373,10 +421,12 @@ export default function CustomerDetailPage() {
 
         {/* Tabbed Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="orders">Orders</TabsTrigger>
+            <TabsTrigger value="quotes">Quotes</TabsTrigger>
             <TabsTrigger value="products">Products</TabsTrigger>
+            <TabsTrigger value="pricing">Catalog & Pricing</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
           </TabsList>
@@ -527,6 +577,142 @@ export default function CustomerDetailPage() {
             </Card>
           </TabsContent>
           
+          <TabsContent value="quotes" className="mt-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Quotes</CardTitle>
+                  <Button onClick={() => router.push(`/rep/quotes/new?customerId=${customer.id}`)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Quote
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {quotesLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <p className="text-gray-500">Loading quotes...</p>
+                  </div>
+                ) : quotes.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500 mb-4">No quotes for this customer yet</p>
+                    <Button 
+                      variant="outline"
+                      onClick={() => router.push(`/rep/quotes/new?customerId=${customer.id}`)}
+                    >
+                      Create First Quote
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-gray-50 border-b">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Quote Number
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Date
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Items
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Total
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Valid Until
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Status
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {quotes.map((quote: any) => {
+                          const getStatusIcon = (status: string) => {
+                            switch (status) {
+                              case 'draft':
+                                return <FileText className="h-4 w-4" />
+                              case 'sent':
+                              case 'viewed':
+                                return <Clock className="h-4 w-4" />
+                              case 'accepted':
+                                return <CheckCircle className="h-4 w-4" />
+                              case 'rejected':
+                                return <XCircle className="h-4 w-4" />
+                              case 'expired':
+                                return <AlertCircle className="h-4 w-4" />
+                              default:
+                                return null
+                            }
+                          }
+                          
+                          const getStatusBadgeVariant = (status: string) => {
+                            switch (status) {
+                              case 'draft':
+                                return 'secondary'
+                              case 'sent':
+                                return 'default'
+                              case 'viewed':
+                                return 'outline'
+                              case 'accepted':
+                                return 'success'
+                              case 'rejected':
+                                return 'destructive'
+                              case 'expired':
+                                return 'warning'
+                              default:
+                                return 'default'
+                            }
+                          }
+                          
+                          return (
+                            <tr key={quote.id} className="hover:bg-gray-50">
+                              <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                                {quote.number}
+                              </td>
+                              <td className="px-4 py-3 text-sm text-gray-900">
+                                {new Date(quote.createdAt).toLocaleDateString()}
+                              </td>
+                              <td className="px-4 py-3 text-sm text-gray-900">
+                                {quote.items.length}
+                              </td>
+                              <td className="px-4 py-3 text-sm text-gray-900">
+                                {formatCurrency(quote.pricing.total)}
+                              </td>
+                              <td className="px-4 py-3 text-sm text-gray-900">
+                                {new Date(quote.terms.validUntil).toLocaleDateString()}
+                              </td>
+                              <td className="px-4 py-3">
+                                <Badge variant={getStatusBadgeVariant(quote.status) as any}>
+                                  {getStatusIcon(quote.status)}
+                                  <span className="ml-1 capitalize">{quote.status}</span>
+                                </Badge>
+                              </td>
+                              <td className="px-4 py-3 text-sm">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => router.push(`/rep/quotes/${quote.id}`)}
+                                >
+                                  View
+                                </Button>
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
           <TabsContent value="products" className="mt-6">
             <Card>
               <CardHeader>
@@ -554,6 +740,135 @@ export default function CustomerDetailPage() {
                     </div>
                   ))}
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="pricing" className="mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Catalog Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Book className="h-5 w-5" />
+                    Catalog Assignment
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {catalogInfo && (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm text-gray-600">Assigned Catalog</p>
+                          <p className="font-medium text-lg">{catalogInfo.name}</p>
+                        </div>
+                        <CatalogBadge 
+                          catalogName={catalogInfo.name}
+                          features={catalogInfo.features}
+                        />
+                      </div>
+                      <div className="pt-4 border-t">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm text-gray-600">Products Available</span>
+                          <span className="font-medium">{catalogInfo.productCount || 150}</span>
+                        </div>
+                        {catalogInfo.features?.includes('early-access') && (
+                          <Badge variant="outline" className="text-xs bg-blue-50">
+                            <TrendingUp className="h-3 w-3 mr-1" />
+                            Early Access to New Products
+                          </Badge>
+                        )}
+                        {catalogInfo.features?.includes('exclusive-products') && (
+                          <Badge variant="outline" className="text-xs bg-purple-50 mt-1">
+                            <Package className="h-3 w-3 mr-1" />
+                            Exclusive Product Lines
+                          </Badge>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Pricing Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Tag className="h-5 w-5" />
+                    Pricing Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <p className="text-sm text-gray-600">Pricing Tier</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge className={getTierColorClasses(customer.pricingTier)}>
+                        {formatTierLabel(customer.pricingTier)}
+                      </Badge>
+                      <span className="font-medium">
+                        {customer.pricingTier === 'tier-3' ? '50%' : 
+                         customer.pricingTier === 'tier-2' ? '40%' : '30%'} Discount
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {priceList && (
+                    <div className="pt-4 border-t">
+                      <p className="text-sm text-gray-600 mb-2">Custom Price List</p>
+                      <div className="bg-gray-50 p-3 rounded-lg">
+                        <p className="font-medium">{priceList.name}</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {priceList.rules?.length || 0} custom pricing rules
+                        </p>
+                        {priceList.globalDiscount && (
+                          <Badge variant="outline" className="text-xs mt-2">
+                            Additional {(priceList.globalDiscount * 100).toFixed(0)}% volume discount
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="pt-4 border-t">
+                    <p className="text-sm text-gray-600 mb-2">Price Benefits</p>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-sm">
+                        <div className="w-2 h-2 bg-green-500 rounded-full" />
+                        <span>Volume pricing on bulk orders</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <div className="w-2 h-2 bg-green-500 rounded-full" />
+                        <span>Seasonal promotions eligible</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <div className="w-2 h-2 bg-green-500 rounded-full" />
+                        <span>Free shipping on orders over $2,500</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            {/* Pricing Calculator */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle>Quick Price Check</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-blue-50 border border-blue-200 text-blue-800 p-3 rounded-lg mb-4">
+                  <p className="text-sm">
+                    Use this calculator to quickly check customer-specific pricing for any product.
+                  </p>
+                </div>
+                {/* Placeholder: adjust props when calculator supports company context */}
+                <PricingCalculator 
+                  productId="sample"
+                  productName="Sample"
+                  msrp={100}
+                  companyTier={customer.pricingTier}
+                  priceListName={priceList?.name}
+                />
               </CardContent>
             </Card>
           </TabsContent>

@@ -82,10 +82,22 @@ export async function GET(request: NextRequest) {
       totalValue: 0 // Would calculate in production
     }))
     
+    // Apply company-specific pricing if user is a retailer
+    const productsWithPricing = products.map(product => ({
+      ...product,
+      userPricingTier: user.pricingTier || 'tier-1',
+      effectivePrice: product.pricing[user.pricingTier || 'tier-1']?.price || product.msrp
+    }))
+    
     return NextResponse.json({
-      products,
+      products: productsWithPricing,
       lists: updatedLists,
-      total: products.length,
+      total: productsWithPricing.length,
+      userContext: {
+        companyId: user.companyId,
+        pricingTier: user.pricingTier || 'tier-1',
+        role: user.role
+      },
       filters: {
         lists: updatedLists.map(l => ({ id: l.id, name: l.name })),
         urgencyLevels: ['critical', 'high', 'normal']

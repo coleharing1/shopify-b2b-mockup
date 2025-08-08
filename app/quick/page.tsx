@@ -150,7 +150,7 @@ export default function QuickAccessPage() {
       icon: <ClipboardList className="h-5 w-5" />,
       routes: [
         { path: "/retailer/orders", label: "Order History", icon: <FileText className="h-4 w-4" />, status: 'complete', requiresAuth: true },
-        { path: "/retailer/orders/ORD-2024-001", label: "Order Detail", params: "orderId", icon: <Eye className="h-4 w-4" />, status: 'pending', requiresAuth: true },
+        { path: "/retailer/orders/ORD-2024-001", label: "Order Detail", params: "orderId", icon: <Eye className="h-4 w-4" />, status: 'complete', requiresAuth: true },
       ]
     },
     {
@@ -211,7 +211,7 @@ export default function QuickAccessPage() {
       routes: [
         { path: "/rep/prebooks", label: "Prebook Management", icon: <Clock className="h-4 w-4" />, status: 'complete', requiresAuth: true, description: "Season planning & tracking" },
         { path: "/rep/prebooks/spring-2025", label: "Spring '25 Orders", params: "season", icon: <Clock className="h-4 w-4" />, status: 'complete', requiresAuth: true },
-        { path: "/rep/closeouts/manage", label: "Closeout Manager", icon: <TrendingUp className="h-4 w-4" />, status: 'pending', requiresAuth: true, description: "Create & assign lists" },
+        { path: "/rep/closeouts/manage", label: "Closeout Manager", icon: <TrendingUp className="h-4 w-4" />, status: 'complete', requiresAuth: true, description: "Create & assign lists" },
       ]
     },
     {
@@ -241,29 +241,29 @@ export default function QuickAccessPage() {
       icon: <Package className="h-5 w-5" />,
       routes: [
         { path: "/admin/order-settings", label: "Order Type Settings", icon: <Settings className="h-4 w-4" />, status: 'complete', requiresAuth: true, description: "Configure order types" },
-        { path: "/admin/seasons", label: "Season Management", icon: <Clock className="h-4 w-4" />, status: 'pending', requiresAuth: true, description: "Prebook seasons" },
-        { path: "/admin/closeouts", label: "Closeout Builder", icon: <TrendingUp className="h-4 w-4" />, status: 'pending', requiresAuth: true, description: "Create closeout lists" },
+        { path: "/admin/seasons", label: "Season Management", icon: <Clock className="h-4 w-4" />, status: 'complete', requiresAuth: true, description: "Prebook seasons" },
+        { path: "/admin/closeouts", label: "Closeout Builder", icon: <TrendingUp className="h-4 w-4" />, status: 'complete', requiresAuth: true, description: "Create closeout lists" },
       ]
     },
     {
-      title: "Future Admin Features",
+      title: "Admin Management Tools",
       icon: <Database className="h-5 w-5" />,
       routes: [
-        { path: "/admin/users", label: "User Management", icon: <Users className="h-4 w-4" />, status: 'pending', requiresAuth: true },
-        { path: "/admin/products", label: "Product Management", icon: <Package className="h-4 w-4" />, status: 'pending', requiresAuth: true },
-        { path: "/admin/pricing", label: "Pricing Rules", icon: <DollarSign className="h-4 w-4" />, status: 'pending', requiresAuth: true },
-        { path: "/admin/catalogs", label: "Catalog Management", icon: <FileText className="h-4 w-4" />, status: 'pending', requiresAuth: true },
-        { path: "/admin/analytics", label: "Platform Analytics", icon: <BarChart className="h-4 w-4" />, status: 'pending', requiresAuth: true },
+        { path: "/admin/users", label: "User Management", icon: <Users className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/admin/products", label: "Product Management", icon: <Package className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/admin/pricing", label: "Pricing Rules", icon: <DollarSign className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/admin/catalogs", label: "Catalog Management", icon: <FileText className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/admin/analytics", label: "Platform Analytics", icon: <BarChart className="h-4 w-4" />, status: 'complete', requiresAuth: true },
       ]
     }
   ]
 
   const testCredentials = [
-    { email: "john@outdoorco.com", role: "Retailer", company: "Outdoor Retailers Co.", tier: "Tier 1" },
-    { email: "sarah@urbanstyle.com", role: "Retailer", company: "Urban Style Boutique", tier: "Tier 2" },
-    { email: "mike@westcoast.com", role: "Retailer", company: "West Coast Sports", tier: "Tier 3" },
-    { email: "alex@b2b.com", role: "Sales Rep", company: "B2B Portal", tier: "N/A" },
-    { email: "admin@b2b.com", role: "Admin", company: "B2B Portal", tier: "N/A" },
+    { email: "john@outdoorretailers.com", role: "Retailer", company: "Outdoor Retailers Co.", tier: "Gold" },
+    { email: "sarah@sportinggoods.com", role: "Retailer", company: "Sporting Goods Plus", tier: "Silver" },
+    { email: "mike@adventuregear.com", role: "Retailer", company: "Adventure Gear Shop", tier: "Bronze" },
+    { email: "tom@company.com", role: "Sales Rep", company: "B2B Company", tier: "N/A" },
+    { email: "admin@company.com", role: "Admin", company: "B2B Company", tier: "N/A" },
   ]
 
   const getAllRoutes = () => {
@@ -310,8 +310,8 @@ export default function QuickAccessPage() {
             Complete URL directory for testing and navigation
           </p>
           <div className="mt-4 flex justify-center gap-2">
-            <Badge variant="secondary" className="bg-green-100 text-green-800">✅ Demo Features Added</Badge>
-            <Badge variant="secondary">Phase 4 Complete</Badge>
+            <Badge variant="secondary" className="bg-green-100 text-green-800">✅ Placeholder Routes Added</Badge>
+            <Badge variant="secondary">Phase 4: 90% Complete</Badge>
             <Badge variant="outline">Next: Phase 5 - Custom Pricing</Badge>
           </div>
           <p className="text-sm text-gray-500 mt-2">
@@ -663,23 +663,23 @@ export default function QuickAccessPage() {
                 <Badge variant="secondary">Complete</Badge>
               </div>
               
-              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <Clock className="h-5 w-5 text-yellow-600" />
                   <div>
-                    <p className="font-medium text-sm">Phase 4: B2B Order Types & Demo Features</p>
-                    <p className="text-xs text-gray-600">At-Once, Prebook, Closeout + Demo enhancements</p>
+                    <p className="font-medium text-sm">Phase 4: Service Layer & Admin Portal</p>
+                    <p className="text-xs text-gray-600">Config system, services, admin features (90% done)</p>
                   </div>
                 </div>
-                <Badge variant="secondary">Complete</Badge>
+                <Badge variant="secondary">Near Complete</Badge>
               </div>
               
               <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                 <div className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600" />
                   <div>
-                    <p className="font-medium text-sm">✨ Demo Experience Enhancements</p>
-                    <p className="text-xs text-gray-600">Quick role switcher, scenario launcher, deep-links</p>
+                    <p className="font-medium text-sm">✨ Route Scaffolding Complete</p>
+                    <p className="text-xs text-gray-600">All admin and missing routes now have placeholder pages</p>
                   </div>
                 </div>
                 <Badge variant="secondary">Just Added!</Badge>

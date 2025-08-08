@@ -15,6 +15,8 @@ import { formatCurrency, getCompanyById } from "@/lib/mock-data"
 import { useAuth } from "@/lib/contexts/auth-context"
 import { toast } from "sonner"
 import Link from "next/link"
+import { CatalogBadge } from "@/components/features/catalog-badge"
+import { loadPriceListForCompany } from "@/lib/pricing-helpers"
 
 interface CloseoutProduct {
   id: string
@@ -64,6 +66,8 @@ export default function CloseoutsPage() {
   const [pricingTier, setPricingTier] = useState("tier-1")
   const [sortBy, setSortBy] = useState("discount")
   const [filterUrgency, setFilterUrgency] = useState<string>("all")
+  const [catalogInfo, setCatalogInfo] = useState<any>(null)
+  const [priceList, setPriceList] = useState<any>(null)
   
   const { addToCart, getItemCount, getCartTotal } = useCloseoutCart()
   const { user } = useAuth()
@@ -80,12 +84,15 @@ export default function CloseoutsPage() {
 
   const loadCompanyAndProducts = async () => {
     // Get user's company pricing tier
-    if (user?.companyId) {
-      const company = await getCompanyById(user.companyId)
-      if (company) {
-        setPricingTier(company.pricingTier)
-      }
+    const companyId = user?.companyId || "company-1"
+    const company = await getCompanyById(companyId)
+    if (company) {
+      setPricingTier(company.pricingTier)
     }
+    
+    // Load price list for company
+    const companyPriceList = await loadPriceListForCompany(companyId)
+    setPriceList(companyPriceList)
     
     // Fetch initial products
     fetchCloseoutProducts()
@@ -94,6 +101,61 @@ export default function CloseoutsPage() {
   const fetchCloseoutProducts = async (listId?: string) => {
     try {
       setLoading(true)
+      
+      // Try to fetch via catalog API first for filtering
+      try {
+        const catalogResponse = await fetch('/api/catalogs')
+        if (catalogResponse.ok) {
+          const catalogData = await catalogResponse.json()
+          setCatalogInfo(catalogData.catalog)
+          
+          // Filter products to only closeout eligible
+          const closeoutProducts = catalogData.products.filter((p: any) => 
+            p.orderTypes?.includes('closeout')
+          )
+          
+          // Apply additional filters
+          let filtered = closeoutProducts
+          if (listId) {
+            filtered = filtered.filter((p: any) => 
+              p.orderTypeMetadata?.closeout?.listId === listId
+            )
+          }
+          if (filterUrgency !== "all") {
+            filtered = filtered.filter((p: any) => 
+              p.orderTypeMetadata?.closeout?.urgency === 'critical'
+            )
+          }
+          
+          setProducts(filtered)
+          
+          // Extract available lists
+          const uniqueLists = [...new Set(closeoutProducts.map((p: any) => 
+            p.orderTypeMetadata?.closeout?.listId
+          ).filter(Boolean))].map(id => ({
+            id,
+            name: `Closeout List ${id}`,
+            description: 'Limited time clearance items',
+            status: 'active',
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            productsCount: closeoutProducts.filter((p: any) => 
+              p.orderTypeMetadata?.closeout?.listId === id
+            ).length
+          }))
+          
+          setLists(uniqueLists as CloseoutList[])
+          
+          if (!selectedList && uniqueLists.length > 0) {
+            setSelectedList(uniqueLists[0].id as string)
+          }
+          
+          return
+        }
+      } catch (catalogError) {
+        console.warn('Catalog API failed, falling back to direct API:', catalogError)
+      }
+      
+      // Fallback to direct closeout API
       const params = new URLSearchParams()
       if (listId) params.append("listId", listId)
       if (filterUrgency !== "all") params.append("urgent", "true")
@@ -105,7 +167,6 @@ export default function CloseoutsPage() {
         setProducts(data.products || [])
         setLists(data.lists || [])
         
-        // Auto-select first list if none selected
         if (!selectedList && data.lists?.length > 0) {
           setSelectedList(data.lists[0].id)
         }
@@ -130,8 +191,12 @@ export default function CloseoutsPage() {
       return
     }
     
-    // Use closeout price from metadata
-    const closeoutPrice = metadata.originalPrice * (1 - metadata.discountPercent / 100)
+    // Calculate closeout price with additional customer discounts
+    const baseCloseoutPrice = metadata.originalPrice * (1 - metadata.discountPercent / 100)
+    
+    // Apply tier discount on top of closeout discount
+    const tierDiscount = pricingTier === 'tier-3' ? 0.10 : pricingTier === 'tier-2' ? 0.05 : 0
+    const closeoutPrice = baseCloseoutPrice * (1 - tierDiscount)
     
     addToCart({
       productId: product.id,
@@ -142,8 +207,8 @@ export default function CloseoutsPage() {
       unitPrice: closeoutPrice,
       originalPrice: metadata.originalPrice,
       discountPercent: metadata.discountPercent,
-      expiresAt: metadata.expiresAt,
-      finalSale: metadata.finalSale,
+      listId: metadata.listId || 'closeout-default',
+      expiresAt: new Date(metadata.expiresAt),
       metadata: metadata as any
     })
     
@@ -221,14 +286,27 @@ export default function CloseoutsPage() {
             <p className="text-gray-600 mt-1">
               Limited-time clearance items with deep discounts
             </p>
+            {catalogInfo && (
+              <div className="mt-2">
+                <CatalogBadge 
+                  catalogName={catalogInfo.name}
+                  features={catalogInfo.features}
+                />
+                {catalogInfo.includesCloseouts === false && (
+                  <Badge variant="outline" className="ml-2 text-xs bg-yellow-50">
+                    Limited closeout access
+                  </Badge>
+                )}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-4">
             <Badge 
               variant="secondary" 
               className="px-3 py-1"
               style={{ 
-                backgroundColor: `${ORDER_TYPE_COLORS[ORDER_TYPES.CLOSEOUT]}20`,
-                color: ORDER_TYPE_COLORS[ORDER_TYPES.CLOSEOUT]
+                backgroundColor: `${ORDER_TYPE_COLORS[ORDER_TYPES.CLOSEOUT].primary}20`,
+                color: ORDER_TYPE_COLORS[ORDER_TYPES.CLOSEOUT].primary
               }}
             >
               <Zap className="h-4 w-4 mr-1" />
@@ -410,6 +488,11 @@ export default function CloseoutsPage() {
                           <p className="font-bold text-lg text-red-600">
                             {formatCurrency(closeoutPrice)}
                           </p>
+                          {pricingTier !== 'tier-1' && (
+                            <p className="text-xs text-green-600">
+                              {pricingTier === 'tier-3' ? '10%' : '5%'} extra off
+                            </p>
+                          )}
                         </div>
                         <Badge 
                           variant="outline" 

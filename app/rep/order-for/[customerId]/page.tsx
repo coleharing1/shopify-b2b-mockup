@@ -17,8 +17,13 @@ import {
   AlertCircle,
   Building
 } from "lucide-react"
-import { getProducts, Product, formatCurrency } from "@/lib/mock-data"
+import { getProducts, Product, formatCurrency, getCompanyById } from "@/lib/mock-data"
 import Link from "next/link"
+import { CatalogBadge } from "@/components/features/catalog-badge"
+import { loadPriceListForCompany, getProductVolumeBreaks, formatTierLabel } from "@/lib/pricing-helpers"
+import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Info, User } from "lucide-react"
 
 interface OrderItem {
   productId: string
@@ -33,6 +38,8 @@ interface CompanyInfo {
   name: string
   pricingTier: string
   discount: number
+  contactName?: string
+  contactEmail?: string
 }
 
 /**
@@ -49,26 +56,54 @@ export default function OrderOnBehalfPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [quickOrderSku, setQuickOrderSku] = useState("")
   const [quickOrderQuantity, setQuickOrderQuantity] = useState("")
+  const [catalogInfo, setCatalogInfo] = useState<any>(null)
+  const [priceList, setPriceList] = useState<any>(null)
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Simulate loading company and products
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
-        // Mock company data
-        const mockCompany: CompanyInfo = {
-          id: params.customerId as string,
-          name: "Mountain Gear Outfitters",
-          pricingTier: "tier-3",
-          discount: 0.5 // 50% discount
+        // Load actual company data
+        const companyData = await getCompanyById(params.customerId as string)
+        if (!companyData) {
+          setIsLoading(false)
+          return
         }
         
-        // Load products
-        const data = await getProducts()
+        const mockCompany: CompanyInfo = {
+          id: companyData.id,
+          name: companyData.name,
+          pricingTier: companyData.pricingTier,
+          discount: companyData.pricingTier === 'tier-3' ? 0.5 : 
+                   companyData.pricingTier === 'tier-2' ? 0.4 : 0.3,
+          contactName: companyData.primaryContact?.name,
+          contactEmail: companyData.primaryContact?.email
+        }
         
         setCompany(mockCompany)
-        setProducts(data)
+        
+        // Load customer's price list
+        const customerPriceList = await loadPriceListForCompany(companyData.id)
+        setPriceList(customerPriceList)
+        
+        // Load products with customer's catalog
+        try {
+          // Mock API call to get customer's catalog
+          const catalogResponse = await fetch(`/api/catalogs?companyId=${companyData.id}`)
+          if (catalogResponse.ok) {
+            const catalogData = await catalogResponse.json()
+            setCatalogInfo(catalogData.catalog)
+            setProducts(catalogData.products || [])
+          } else {
+            // Fallback to all products
+            const data = await getProducts()
+            setProducts(data)
+          }
+        } catch (error) {
+          console.warn('Failed to load catalog, using all products:', error)
+          const data = await getProducts()
+          setProducts(data)
+        }
+        
         setIsLoading(false)
       } catch (error) {
         console.error("Error loading data:", error)
@@ -92,7 +127,18 @@ export default function OrderOnBehalfPage() {
       variantQuantities.set(variantId, currentQuantity + quantity)
       
       const totalQuantity = Array.from(variantQuantities.values()).reduce((sum, q) => sum + q, 0)
-      const unitPrice = product.pricing[company!.pricingTier].price
+      let unitPrice = product.pricing[company!.pricingTier].price
+      
+      // Apply volume pricing if available
+      const volumeBreaks = getProductVolumeBreaks(product.id, priceList)
+      if (volumeBreaks.length > 0) {
+        const applicableBreak = [...volumeBreaks]
+          .sort((a, b) => b.minQty - a.minQty)
+          .find(vb => totalQuantity >= vb.minQty)
+        if (applicableBreak) {
+          unitPrice = product.msrp * (1 - applicableBreak.discount)
+        }
+      }
       
       newItems.set(product.id, {
         ...existingItem,
@@ -103,7 +149,18 @@ export default function OrderOnBehalfPage() {
     } else {
       const variantQuantities = new Map<string, number>()
       variantQuantities.set(variantId, quantity)
-      const unitPrice = product.pricing[company!.pricingTier].price
+      let unitPrice = product.pricing[company!.pricingTier].price
+      
+      // Apply volume pricing if available
+      const volumeBreaks = getProductVolumeBreaks(product.id, priceList)
+      if (volumeBreaks.length > 0) {
+        const applicableBreak = [...volumeBreaks]
+          .sort((a, b) => b.minQty - a.minQty)
+          .find(vb => quantity >= vb.minQty)
+        if (applicableBreak) {
+          unitPrice = product.msrp * (1 - applicableBreak.discount)
+        }
+      }
       
       newItems.set(product.id, {
         productId: product.id,
@@ -220,11 +277,28 @@ export default function OrderOnBehalfPage() {
                 <div>
                   <p className="text-sm text-gray-600">Ordering for:</p>
                   <h2 className="text-xl font-bold text-gray-900">{company.name}</h2>
+                  {company.contactName && (
+                    <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
+                      <User className="h-3 w-3" />
+                      {company.contactName} • {company.contactEmail}
+                    </p>
+                  )}
                 </div>
               </div>
-              <span className="px-3 py-1 bg-white rounded-full text-sm font-medium">
-                {Math.round(company.discount * 100)}% Discount Applied
-              </span>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="bg-white">
+                  {formatTierLabel(company.pricingTier)} Tier
+                </Badge>
+                <span className="px-3 py-1 bg-white rounded-full text-sm font-medium">
+                  {Math.round(company.discount * 100)}% Discount
+                </span>
+                {catalogInfo && (
+                  <CatalogBadge 
+                    catalogName={catalogInfo.name}
+                    features={catalogInfo.features}
+                  />
+                )}
+              </div>
             </div>
             <Button variant="outline" asChild>
               <Link href={`/rep/customers/${company.id}`}>
@@ -274,6 +348,11 @@ export default function OrderOnBehalfPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Browse Products</CardTitle>
+                {catalogInfo && (
+                  <CardDescription>
+                    Showing products from {company.name}'s catalog
+                  </CardDescription>
+                )}
               </CardHeader>
               <CardContent>
                 <div className="relative mb-4">
@@ -287,9 +366,18 @@ export default function OrderOnBehalfPage() {
                 </div>
 
                 <div className="space-y-4 max-h-96 overflow-y-auto">
+                  {filteredProducts.length === 0 ? (
+                    <Alert>
+                      <Info className="h-4 w-4" />
+                      <AlertDescription>
+                        No products found in customer's catalog matching your search.
+                      </AlertDescription>
+                    </Alert>
+                  ) : null}
                   {filteredProducts.map((product) => {
-                    const customerPrice = product.pricing[company.pricingTier].price
-                    const msrp = product.pricing["tier-1"].price
+                    let customerPrice = product.pricing[company.pricingTier].price
+                    const msrp = product.msrp
+                    const volumeBreaks = getProductVolumeBreaks(product.id, priceList)
                     
                     return (
                       <div key={product.id} className="border rounded-lg p-4">
@@ -305,6 +393,11 @@ export default function OrderOnBehalfPage() {
                             <p className="text-sm text-gray-500 line-through">
                               MSRP: {formatCurrency(msrp)}
                             </p>
+                            {volumeBreaks.length > 0 && (
+                              <Badge variant="outline" className="text-xs mt-1 bg-green-50">
+                                Volume pricing
+                              </Badge>
+                            )}
                           </div>
                         </div>
                         
@@ -404,8 +497,13 @@ export default function OrderOnBehalfPage() {
                       </div>
                       <div className="bg-green-50 text-green-700 text-sm p-2 rounded">
                         <AlertCircle className="h-4 w-4 inline mr-1" />
-                        Customer saves {formatCurrency(orderTotal)} with their {Math.round(company.discount * 100)}% discount
+                        Customer pricing applied • {formatTierLabel(company.pricingTier)} tier
                       </div>
+                      {priceList && (
+                        <div className="text-xs text-gray-500 text-center">
+                          Using price list: {priceList.name}
+                        </div>
+                      )}
                     </div>
 
                     <div className="mt-6 space-y-3">

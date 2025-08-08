@@ -24,6 +24,12 @@ import Link from "next/link"
 import { getProducts, getCompanyById, formatCurrency, type Product } from "@/lib/mock-data"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/contexts/auth-context"
+import { CatalogBadge } from "@/components/features/catalog-badge"
+import { VolumePricingTable } from "@/components/features/volume-pricing-table"
+import { loadPriceListForCompany, getProductVolumeBreaks } from "@/lib/pricing-helpers"
+import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Info } from "lucide-react"
 
 /**
  * @description Product detail page with variants and bulk ordering
@@ -49,6 +55,10 @@ export default function ProductDetailPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [orderMode, setOrderMode] = useState<"single" | "matrix">("single")
   const [showAddedMessage, setShowAddedMessage] = useState(false)
+  const [catalogInfo, setCatalogInfo] = useState<any>(null)
+  const [priceList, setPriceList] = useState<any>(null)
+  const [isInCatalog, setIsInCatalog] = useState(true)
+  const [volumeBreaks, setVolumeBreaks] = useState<any[]>([])
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -60,15 +70,56 @@ export default function ProductDetailPage() {
           setPricingTier(company.pricingTier)
         }
 
-        // Load products and find the one we need
-        const allProducts = await getProducts()
-        const foundProduct = allProducts.find((p) => p.id === params.id)
-        
-        if (foundProduct) {
-          setProduct(foundProduct)
-          // Select first available variant
-          if (foundProduct.variants && foundProduct.variants.length > 0) {
-            setSelectedVariant(foundProduct.variants[0])
+        // Load price list for volume pricing
+        const companyPriceList = await loadPriceListForCompany(companyId)
+        setPriceList(companyPriceList)
+
+        // Check catalog for product visibility
+        try {
+          const catalogResponse = await fetch('/api/catalogs')
+          if (catalogResponse.ok) {
+            const catalogData = await catalogResponse.json()
+            setCatalogInfo(catalogData.catalog)
+            
+            // Check if product is in catalog
+            const catalogProduct = catalogData.products.find((p: Product) => p.id === params.id)
+            if (catalogProduct) {
+              setProduct(catalogProduct)
+              setIsInCatalog(true)
+              // Select first available variant
+              if (catalogProduct.variants && catalogProduct.variants.length > 0) {
+                setSelectedVariant(catalogProduct.variants[0])
+              }
+              // Get volume breaks for this product
+              const breaks = getProductVolumeBreaks(catalogProduct.id, companyPriceList)
+              setVolumeBreaks(breaks)
+            } else {
+              // Product not in catalog, load anyway but show restricted access
+              const allProducts = await getProducts()
+              const foundProduct = allProducts.find((p) => p.id === params.id)
+              if (foundProduct) {
+                setProduct(foundProduct)
+                setIsInCatalog(false)
+                if (foundProduct.variants && foundProduct.variants.length > 0) {
+                  setSelectedVariant(foundProduct.variants[0])
+                }
+              }
+            }
+          } else {
+            throw new Error('Catalog API failed')
+          }
+        } catch (catalogError) {
+          // Fallback to direct product loading
+          console.warn('Catalog check failed:', catalogError)
+          const allProducts = await getProducts()
+          const foundProduct = allProducts.find((p) => p.id === params.id)
+          if (foundProduct) {
+            setProduct(foundProduct)
+            if (foundProduct.variants && foundProduct.variants.length > 0) {
+              setSelectedVariant(foundProduct.variants[0])
+            }
+            const breaks = getProductVolumeBreaks(foundProduct.id, companyPriceList)
+            setVolumeBreaks(breaks)
           }
         }
         
@@ -90,11 +141,21 @@ export default function ProductDetailPage() {
   }
 
   const handleAddToCart = () => {
-    if (!product) return
+    if (!product || !isInCatalog) return
 
     if (orderMode === "single" && selectedVariant) {
       const quantity = quantities[selectedVariant.id] || 1
-      const tierPrice = product.pricing[pricingTier].price
+      let tierPrice = product.pricing[pricingTier].price
+      
+      // Apply volume pricing if available
+      if (volumeBreaks.length > 0) {
+        const applicableBreak = [...volumeBreaks]
+          .sort((a, b) => b.minQty - a.minQty)
+          .find(vb => quantity >= vb.minQty)
+        if (applicableBreak) {
+          tierPrice = product.msrp * (1 - applicableBreak.discount)
+        }
+      }
       
       addToCart({
         productId: product.id,
@@ -109,7 +170,19 @@ export default function ProductDetailPage() {
       setTimeout(() => setShowAddedMessage(false), 3000)
     } else {
       // Add all quantities from matrix
-      const tierPrice = product.pricing[pricingTier].price
+      const totalQty = getTotalQuantity()
+      let tierPrice = product.pricing[pricingTier].price
+      
+      // Apply volume pricing based on total quantity
+      if (volumeBreaks.length > 0) {
+        const applicableBreak = [...volumeBreaks]
+          .sort((a, b) => b.minQty - a.minQty)
+          .find(vb => totalQty >= vb.minQty)
+        if (applicableBreak) {
+          tierPrice = product.msrp * (1 - applicableBreak.discount)
+        }
+      }
+      
       Object.entries(quantities)
         .filter(([, qty]) => qty > 0)
         .forEach(([variantId, qty]) => {
@@ -244,7 +317,30 @@ export default function ProductDetailPage() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
               <p className="text-gray-600 mt-2">SKU: {product.sku}</p>
+              {catalogInfo && (
+                <div className="mt-3 flex items-center gap-2">
+                  <CatalogBadge 
+                    catalogName={catalogInfo.name}
+                    features={catalogInfo.features}
+                  />
+                  {!isInCatalog && (
+                    <Badge variant="destructive" className="text-xs">
+                      Not in your catalog
+                    </Badge>
+                  )}
+                </div>
+              )}
             </div>
+            
+            {/* Catalog Access Alert */}
+            {!isInCatalog && (
+              <Alert className="border-yellow-200 bg-yellow-50">
+                <Info className="h-4 w-4 text-yellow-600" />
+                <AlertDescription className="text-yellow-800">
+                  This product is not included in your catalog. Contact your sales representative to request access.
+                </AlertDescription>
+              </Alert>
+            )}
 
             {/* Pricing */}
             <Card>
@@ -264,9 +360,25 @@ export default function ProductDetailPage() {
                   <p className="text-sm text-gray-600">
                     Your {pricingTier.replace('-', ' ').toUpperCase()} pricing
                   </p>
+                  {volumeBreaks.length > 0 && (
+                    <div className="mt-2 pt-2 border-t">
+                      <Badge variant="outline" className="text-xs bg-green-50">
+                        Volume discounts available
+                      </Badge>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
+            
+            {/* Volume Pricing Table */}
+            {volumeBreaks.length > 0 && (
+              <VolumePricingTable
+                msrp={product.msrp}
+                volumeBreaks={volumeBreaks}
+                currentQuantity={getTotalQuantity()}
+              />
+            )}
 
             {/* Order Mode Toggle */}
             {product.variants && product.variants.length > 1 && (
@@ -331,7 +443,7 @@ export default function ProductDetailPage() {
                 size="lg" 
                 className="w-full"
                 onClick={handleAddToCart}
-                disabled={orderMode === "single" && !selectedVariant}
+                disabled={(orderMode === "single" && !selectedVariant) || !isInCatalog}
               >
                 <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart

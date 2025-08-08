@@ -13,6 +13,8 @@ import { EnhancedProduct, AtOnceMetadata, ORDER_TYPE_COLORS } from "@/types/orde
 import { toast } from "sonner"
 import { formatCurrency, getCompanyById } from "@/lib/mock-data"
 import { useAuth } from "@/lib/contexts/auth-context"
+import { CatalogBadge } from "@/components/features/catalog-badge"
+import { loadPriceListForCompany, getProductVolumeBreaks } from "@/lib/pricing-helpers"
 
 export default function AtOncePage() {
   const [products, setProducts] = useState<EnhancedProduct[]>([])
@@ -20,6 +22,8 @@ export default function AtOncePage() {
   const [filter, setFilter] = useState("all")
   const [sortBy, setSortBy] = useState("name")
   const [pricingTier, setPricingTier] = useState("tier-1")
+  const [catalogInfo, setCatalogInfo] = useState<any>(null)
+  const [priceList, setPriceList] = useState<any>(null)
   const { addToCart, getItemCount } = useAtOnceCart()
   const { user } = useAuth()
 
@@ -29,18 +33,57 @@ export default function AtOncePage() {
 
   const loadCompanyAndProducts = async () => {
     // Get user's company pricing tier
-    if (user?.companyId) {
-      const company = await getCompanyById(user.companyId)
-      if (company) {
-        setPricingTier(company.pricingTier)
-      }
+    const companyId = user?.companyId || "company-1"
+    const company = await getCompanyById(companyId)
+    if (company) {
+      setPricingTier(company.pricingTier)
     }
+    
+    // Load price list for volume pricing
+    const companyPriceList = await loadPriceListForCompany(companyId)
+    setPriceList(companyPriceList)
+    
     fetchAtOnceProducts()
   }
 
   const fetchAtOnceProducts = async () => {
     try {
       setLoading(true)
+      
+      // Try to fetch via catalog API first for filtering
+      try {
+        const catalogResponse = await fetch('/api/catalogs')
+        if (catalogResponse.ok) {
+          const catalogData = await catalogResponse.json()
+          setCatalogInfo(catalogData.catalog)
+          
+          // Filter products to only at-once eligible
+          const atOnceProducts = catalogData.products.filter((p: EnhancedProduct) => 
+            p.orderTypes?.includes('at-once')
+          )
+          
+          // Apply additional filters
+          let filtered = atOnceProducts
+          if (filter === "evergreen") {
+            filtered = filtered.filter((p: EnhancedProduct) => 
+              (p.orderTypeMetadata?.['at-once'] as AtOnceMetadata)?.evergreenItem
+            )
+          }
+          if (filter === "in-stock") {
+            filtered = filtered.filter((p: EnhancedProduct) => {
+              const stock = (p.orderTypeMetadata?.['at-once'] as AtOnceMetadata)?.atsInventory || 0
+              return stock > 0
+            })
+          }
+          
+          setProducts(filtered)
+          return
+        }
+      } catch (catalogError) {
+        console.warn('Catalog API failed, falling back to direct API:', catalogError)
+      }
+      
+      // Fallback to direct at-once API
       const params = new URLSearchParams()
       if (filter === "evergreen") params.append("evergreen", "true")
       if (filter === "in-stock") params.append("inStock", "true")
@@ -61,7 +104,18 @@ export default function AtOncePage() {
     if (!firstVariant) return
 
     const metadata = product.orderTypeMetadata?.['at-once'] as AtOnceMetadata
-    const price = product.pricing[pricingTier]?.price || product.msrp
+    
+    // Check for volume pricing
+    const volumeBreaks = getProductVolumeBreaks(product.id, priceList)
+    let price = product.pricing[pricingTier]?.price || product.msrp
+    
+    // Apply volume break if available (for qty 1)
+    if (volumeBreaks.length > 0) {
+      const applicableBreak = volumeBreaks.find(vb => 1 >= vb.minQty)
+      if (applicableBreak) {
+        price = product.msrp * (1 - applicableBreak.discount)
+      }
+    }
     
     addToCart({
       productId: product.id,
@@ -72,6 +126,8 @@ export default function AtOncePage() {
       unitPrice: price,
       metadata
     })
+    
+    toast.success(`Added ${product.name} to cart`)
   }
 
   const getStockStatus = (product: EnhancedProduct) => {
@@ -120,6 +176,14 @@ export default function AtOncePage() {
             <p className="text-muted-foreground mt-1">
               Immediate fulfillment from available inventory • Ships within 1-5 business days
             </p>
+            {catalogInfo && (
+              <div className="mt-2">
+                <CatalogBadge 
+                  catalogName={catalogInfo.name}
+                  features={catalogInfo.features}
+                />
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <Badge className={ORDER_TYPE_COLORS['at-once'].badge + " text-white"}>
@@ -254,6 +318,17 @@ export default function AtOncePage() {
                         Ships in {metadata?.shipWithin || 3} business days
                       </span>
                     </div>
+                    {(() => {
+                      const volumeBreaks = getProductVolumeBreaks(product.id, priceList)
+                      if (volumeBreaks.length > 0) {
+                        return (
+                          <Badge variant="outline" className="text-xs mt-1 bg-green-50">
+                            Volume pricing available
+                          </Badge>
+                        )
+                      }
+                      return null
+                    })()}
                   </CardHeader>
                   
                   <CardContent>
@@ -261,7 +336,16 @@ export default function AtOncePage() {
                       <div className="flex justify-between items-center">
                         <div>
                           <p className="text-2xl font-bold">{formatCurrency(price)}</p>
-                          <p className="text-xs text-muted-foreground">{pricingTier.replace('-', ' ')} tier pricing</p>
+                          <p className="text-xs text-muted-foreground">
+                            {(() => {
+                              const volumeBreaks = getProductVolumeBreaks(product.id, priceList)
+                              if (volumeBreaks.length > 0) {
+                                const maxDiscount = Math.max(...volumeBreaks.map(vb => vb.discount))
+                                return `Up to ${(maxDiscount * 100).toFixed(0)}% off with volume`
+                              }
+                              return `${pricingTier.replace('-', ' ')} tier pricing`
+                            })()}
+                          </p>
                         </div>
                         {metadata?.quickReorderEligible && (
                           <Badge variant="outline" className="text-xs">
@@ -321,7 +405,17 @@ export default function AtOncePage() {
                     <Package className="h-8 w-8 mb-2 text-muted-foreground" />
                     <span className="text-xs text-center">{product.name}</span>
                     <span className="text-xs font-bold mt-1">
-                      {formatCurrency(product.pricing[pricingTier]?.price || product.msrp)}
+                      {(() => {
+                        const volumeBreaks = getProductVolumeBreaks(product.id, priceList)
+                        let price = product.pricing[pricingTier]?.price || product.msrp
+                        if (volumeBreaks.length > 0) {
+                          const applicableBreak = volumeBreaks.find(vb => 1 >= vb.minQty)
+                          if (applicableBreak) {
+                            price = product.msrp * (1 - applicableBreak.discount)
+                          }
+                        }
+                        return formatCurrency(price)
+                      })()}
                     </span>
                   </Button>
                 ))}

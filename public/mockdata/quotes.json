@@ -1,0 +1,300 @@
+{
+  "quotes": [
+    {
+      "id": "quote-001",
+      "number": "QUOTE-2024-001",
+      "companyId": "company-001",
+      "companyName": "Outdoor Retailers Inc.",
+      "contactId": "user-john",
+      "contactName": "John Smith",
+      "contactEmail": "john@outdoorretailers.com",
+      "createdBy": "user-tom",
+      "createdByName": "Tom Wilson",
+      "assignedTo": "user-tom",
+      "assignedToName": "Tom Wilson",
+      "status": "sent",
+      "type": "proactive",
+      "orderType": "prebook",
+      "items": [
+        {
+          "id": "item-001",
+          "productId": "prod-001",
+          "productName": "Classic Leather Jacket",
+          "sku": "CLJ-001",
+          "quantity": 50,
+          "unitPrice": 150,
+          "originalPrice": 200,
+          "discount": 25,
+          "discountType": "percentage",
+          "discountReason": "Volume discount",
+          "total": 7500,
+          "variant": {
+            "size": "M",
+            "color": "Black"
+          }
+        },
+        {
+          "id": "item-002",
+          "productId": "prod-002",
+          "productName": "Urban Backpack",
+          "sku": "UB-002",
+          "quantity": 30,
+          "unitPrice": 60,
+          "originalPrice": 80,
+          "discount": 25,
+          "discountType": "percentage",
+          "total": 1800
+        }
+      ],
+      "pricing": {
+        "subtotal": 9300,
+        "discount": 2325,
+        "discountPercentage": 25,
+        "tax": 837,
+        "taxRate": 9,
+        "shipping": 150,
+        "total": 10287,
+        "currency": "USD"
+      },
+      "terms": {
+        "validUntil": "2024-02-15T00:00:00Z",
+        "paymentTerms": "net-30",
+        "shippingTerms": "fob-destination",
+        "deliveryDate": "2024-03-01T00:00:00Z",
+        "notes": "Spring collection prebook order. All items subject to availability."
+      },
+      "versions": [
+        {
+          "versionNumber": 1,
+          "createdAt": "2024-01-15T10:00:00Z",
+          "createdBy": "user-tom",
+          "changes": ["Initial quote created"],
+          "pricing": {
+            "subtotal": 9300,
+            "discount": 2325,
+            "discountPercentage": 25,
+            "tax": 837,
+            "taxRate": 9,
+            "shipping": 150,
+            "total": 10287,
+            "currency": "USD"
+          },
+          "items": []
+        }
+      ],
+      "currentVersion": 1,
+      "timeline": [
+        {
+          "id": "event-001",
+          "timestamp": "2024-01-15T10:00:00Z",
+          "type": "created",
+          "userId": "user-tom",
+          "userName": "Tom Wilson",
+          "details": "Quote created for spring prebook"
+        },
+        {
+          "id": "event-002",
+          "timestamp": "2024-01-15T10:30:00Z",
+          "type": "sent",
+          "userId": "user-tom",
+          "userName": "Tom Wilson",
+          "details": "Quote sent to customer via email"
+        }
+      ],
+      "tags": ["prebook", "spring-2024", "vip"],
+      "source": "sales-call",
+      "createdAt": "2024-01-15T10:00:00Z",
+      "updatedAt": "2024-01-15T10:30:00Z"
+    },
+    {
+      "id": "quote-002",
+      "number": "QUOTE-2024-002",
+      "companyId": "company-002",
+      "companyName": "Sporting Goods Plus",
+      "contactId": "user-sarah",
+      "contactName": "Sarah Johnson",
+      "contactEmail": "sarah@sportinggoods.com",
+      "createdBy": "user-sarah",
+      "createdByName": "Sarah Johnson",
+      "assignedTo": "user-tom",
+      "assignedToName": "Tom Wilson",
+      "status": "viewed",
+      "type": "rfq",
+      "orderType": "at-once",
+      "items": [
+        {
+          "id": "item-003",
+          "productId": "prod-004",
+          "productName": "Trail Running Shoes",
+          "sku": "TRS-004",
+          "quantity": 100,
+          "unitPrice": 65,
+          "originalPrice": 100,
+          "discount": 35,
+          "discountType": "percentage",
+          "total": 6500
+        }
+      ],
+      "pricing": {
+        "subtotal": 6500,
+        "discount": 2275,
+        "discountPercentage": 35,
+        "tax": 585,
+        "taxRate": 9,
+        "shipping": 0,
+        "total": 7085,
+        "currency": "USD"
+      },
+      "terms": {
+        "validUntil": "2024-01-31T00:00:00Z",
+        "paymentTerms": "net-60",
+        "shippingTerms": "fob-origin",
+        "notes": "Customer requested bulk pricing for immediate delivery"
+      },
+      "versions": [],
+      "currentVersion": 1,
+      "timeline": [
+        {
+          "id": "event-003",
+          "timestamp": "2024-01-14T14:00:00Z",
+          "type": "created",
+          "userId": "user-sarah",
+          "userName": "Sarah Johnson",
+          "details": "RFQ submitted by customer"
+        },
+        {
+          "id": "event-004",
+          "timestamp": "2024-01-14T15:00:00Z",
+          "type": "sent",
+          "userId": "user-tom",
+          "userName": "Tom Wilson",
+          "details": "Quote prepared and sent"
+        },
+        {
+          "id": "event-005",
+          "timestamp": "2024-01-15T09:00:00Z",
+          "type": "viewed",
+          "userId": "user-sarah",
+          "userName": "Sarah Johnson",
+          "details": "Customer viewed the quote"
+        }
+      ],
+      "tags": ["rfq", "bulk-order"],
+      "source": "website",
+      "referenceNumber": "PO-2024-0156",
+      "createdAt": "2024-01-14T14:00:00Z",
+      "updatedAt": "2024-01-15T09:00:00Z"
+    },
+    {
+      "id": "quote-003",
+      "number": "QUOTE-2024-003",
+      "companyId": "company-003",
+      "companyName": "Adventure Gear Co.",
+      "contactId": "user-mike",
+      "contactName": "Mike Chen",
+      "contactEmail": "mike@adventuregear.com",
+      "createdBy": "user-tom",
+      "createdByName": "Tom Wilson",
+      "assignedTo": "user-tom",
+      "assignedToName": "Tom Wilson",
+      "status": "accepted",
+      "type": "proactive",
+      "orderType": "closeout",
+      "items": [
+        {
+          "id": "item-004",
+          "productId": "prod-007",
+          "productName": "Winter Gloves - Previous Season",
+          "sku": "WG-007",
+          "quantity": 200,
+          "unitPrice": 12,
+          "originalPrice": 30,
+          "discount": 60,
+          "discountType": "percentage",
+          "discountReason": "Closeout pricing",
+          "total": 2400
+        }
+      ],
+      "pricing": {
+        "subtotal": 2400,
+        "discount": 1440,
+        "discountPercentage": 60,
+        "tax": 216,
+        "taxRate": 9,
+        "shipping": 50,
+        "total": 2666,
+        "currency": "USD"
+      },
+      "terms": {
+        "validUntil": "2024-01-20T00:00:00Z",
+        "paymentTerms": "due-on-receipt",
+        "shippingTerms": "fob-origin",
+        "notes": "Limited quantity available. First come, first served."
+      },
+      "versions": [],
+      "currentVersion": 1,
+      "timeline": [
+        {
+          "id": "event-006",
+          "timestamp": "2024-01-10T11:00:00Z",
+          "type": "created",
+          "userId": "user-tom",
+          "userName": "Tom Wilson",
+          "details": "Closeout quote created"
+        },
+        {
+          "id": "event-007",
+          "timestamp": "2024-01-10T11:30:00Z",
+          "type": "sent",
+          "userId": "user-tom",
+          "userName": "Tom Wilson",
+          "details": "Quote sent to customer"
+        },
+        {
+          "id": "event-008",
+          "timestamp": "2024-01-11T14:00:00Z",
+          "type": "accepted",
+          "userId": "user-mike",
+          "userName": "Mike Chen",
+          "details": "Customer accepted the quote"
+        }
+      ],
+      "tags": ["closeout", "winter-clearance"],
+      "source": "email",
+      "convertedOrderId": "order-12345",
+      "createdAt": "2024-01-10T11:00:00Z",
+      "updatedAt": "2024-01-11T14:00:00Z"
+    }
+  ],
+  "templates": [
+    {
+      "id": "template-001",
+      "name": "Spring Prebook Bundle",
+      "description": "Standard spring collection bundle for retailers",
+      "items": [
+        {
+          "productId": "prod-001",
+          "quantity": 25,
+          "discount": 20,
+          "discountType": "percentage"
+        },
+        {
+          "productId": "prod-002",
+          "quantity": 20,
+          "discount": 20,
+          "discountType": "percentage"
+        }
+      ],
+      "terms": {
+        "paymentTerms": "net-30",
+        "shippingTerms": "fob-destination",
+        "notes": "Spring collection prebook. Delivery in March."
+      },
+      "tags": ["prebook", "spring", "bundle"],
+      "createdBy": "user-tom",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z",
+      "usageCount": 5
+    }
+  ]
+}

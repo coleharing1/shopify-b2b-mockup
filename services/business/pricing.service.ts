@@ -10,6 +10,14 @@ import {
   OrderType,
   ORDER_TYPE_CONFIG
 } from '@/config/order-types.config'
+import {
+  PriceList,
+  PriceRule,
+  VolumeBreak,
+  PriceCalculation as DetailedPriceCalculation,
+  PriceBreakdownItem,
+  PriceCalculationInput
+} from '@/types/pricing-types'
 
 export interface PriceCalculation {
   msrp: number
@@ -242,4 +250,173 @@ export function calculateCartTotals(
     tax,
     total
   }
+}
+
+/**
+ * Calculate customer-specific price with volume breaks
+ */
+export function calculateCustomerPrice(
+  input: PriceCalculationInput,
+  priceList?: PriceList
+): DetailedPriceCalculation {
+  const breakdown: PriceBreakdownItem[] = []
+  let currentPrice = input.msrp
+  let totalDiscount = 0
+
+  // Start with MSRP
+  breakdown.push({
+    type: 'base',
+    description: 'Manufacturer\'s Suggested Retail Price',
+    amount: input.msrp
+  })
+
+  // Apply base tier discount if no price list or if price list has a base tier
+  const baseTier = (priceList?.baseTier || 'tier-1') as PricingTier
+  const tierConfig = TIER_CONFIG[baseTier]
+  if (tierConfig) {
+    const tierDiscount = input.msrp * tierConfig.discount
+    currentPrice -= tierDiscount
+    totalDiscount += tierDiscount
+    
+    breakdown.push({
+      type: 'tier',
+      description: `${tierConfig.label} Tier Discount (${tierConfig.discount * 100}%)`,
+      amount: -tierDiscount,
+      discount: tierConfig.discount
+    })
+  }
+
+  // Check for fixed price override
+  if (priceList) {
+    const rule = priceList.rules.find(r => r.productId === input.productId)
+    
+    if (rule?.fixedPrice) {
+      // Fixed price overrides everything
+      const fixedDiscount = input.msrp - rule.fixedPrice
+      breakdown.push({
+        type: 'override',
+        description: 'Contract Price Override',
+        amount: -fixedDiscount,
+        discount: fixedDiscount / input.msrp
+      })
+      currentPrice = rule.fixedPrice
+      totalDiscount = fixedDiscount
+    } else if (rule?.volumeBreaks && rule.volumeBreaks.length > 0) {
+      // Apply volume breaks
+      const applicableBreak = getApplicableVolumeBreak(input.quantity, rule.volumeBreaks)
+      if (applicableBreak) {
+        const volumeDiscount = input.msrp * (applicableBreak.discount - (tierConfig?.discount || 0))
+        if (volumeDiscount > 0) {
+          currentPrice -= volumeDiscount
+          totalDiscount += volumeDiscount
+          
+          breakdown.push({
+            type: 'volume',
+            description: `Volume Discount (${input.quantity}+ units: ${applicableBreak.discount * 100}% total)`,
+            amount: -volumeDiscount,
+            discount: applicableBreak.discount
+          })
+        }
+      }
+    }
+
+    // Apply global volume breaks based on order total
+    if (priceList.globalVolumeBreaks && input.orderTotal) {
+      const globalBreak = getApplicableGlobalBreak(input.orderTotal, priceList.globalVolumeBreaks)
+      if (globalBreak) {
+        const globalDiscount = currentPrice * globalBreak.additionalDiscount
+        currentPrice -= globalDiscount
+        totalDiscount += globalDiscount
+        
+        breakdown.push({
+          type: 'global',
+          description: `Order Volume Discount ($${input.orderTotal.toLocaleString()}+: ${globalBreak.additionalDiscount * 100}% extra)`,
+          amount: -globalDiscount,
+          discount: globalBreak.additionalDiscount
+        })
+      }
+    }
+
+    // Apply clearance discount if applicable
+    if (input.orderType === 'closeout' && priceList.clearanceRules) {
+      const clearanceDiscount = currentPrice * priceList.clearanceRules.additionalDiscount
+      currentPrice -= clearanceDiscount
+      totalDiscount += clearanceDiscount
+      
+      breakdown.push({
+        type: 'clearance',
+        description: `Clearance Additional Discount (${priceList.clearanceRules.additionalDiscount * 100}%)`,
+        amount: -clearanceDiscount,
+        discount: priceList.clearanceRules.additionalDiscount
+      })
+    }
+  }
+
+  const unitPrice = Math.max(currentPrice, 0.01) // Never go below 1 cent
+  const totalPrice = unitPrice * input.quantity
+
+  return {
+    productId: input.productId,
+    quantity: input.quantity,
+    msrp: input.msrp,
+    listPrice: input.msrp,
+    tierDiscount: tierConfig?.discount || 0,
+    volumeDiscount: 0, // Calculated above
+    globalDiscount: 0, // Calculated above
+    clearanceDiscount: 0, // Calculated above
+    fixedPriceOverride: priceList?.rules.some(r => r.productId === input.productId && r.fixedPrice) || false,
+    finalPrice: unitPrice,
+    unitPrice,
+    totalPrice,
+    savings: input.msrp - unitPrice,
+    savingsPercent: ((input.msrp - unitPrice) / input.msrp) * 100,
+    appliedRules: breakdown.map(b => b.description),
+    priceListId: priceList?.id,
+    breakdown
+  }
+}
+
+/**
+ * Get applicable volume break for a quantity
+ */
+function getApplicableVolumeBreak(quantity: number, breaks: VolumeBreak[]): VolumeBreak | null {
+  const sortedBreaks = [...breaks].sort((a, b) => b.minQty - a.minQty)
+  return sortedBreaks.find(b => quantity >= b.minQty) || null
+}
+
+/**
+ * Get applicable global volume break for order total
+ */
+function getApplicableGlobalBreak(orderTotal: number, breaks: { minOrderValue: number; additionalDiscount: number }[]): { minOrderValue: number; additionalDiscount: number } | null {
+  const sortedBreaks = [...breaks].sort((a, b) => b.minOrderValue - a.minOrderValue)
+  return sortedBreaks.find(b => orderTotal >= b.minOrderValue) || null
+}
+
+/**
+ * Get volume breaks for a product
+ */
+export function getVolumeBreaks(productId: string, priceList?: PriceList): VolumeBreak[] {
+  if (!priceList) return []
+  
+  const rule = priceList.rules.find(r => r.productId === productId)
+  return rule?.volumeBreaks || []
+}
+
+/**
+ * Get price breakdown for transparency
+ */
+export function getPriceBreakdown(
+  product: { id: string; msrp: number },
+  quantity: number,
+  companyId: string,
+  priceList?: PriceList,
+  orderTotal?: number
+): DetailedPriceCalculation {
+  return calculateCustomerPrice({
+    productId: product.id,
+    msrp: product.msrp,
+    quantity,
+    companyId,
+    orderTotal
+  }, priceList)
 }

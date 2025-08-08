@@ -16,6 +16,8 @@ import { formatCurrency, getCompanyById } from "@/lib/mock-data"
 import { useAuth } from "@/lib/contexts/auth-context"
 import { toast } from "sonner"
 import Link from "next/link"
+import { CatalogBadge } from "@/components/features/catalog-badge"
+import { loadPriceListForCompany, getProductVolumeBreaks } from "@/lib/pricing-helpers"
 
 interface PrebookProduct {
   id: string
@@ -56,6 +58,8 @@ export default function PrebookPage() {
   const [pricingTier, setPricingTier] = useState("tier-1")
   const [sortBy, setSortBy] = useState("name")
   const [availableSeasons, setAvailableSeasons] = useState<string[]>([])
+  const [catalogInfo, setCatalogInfo] = useState<any>(null)
+  const [priceList, setPriceList] = useState<any>(null)
   
   const { addToCart, getSeasonGroups, getDepositAmount, getItemCount } = usePrebookCart()
   const { user } = useAuth()
@@ -73,12 +77,15 @@ export default function PrebookPage() {
 
   const loadCompanyAndProducts = async () => {
     // Get user's company pricing tier
-    if (user?.companyId) {
-      const company = await getCompanyById(user.companyId)
-      if (company) {
-        setPricingTier(company.pricingTier)
-      }
+    const companyId = user?.companyId || "company-1"
+    const company = await getCompanyById(companyId)
+    if (company) {
+      setPricingTier(company.pricingTier)
     }
+    
+    // Load price list for volume pricing
+    const companyPriceList = await loadPriceListForCompany(companyId)
+    setPriceList(companyPriceList)
     
     // Fetch initial products
     fetchPrebookProducts()
@@ -87,6 +94,46 @@ export default function PrebookPage() {
   const fetchPrebookProducts = async (season?: string) => {
     try {
       setLoading(true)
+      
+      // Try to fetch via catalog API first for filtering
+      try {
+        const catalogResponse = await fetch('/api/catalogs')
+        if (catalogResponse.ok) {
+          const catalogData = await catalogResponse.json()
+          setCatalogInfo(catalogData.catalog)
+          
+          // Filter products to only prebook eligible
+          const prebookProducts = catalogData.products.filter((p: any) => 
+            p.orderTypes?.includes('prebook')
+          )
+          
+          // Apply season filter if specified
+          let filtered = prebookProducts
+          if (season) {
+            filtered = filtered.filter((p: any) => 
+              p.orderTypeMetadata?.prebook?.season === season
+            )
+          }
+          
+          setProducts(filtered)
+          
+          // Extract available seasons
+          const seasons = [...new Set(prebookProducts.map((p: any) => 
+            p.orderTypeMetadata?.prebook?.season
+          ).filter(Boolean))]
+          setAvailableSeasons(seasons as string[])
+          
+          if (!selectedSeason && seasons.length > 0) {
+            setSelectedSeason(seasons[0] as string)
+          }
+          
+          return
+        }
+      } catch (catalogError) {
+        console.warn('Catalog API failed, falling back to direct API:', catalogError)
+      }
+      
+      // Fallback to direct prebook API
       const params = new URLSearchParams()
       if (season) params.append("season", season)
       
@@ -96,10 +143,8 @@ export default function PrebookPage() {
       if (response.ok) {
         setProducts(data.products || [])
         
-        // Extract available seasons from the response
         if (data.filters?.seasons) {
           setAvailableSeasons(data.filters.seasons)
-          // Auto-select first season if none selected
           if (!selectedSeason && data.filters.seasons.length > 0) {
             setSelectedSeason(data.filters.seasons[0])
           }
@@ -125,10 +170,20 @@ export default function PrebookPage() {
       return
     }
     
-    const price = product.pricing[pricingTier]?.price || product.msrp
-    
-    // Check minimum units requirement
+    // Check for volume pricing and minimum units
     const minUnits = metadata.minimumUnits || 1
+    const volumeBreaks = getProductVolumeBreaks(product.id, priceList)
+    let price = product.pricing[pricingTier]?.price || product.msrp
+    
+    // Apply volume break based on minimum units
+    if (volumeBreaks.length > 0) {
+      const applicableBreak = [...volumeBreaks]
+        .sort((a, b) => b.minQty - a.minQty)
+        .find(vb => minUnits >= vb.minQty)
+      if (applicableBreak) {
+        price = product.msrp * (1 - applicableBreak.discount)
+      }
+    }
     
     addToCart({
       productId: product.id,
@@ -138,8 +193,10 @@ export default function PrebookPage() {
       quantity: minUnits,
       unitPrice: price,
       season: metadata.season,
-      deliveryWindow: metadata.deliveryWindow,
-      depositPercent: metadata.depositPercent,
+      deliveryWindow: {
+        start: new Date(metadata.deliveryWindow.start),
+        end: new Date(metadata.deliveryWindow.end),
+      },
       metadata: metadata as any
     })
     
@@ -188,14 +245,22 @@ export default function PrebookPage() {
             <p className="text-gray-600 mt-1">
               Order future seasons in advance with special pricing
             </p>
+            {catalogInfo && (
+              <div className="mt-2">
+                <CatalogBadge 
+                  catalogName={catalogInfo.name}
+                  features={catalogInfo.features}
+                />
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-4">
             <Badge 
               variant="secondary" 
               className="px-3 py-1"
               style={{ 
-                backgroundColor: `${ORDER_TYPE_COLORS[ORDER_TYPES.PREBOOK]}20`,
-                color: ORDER_TYPE_COLORS[ORDER_TYPES.PREBOOK]
+                backgroundColor: `${ORDER_TYPE_COLORS[ORDER_TYPES.PREBOOK].primary}20`,
+                color: ORDER_TYPE_COLORS[ORDER_TYPES.PREBOOK].primary
               }}
             >
               <Calendar className="h-4 w-4 mr-1" />
@@ -331,6 +396,18 @@ export default function PrebookPage() {
                         <p className="text-xs text-gray-500">
                           Deposit: {formatCurrency(depositAmount)}
                         </p>
+                        {(() => {
+                          const volumeBreaks = getProductVolumeBreaks(product.id, priceList)
+                          if (volumeBreaks.length > 0) {
+                            const maxDiscount = Math.max(...volumeBreaks.map(vb => vb.discount))
+                            return (
+                              <p className="text-xs text-green-600">
+                                Up to {(maxDiscount * 100).toFixed(0)}% off with volume
+                              </p>
+                            )
+                          }
+                          return null
+                        })()}
                       </div>
                       <Badge variant="outline" className="text-xs">
                         {metadata?.depositPercent || 30}% down

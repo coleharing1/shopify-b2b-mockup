@@ -1,0 +1,140 @@
+{
+  "priceLists": [
+    {
+      "id": "pricelist-volume-gold",
+      "name": "Gold Volume Pricing",
+      "description": "Premium volume discounts for top-tier partners",
+      "companyId": "company-1",
+      "baseTier": "tier-3",
+      "rules": [
+        {
+          "productId": "PROD-001",
+          "volumeBreaks": [
+            { "minQty": 1, "discount": 0.50 },
+            { "minQty": 25, "discount": 0.55 },
+            { "minQty": 50, "discount": 0.60 },
+            { "minQty": 100, "discount": 0.65 }
+          ],
+          "fixedPrice": null,
+          "notes": "Trail Runner Pro - Extra volume discounts"
+        },
+        {
+          "productId": "PROD-002",
+          "volumeBreaks": [
+            { "minQty": 1, "discount": 0.50 },
+            { "minQty": 20, "discount": 0.55 },
+            { "minQty": 40, "discount": 0.58 }
+          ],
+          "fixedPrice": null
+        },
+        {
+          "productId": "PROD-015",
+          "volumeBreaks": [],
+          "fixedPrice": 89.99,
+          "notes": "Special contract price for Summit Jacket"
+        }
+      ],
+      "globalVolumeBreaks": [
+        { "minOrderValue": 5000, "additionalDiscount": 0.02 },
+        { "minOrderValue": 10000, "additionalDiscount": 0.03 },
+        { "minOrderValue": 25000, "additionalDiscount": 0.05 }
+      ],
+      "effectiveFrom": "2024-01-01T00:00:00Z",
+      "effectiveTo": "2024-12-31T23:59:59Z"
+    },
+    {
+      "id": "pricelist-standard-silver",
+      "name": "Silver Partner Pricing",
+      "description": "Standard volume pricing for silver tier",
+      "companyId": "company-2",
+      "baseTier": "tier-2",
+      "rules": [
+        {
+          "productId": "PROD-001",
+          "volumeBreaks": [
+            { "minQty": 1, "discount": 0.40 },
+            { "minQty": 50, "discount": 0.45 },
+            { "minQty": 100, "discount": 0.48 }
+          ],
+          "fixedPrice": null
+        },
+        {
+          "productId": "PROD-010",
+          "volumeBreaks": [
+            { "minQty": 1, "discount": 0.40 },
+            { "minQty": 24, "discount": 0.42 }
+          ],
+          "fixedPrice": null,
+          "notes": "Hydration Pack volume pricing"
+        }
+      ],
+      "globalVolumeBreaks": [
+        { "minOrderValue": 2500, "additionalDiscount": 0.01 },
+        { "minOrderValue": 7500, "additionalDiscount": 0.02 }
+      ],
+      "effectiveFrom": "2024-01-01T00:00:00Z",
+      "effectiveTo": "2024-12-31T23:59:59Z"
+    },
+    {
+      "id": "pricelist-basic-bronze",
+      "name": "Bronze Standard Pricing",
+      "description": "Basic pricing for bronze tier partners",
+      "companyId": "company-3",
+      "baseTier": "tier-1",
+      "rules": [
+        {
+          "productId": "PROD-001",
+          "volumeBreaks": [
+            { "minQty": 1, "discount": 0.30 },
+            { "minQty": 100, "discount": 0.35 }
+          ],
+          "fixedPrice": null
+        }
+      ],
+      "globalVolumeBreaks": [
+        { "minOrderValue": 1000, "additionalDiscount": 0.01 }
+      ],
+      "effectiveFrom": "2024-01-01T00:00:00Z",
+      "effectiveTo": "2024-12-31T23:59:59Z"
+    },
+    {
+      "id": "pricelist-clearance-special",
+      "name": "Clearance Special Pricing",
+      "description": "Deep discounts on clearance items",
+      "companyId": null,
+      "baseTier": null,
+      "rules": [],
+      "globalVolumeBreaks": [],
+      "clearanceRules": {
+        "additionalDiscount": 0.15,
+        "minOrderQty": 10,
+        "applyToCloseoutOnly": true
+      },
+      "effectiveFrom": "2024-11-01T00:00:00Z",
+      "effectiveTo": "2025-01-31T23:59:59Z"
+    }
+  ],
+  "assignments": [
+    {
+      "companyId": "company-1",
+      "priceListId": "pricelist-volume-gold",
+      "assignedBy": "admin-1",
+      "assignedAt": "2024-01-15T00:00:00Z",
+      "priority": 1
+    },
+    {
+      "companyId": "company-2",
+      "priceListId": "pricelist-standard-silver",
+      "assignedBy": "admin-1",
+      "assignedAt": "2024-02-01T00:00:00Z",
+      "priority": 1
+    },
+    {
+      "companyId": "company-3",
+      "priceListId": "pricelist-basic-bronze",
+      "assignedBy": "admin-1",
+      "assignedAt": "2024-03-01T00:00:00Z",
+      "priority": 1
+    }
+  ]
+}

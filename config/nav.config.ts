@@ -25,7 +25,8 @@ export const RETAILER_NAV: NavItem[] = [
       { href: '/retailer/closeouts', label: 'Closeout Deals' }
     ]
   },
-  { href: '/retailer/invoices', label: 'Invoices', icon: 'FileText' },
+  { href: '/retailer/quotes', label: 'Quotes', icon: 'FileText' },
+  { href: '/retailer/invoices', label: 'Invoices', icon: 'Receipt' },
   { href: '/retailer/resources', label: 'Resources', icon: 'BookOpen' },
   { href: '/retailer/settings', label: 'Settings', icon: 'Settings' }
 ]
@@ -35,6 +36,16 @@ export const REP_NAV: NavItem[] = [
   { href: '/rep/dashboard', label: 'Dashboard', icon: 'LayoutDashboard' },
   { href: '/rep/customers', label: 'Customers', icon: 'Users' },
   { href: '/rep/orders', label: 'Orders', icon: 'ShoppingCart' },
+  { 
+    href: '/rep/quotes', 
+    label: 'Quotes', 
+    icon: 'FileText',
+    children: [
+      { href: '/rep/quotes', label: 'All Quotes' },
+      { href: '/rep/quotes/new', label: 'Create Quote' },
+      { href: '/rep/quotes/templates', label: 'Templates' }
+    ]
+  },
   { href: '/rep/products', label: 'Products', icon: 'Package' },
   { href: '/rep/reports', label: 'Reports', icon: 'BarChart' },
   { href: '/rep/resources', label: 'Resources', icon: 'BookOpen' },
@@ -44,13 +55,15 @@ export const REP_NAV: NavItem[] = [
 // Admin navigation items
 export const ADMIN_NAV: NavItem[] = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: 'LayoutDashboard' },
-  { href: '/admin/users', label: 'Users', icon: 'Users' },
   { href: '/admin/applications', label: 'Applications', icon: 'FileText' },
+  { href: '/admin/users', label: 'Users', icon: 'Users' },
   { href: '/admin/products', label: 'Products', icon: 'Package' },
   { href: '/admin/catalogs', label: 'Catalogs', icon: 'Book' },
-  { href: '/admin/order-settings', label: 'Order Settings', icon: 'Settings2' },
-  { href: '/admin/reports', label: 'Reports', icon: 'BarChart' },
-  { href: '/admin/settings', label: 'Settings', icon: 'Settings' }
+  { href: '/admin/pricing', label: 'Pricing', icon: 'DollarSign' },
+  { href: '/admin/seasons', label: 'Seasons', icon: 'Calendar' },
+  { href: '/admin/closeouts', label: 'Closeouts', icon: 'TrendingDown' },
+  { href: '/admin/analytics', label: 'Analytics', icon: 'BarChart' },
+  { href: '/admin/order-settings', label: 'Settings', icon: 'Settings' }
 ]
 
 // Mobile bottom navigation (simplified)

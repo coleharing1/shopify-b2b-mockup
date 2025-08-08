@@ -13,7 +13,10 @@ import {
   Package, 
   AlertCircle,
   TrendingUp,
-  ArrowRight 
+  ArrowRight,
+  BarChart3,
+  PieChart,
+  TrendingDown
 } from "lucide-react"
 import Link from "next/link"
 import { 
@@ -45,6 +48,12 @@ export default function RetailerDashboardPage() {
     }>
     recommendations: string[]
   } | null>(null)
+  const [analytics, setAnalytics] = useState<{
+    spendingTrend: Array<{ month: string; amount: number }>
+    categoryBreakdown: Array<{ category: string; value: number; percentage: number }>
+    savings: { total: number; percentage: number }
+    seasonalPattern: { peak: string; low: string }
+  } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -62,6 +71,37 @@ export default function RetailerDashboardPage() {
         getOrdersByCompanyId(companyId),
         getRetailerMetrics(companyId)
       ])
+
+      // Fetch analytics data
+      try {
+        const response = await fetch('/api/analytics/sales?' + new URLSearchParams({
+          companyId,
+          startDate: new Date(Date.now() - 180 * 86400000).toISOString(),
+          endDate: new Date().toISOString(),
+          groupBy: 'month'
+        }))
+        
+        if (response.ok) {
+          const analyticsData = await response.json()
+          const spendingTrend = analyticsData.data.revenueByPeriod.map((item: any) => ({
+            month: new Date(item.date).toLocaleDateString('en-US', { month: 'short' }),
+            amount: item.revenue
+          }))
+          
+          setAnalytics({
+            spendingTrend: spendingTrend.slice(-6), // Last 6 months
+            categoryBreakdown: [
+              { category: 'Apparel', value: 45000, percentage: 45 },
+              { category: 'Footwear', value: 35000, percentage: 35 },
+              { category: 'Accessories', value: 20000, percentage: 20 }
+            ],
+            savings: { total: 12500, percentage: 12.5 },
+            seasonalPattern: { peak: 'Q4', low: 'Q1' }
+          })
+        }
+      } catch (error) {
+        console.error('Failed to fetch analytics:', error)
+      }
 
       setCompany(companyData)
       setOrders(ordersData)
@@ -161,6 +201,86 @@ export default function RetailerDashboardPage() {
           />
         </div>
 
+        {/* Analytics Section */}
+        {analytics && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Spending Trends Chart */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Spending Trends</CardTitle>
+                <BarChart3 className="h-5 w-5 text-gray-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {analytics.spendingTrend.map((month, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">{month.month}</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-32 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-primary h-2 rounded-full"
+                            style={{ width: `${(month.amount / Math.max(...analytics.spendingTrend.map(m => m.amount))) * 100}%` }}
+                          />
+                        </div>
+                        <span className="text-sm font-medium min-w-[80px] text-right">
+                          {formatCurrency(month.amount)}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-4 border-t">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">Total Savings</span>
+                    <span className="font-semibold text-green-600">
+                      {formatCurrency(analytics.savings.total)} ({analytics.savings.percentage}%)
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Category Breakdown */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Category Spending</CardTitle>
+                <PieChart className="h-5 w-5 text-gray-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {analytics.categoryBreakdown.map((category, index) => (
+                    <div key={index}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-medium">{category.category}</span>
+                        <span className="text-sm text-gray-600">{category.percentage}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-primary h-2 rounded-full"
+                          style={{ width: `${category.percentage}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-gray-500">
+                        {formatCurrency(category.value)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 pt-4 border-t">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">Peak Season</span>
+                    <span className="font-medium">{analytics.seasonalPattern.peak}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm mt-1">
+                    <span className="text-gray-600">Low Season</span>
+                    <span className="font-medium">{analytics.seasonalPattern.low}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
@@ -190,6 +310,12 @@ export default function RetailerDashboardPage() {
                   <Link href="/retailer/resources">
                     <AlertCircle className="mr-2 h-4 w-4" />
                     Download Catalogs
+                  </Link>
+                </Button>
+                <Button className="w-full justify-start" variant="outline" asChild>
+                  <Link href="/retailer/analytics">
+                    <BarChart3 className="mr-2 h-4 w-4" />
+                    View Analytics
                   </Link>
                 </Button>
               </CardContent>

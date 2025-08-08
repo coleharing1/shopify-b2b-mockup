@@ -35,7 +35,7 @@ interface Scenario {
   title: string
   description: string
   icon: any
-  requiredRole: 'retailer' | 'rep' | 'admin' | 'any'
+  requiredRole: 'retailer' | 'sales_rep' | 'admin' | 'any'
   actions: () => void
   badge?: string
   color: string
@@ -248,8 +248,8 @@ export function DemoScenarioLauncher() {
       icon: Package,
       requiredRole: 'retailer',
       actions: async () => {
-        if (user?.role !== 'retailer') {
-          await login('john@outdoorco.com', 'demo')
+        if (!user || user.role !== 'retailer') {
+          await login('john@outdoorretailers.com', 'demo')
         }
         loadAtOnceCart()
         setIsOpen(false)
@@ -264,8 +264,8 @@ export function DemoScenarioLauncher() {
       icon: Calendar,
       requiredRole: 'retailer',
       actions: async () => {
-        if (user?.role !== 'retailer') {
-          await login('john@outdoorco.com', 'demo')
+        if (!user || user.role !== 'retailer') {
+          await login('john@outdoorretailers.com', 'demo')
         }
         loadPrebookCart()
         setIsOpen(false)
@@ -280,7 +280,7 @@ export function DemoScenarioLauncher() {
       icon: Tag,
       requiredRole: 'retailer',
       actions: async () => {
-        if (user?.role !== 'retailer') {
+        if (!user || user.role !== 'retailer') {
           await login('sarah@urbanstyle.com', 'demo')
         }
         loadCloseoutCart()
@@ -309,10 +309,10 @@ export function DemoScenarioLauncher() {
       title: 'Manage Customers',
       description: 'View customer accounts and place orders as sales rep',
       icon: Users,
-      requiredRole: 'rep',
+      requiredRole: 'sales_rep',
       actions: async () => {
-        if (user?.role !== 'rep') {
-          await login('alex@b2b.com', 'demo')
+        if (!user || user.role !== 'sales_rep') {
+          await login('rep@company.com', 'demo')
         }
         router.push('/rep/customers')
         setIsOpen(false)
@@ -327,7 +327,7 @@ export function DemoScenarioLauncher() {
       requiredRole: 'any',
       actions: async () => {
         if (!user || user.role !== 'retailer') {
-          await login('john@outdoorco.com', 'demo')
+          await login('john@outdoorretailers.com', 'demo')
         }
         // Load all three carts
         loadAtOnceCart()

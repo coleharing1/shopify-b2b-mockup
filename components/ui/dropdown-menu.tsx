@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { createPortal } from "react-dom"
 import { cn } from "@/lib/utils"
 import { Check } from "lucide-react"
 
@@ -161,7 +162,7 @@ export function DropdownMenuContent({
   
   // If portal is enabled, render in a portal at body level
   if (portal && typeof document !== "undefined") {
-    return React.createPortal(content, document.body)
+    return createPortal(content, document.body)
   }
   
   return content

@@ -15,6 +15,9 @@ import {
   PrebookFilters,
   CloseoutFilters
 } from '@/types/order-types'
+import { CatalogService } from './catalog-service'
+import { calculateCustomerPrice } from '@/services/business/pricing.service'
+import { PriceList } from '@/types/pricing-types'
 
 export class ProductService {
   /**
@@ -402,5 +405,109 @@ export class ProductService {
     return products.filter(product => 
       tags.some(tag => product.tags?.includes(tag))
     )
+  }
+
+  /**
+   * Get all products (for catalog filtering)
+   */
+  static async getAllProducts(): Promise<Product[]> {
+    return await getProducts()
+  }
+
+  /**
+   * Get products filtered by company catalog with custom pricing
+   */
+  static async getProductsForCompany(
+    companyId: string,
+    orderType?: OrderTypeValue,
+    priceList?: PriceList
+  ): Promise<EnhancedProduct[]> {
+    // Get company's catalog
+    const catalogContext = await CatalogService.getCompanyCatalog(companyId)
+    
+    // Get all products
+    const allProducts = await getProducts()
+    
+    // Filter by catalog
+    const catalogFiltered = await CatalogService.filterProductsByCatalog(
+      allProducts,
+      catalogContext.catalog
+    )
+    
+    // Filter by order type if specified
+    let products = catalogFiltered
+    if (orderType) {
+      products = catalogFiltered.filter(p => p.orderTypes?.includes(orderType))
+    }
+    
+    // Enhance with pricing
+    const enhancedProducts = products.map(product => {
+      const priceCalc = calculateCustomerPrice({
+        productId: product.id,
+        msrp: product.msrp,
+        quantity: 1,
+        companyId,
+        orderType
+      }, priceList)
+      
+      return {
+        ...product,
+        effectivePrice: priceCalc.finalPrice,
+        listPrice: product.msrp,
+        discount: priceCalc.savingsPercent,
+        priceBreakdown: priceCalc.breakdown,
+        catalogId: catalogContext.catalog.id,
+        catalogName: catalogContext.catalog.name
+      } as EnhancedProduct
+    })
+    
+    return enhancedProducts
+  }
+
+  /**
+   * Check if a product is visible for a company
+   */
+  static async isProductVisibleForCompany(
+    productId: string,
+    companyId: string
+  ): Promise<boolean> {
+    const visibility = await CatalogService.isProductVisible(productId, companyId)
+    return visibility.visible
+  }
+
+  /**
+   * Get product with custom pricing for a company
+   */
+  static async getProductWithPricing(
+    productId: string,
+    companyId: string,
+    quantity: number = 1,
+    priceList?: PriceList
+  ): Promise<EnhancedProduct | null> {
+    // Check visibility first
+    const isVisible = await this.isProductVisibleForCompany(productId, companyId)
+    if (!isVisible) return null
+    
+    // Get product
+    const products = await getProducts()
+    const product = products.find(p => p.id === productId)
+    if (!product) return null
+    
+    // Calculate pricing
+    const priceCalc = calculateCustomerPrice({
+      productId: product.id,
+      msrp: product.msrp,
+      quantity,
+      companyId
+    }, priceList)
+    
+    return {
+      ...product,
+      effectivePrice: priceCalc.finalPrice,
+      listPrice: product.msrp,
+      discount: priceCalc.savingsPercent,
+      priceBreakdown: priceCalc.breakdown,
+      volumeBreaks: priceList?.rules.find(r => r.productId === productId)?.volumeBreaks || []
+    } as EnhancedProduct
   }
 }

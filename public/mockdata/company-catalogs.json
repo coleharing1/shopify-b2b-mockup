@@ -1,0 +1,102 @@
+{
+  "catalogs": [
+    {
+      "id": "catalog-default",
+      "name": "Standard Catalog",
+      "description": "Default product catalog for all retailers",
+      "companyIds": [],
+      "productInclusions": ["all"],
+      "productExclusions": [],
+      "categoryInclusions": ["all"],
+      "categoryExclusions": [],
+      "isDefault": true,
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "catalog-premium",
+      "name": "Premium Outdoor Catalog",
+      "description": "Full access catalog for Gold tier partners",
+      "companyIds": ["company-1"],
+      "productInclusions": ["all"],
+      "productExclusions": [],
+      "categoryInclusions": ["all"],
+      "categoryExclusions": [],
+      "isDefault": false,
+      "features": ["early-access", "exclusive-products", "custom-colors"],
+      "createdAt": "2024-01-15T00:00:00Z",
+      "updatedAt": "2024-12-01T00:00:00Z"
+    },
+    {
+      "id": "catalog-preferred",
+      "name": "Preferred Partner Catalog",
+      "description": "Enhanced catalog for Silver tier retailers",
+      "companyIds": ["company-2"],
+      "productInclusions": ["all"],
+      "productExclusions": [
+        "PROD-045", "PROD-046", "PROD-047", "PROD-048", "PROD-049", "PROD-050"
+      ],
+      "categoryInclusions": ["apparel", "footwear", "accessories"],
+      "categoryExclusions": ["premium-collection"],
+      "isDefault": false,
+      "features": ["seasonal-access", "volume-pricing"],
+      "createdAt": "2024-02-01T00:00:00Z",
+      "updatedAt": "2024-11-15T00:00:00Z"
+    },
+    {
+      "id": "catalog-standard",
+      "name": "Standard Retailer Catalog",
+      "description": "Base catalog for Bronze tier partners",
+      "companyIds": ["company-3"],
+      "productInclusions": ["all"],
+      "productExclusions": [
+        "PROD-040", "PROD-041", "PROD-042", "PROD-043", "PROD-044",
+        "PROD-045", "PROD-046", "PROD-047", "PROD-048", "PROD-049", "PROD-050"
+      ],
+      "categoryInclusions": ["apparel", "footwear", "accessories"],
+      "categoryExclusions": ["premium-collection", "limited-edition"],
+      "isDefault": false,
+      "features": ["standard-pricing"],
+      "createdAt": "2024-03-01T00:00:00Z",
+      "updatedAt": "2024-10-01T00:00:00Z"
+    },
+    {
+      "id": "catalog-clearance",
+      "name": "Clearance Only Catalog",
+      "description": "Special catalog for clearance-only accounts",
+      "companyIds": [],
+      "productInclusions": ["closeout"],
+      "productExclusions": [],
+      "categoryInclusions": ["all"],
+      "categoryExclusions": [],
+      "isDefault": false,
+      "features": ["closeout-only", "final-sale"],
+      "restrictions": ["no-returns", "min-order-500"],
+      "createdAt": "2024-06-01T00:00:00Z",
+      "updatedAt": "2024-12-15T00:00:00Z"
+    }
+  ],
+  "assignments": [
+    {
+      "companyId": "company-1",
+      "catalogId": "catalog-premium",
+      "assignedBy": "admin-1",
+      "assignedAt": "2024-01-15T00:00:00Z",
+      "notes": "Gold tier partner with full access"
+    },
+    {
+      "companyId": "company-2",
+      "catalogId": "catalog-preferred",
+      "assignedBy": "admin-1",
+      "assignedAt": "2024-02-01T00:00:00Z",
+      "notes": "Silver tier with seasonal access"
+    },
+    {
+      "companyId": "company-3",
+      "catalogId": "catalog-standard",
+      "assignedBy": "admin-1",
+      "assignedAt": "2024-03-01T00:00:00Z",
+      "notes": "Bronze tier standard access"
+    }
+  ]
+}

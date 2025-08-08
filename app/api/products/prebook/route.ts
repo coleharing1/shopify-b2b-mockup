@@ -56,10 +56,22 @@ export async function GET(request: NextRequest) {
     // Get available seasons from the service
     const availableSeasons = await ProductService.getAvailableSeasons()
     
+    // Apply company-specific pricing if user is a retailer
+    const productsWithPricing = products.map(product => ({
+      ...product,
+      userPricingTier: user.pricingTier || 'tier-1',
+      effectivePrice: product.pricing[user.pricingTier || 'tier-1']?.price || product.msrp
+    }))
+    
     return NextResponse.json({
-      products,
+      products: productsWithPricing,
       seasonGroups,
-      total: products.length,
+      total: productsWithPricing.length,
+      userContext: {
+        companyId: user.companyId,
+        pricingTier: user.pricingTier || 'tier-1',
+        role: user.role
+      },
       filters: {
         seasons: availableSeasons.length > 0 ? availableSeasons : ["Spring 2025", "Summer 2025", "Fall 2025"],
         collections: ["Core", "Fashion", "Limited"],

@@ -2,8 +2,14 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { 
+  MOCK_USERS, 
+  createSessionCookie,
+  PUBLIC_ROUTES,
+  ROLE_REDIRECTS
+} from '@/config/auth.config'
 
-export type UserRole = 'retailer' | 'rep' | 'admin'
+export type UserRole = 'retailer' | 'sales_rep' | 'admin'
 
 interface User {
   id: string
@@ -109,7 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Redirect logged-in users to their dashboard
         if (user.role === 'retailer') {
           router.push('/retailer/dashboard')
-        } else if (user.role === 'rep') {
+        } else if (user.role === 'sales_rep') {
           router.push('/rep/dashboard')
         } else if (user.role === 'admin') {
           router.push('/admin/dashboard')
@@ -119,67 +125,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user, isLoading, pathname, router])
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string; user?: User }> => {
-    // Mock authentication - in production, this would call an API
-    const mockUsers: Record<string, User> = {
-      'john@outdoorretailers.com': {
-        id: 'user-1',
-        email: 'john@outdoorretailers.com',
-        name: 'John Smith',
-        role: 'retailer',
-        companyId: 'company-1',
-        companyName: 'Outdoor Retailers Co.'
-      },
-      'sarah@urbanstyle.com': {
-        id: 'user-2',
-        email: 'sarah@urbanstyle.com',
-        name: 'Sarah Johnson',
-        role: 'retailer',
-        companyId: 'company-2',
-        companyName: 'Urban Style Boutique'
-      },
-      'mike@westcoastsports.com': {
-        id: 'user-3',
-        email: 'mike@westcoastsports.com',
-        name: 'Mike Wilson',
-        role: 'retailer',
-        companyId: 'company-3',
-        companyName: 'West Coast Sports'
-      },
-      'rep@company.com': {
-        id: 'user-4',
-        email: 'rep@company.com',
-        name: 'Sales Rep',
-        role: 'sales_rep',
-        companyId: 'b2b-internal',
-        companyName: 'B2B Portal'
-      },
-      'admin@company.com': {
-        id: 'user-5',
-        email: 'admin@company.com',
-        name: 'Admin User',
-        role: 'admin',
-        companyId: 'b2b-internal',
-        companyName: 'B2B Portal'
-      }
-    }
-
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500))
 
-    const foundUser = mockUsers[email.toLowerCase()]
+    // Use centralized mock users from config
+    const foundUser = MOCK_USERS[email.toLowerCase()]
     
     if (!foundUser) {
       return { success: false, error: 'Invalid email or password' }
     }
 
+    // Map role for backward compatibility (sales_rep vs rep)
+    const user: User = {
+      ...foundUser,
+      role: (foundUser.role === 'sales_rep' ? 'sales_rep' : foundUser.role) as UserRole
+    }
+
     // Store user in state and localStorage
-    setUser(foundUser)
-    localStorage.setItem('b2b-user', JSON.stringify(foundUser))
+    setUser(user)
+    localStorage.setItem('b2b-user', JSON.stringify(user))
     
-    // Set session cookie for API authentication
-    document.cookie = `session=demo_${foundUser.id}; path=/`
+    // Set session cookie for API authentication using centralized helper
+    document.cookie = createSessionCookie(user.id) + '; path=/'
     
-    return { success: true, user: foundUser }
+    return { success: true, user }
   }
 
   const logout = () => {
@@ -204,7 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Redirect to appropriate dashboard
     if (role === 'retailer') {
       router.push('/retailer/dashboard')
-    } else if (role === 'rep') {
+    } else if (role === 'sales_rep') {
       router.push('/rep/dashboard')
     } else if (role === 'admin') {
       router.push('/admin/dashboard')

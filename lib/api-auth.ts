@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { getCompanyById } from '@/lib/mock-data'
+import { MOCK_USERS_BY_ID, parseSessionCookie } from '@/config/auth.config'
 
 /**
  * Shared authentication utilities for API routes
@@ -24,52 +25,26 @@ export async function verifySession(request: NextRequest): Promise<Authenticated
     return null
   }
 
-  // Parse session to get user ID (simplified for demo)
-  const parts = session.value.split('_')
-  const userId = parts[1]
-  
-  // In production, validate session and get user from database
-  // For demo, return mock user data based on userId
-  const userMap: Record<string, Omit<AuthenticatedUser, 'pricingTier'>> = {
-    'user-1': { 
-      id: 'user-1', 
-      email: 'john@outdoorretailers.com',
-      name: 'John Smith',
-      companyId: 'company-1', 
-      role: 'retailer' 
-    },
-    'user-2': { 
-      id: 'user-2',
-      email: 'sarah@urbanstyle.com', 
-      name: 'Sarah Johnson',
-      companyId: 'company-2', 
-      role: 'retailer' 
-    },
-    'user-3': { 
-      id: 'user-3',
-      email: 'mike@westcoastsports.com',
-      name: 'Mike Wilson', 
-      companyId: 'company-3', 
-      role: 'retailer' 
-    },
-    'user-4': { 
-      id: 'user-4',
-      email: 'rep@company.com',
-      name: 'Sales Rep', 
-      companyId: 'b2b-internal', 
-      role: 'sales_rep' 
-    },
-    'user-5': { 
-      id: 'user-5',
-      email: 'admin@company.com',
-      name: 'Admin User', 
-      companyId: 'b2b-internal', 
-      role: 'admin' 
-    }
+  // Parse session to get user ID using centralized helper
+  const userId = parseSessionCookie(session.value)
+  if (!userId) {
+    return null
   }
   
-  const user = userMap[userId]
-  if (!user) return null
+  // Get user from centralized config
+  const mockUser = MOCK_USERS_BY_ID[userId]
+  if (!mockUser) {
+    return null
+  }
+  
+  // Convert to AuthenticatedUser format
+  const user: Omit<AuthenticatedUser, 'pricingTier'> = {
+    id: mockUser.id,
+    email: mockUser.email,
+    name: mockUser.name,
+    companyId: mockUser.companyId,
+    role: mockUser.role
+  }
   
   // Get company pricing tier for retailers
   if (user.role === 'retailer' && user.companyId) {

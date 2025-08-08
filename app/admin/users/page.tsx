@@ -1,13 +1,17 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 import { AuthenticatedLayout } from "@/components/layout/authenticated-layout"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Users, Mail, Phone, Building2, Shield, Filter, RefreshCw } from "lucide-react"
+import { Users, Mail, Phone, Building2, Shield, Filter, RefreshCw, ExternalLink } from "lucide-react"
+import { useAuth } from "@/lib/contexts/auth-context"
+import { createSessionCookie, MOCK_USERS } from "@/config/auth.config"
+import { toast } from "sonner"
 
 /**
  * @fileoverview Admin Users page for viewing retailer contacts and roles
@@ -37,11 +41,14 @@ interface AdminUserRow {
 }
 
 export default function AdminUsersPage() {
+  const router = useRouter()
+  const { login } = useAuth()
   const [users, setUsers] = useState<AdminUserRow[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState<string>("all")
   const [type, setType] = useState<string>("all")
+  const [impersonating, setImpersonating] = useState<string | null>(null)
 
   useEffect(() => {
     const load = async () => {
@@ -82,6 +89,51 @@ export default function AdminUsersPage() {
       return true
     })
   }, [users, status, type, search])
+
+  const handleImpersonate = async (user: AdminUserRow) => {
+    setImpersonating(user.id)
+    
+    try {
+      // Find the corresponding mock user by email
+      const mockUser = Object.values(MOCK_USERS).find(u => u.email === user.email)
+      
+      if (!mockUser) {
+        toast.error('User account not found')
+        return
+      }
+
+      // Login as the user
+      const result = await login(mockUser.email, 'demo')
+      
+      if (result.success) {
+        // Set session cookie
+        document.cookie = createSessionCookie(mockUser.id) + '; path=/'
+        
+        toast.success(`Now impersonating ${user.name}`)
+        
+        // Redirect to appropriate dashboard
+        if (mockUser.role === 'retailer') {
+          router.push('/retailer/dashboard')
+        } else if (mockUser.role === 'sales_rep') {
+          router.push('/rep/dashboard')
+        } else {
+          router.push('/admin/dashboard')
+        }
+      } else {
+        toast.error('Failed to impersonate user')
+      }
+    } catch (error) {
+      console.error('Impersonation error:', error)
+      toast.error('Error impersonating user')
+    } finally {
+      setImpersonating(null)
+    }
+  }
+
+  const handleViewCompany = (companyId: string) => {
+    // In a real app, this would navigate to company detail page
+    router.push(`/admin/companies/${companyId}`)
+  }
 
   return (
     <AuthenticatedLayout>
@@ -178,8 +230,23 @@ export default function AdminUsersPage() {
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex justify-end gap-2">
-                            <Button variant="outline" size="sm">View Company</Button>
-                            <Button variant="outline" size="sm"><Shield className="h-3 w-3 mr-1" /> Impersonate</Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleViewCompany(u.companyId)}
+                            >
+                              <ExternalLink className="h-3 w-3 mr-1" />
+                              View Company
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleImpersonate(u)}
+                              disabled={impersonating === u.id}
+                            >
+                              <Shield className="h-3 w-3 mr-1" />
+                              {impersonating === u.id ? 'Impersonating...' : 'Impersonate'}
+                            </Button>
                           </div>
                         </td>
                       </tr>

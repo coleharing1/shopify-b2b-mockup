@@ -1,16 +1,17 @@
 import { Suspense } from 'react'
 import { ApplicationDetail } from './application-detail'
 
-export default function ApplicationDetailPage({ 
-  params 
-}: { 
-  params: { id: string } 
-}) {
+export default function ApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
   return (
     <Suspense fallback={<ApplicationDetailSkeleton />}>
-      <ApplicationDetail id={params.id} />
+      <ResolvedDetail params={params} />
     </Suspense>
   )
+}
+
+async function ResolvedDetail({ params }: { params: Promise<{ id: string }> }) {
+  const p = await params
+  return <ApplicationDetail id={p.id} />
 }
 
 function ApplicationDetailSkeleton() {

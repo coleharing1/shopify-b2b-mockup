@@ -6,14 +6,17 @@ import { ProductCard } from "@/components/features/product-card"
 import { AdvancedFilters, FilterState } from "@/components/features/advanced-filters"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { SearchBar } from "@/components/ui/search-bar"
 import { EmptyState } from "@/components/ui/empty-state"
 import { ProductCardSkeleton } from "@/components/ui/skeleton"
-import { Search, Filter, ChevronLeft, ChevronRight, Package, Grid, List } from "lucide-react"
+import { Search, Filter, ChevronLeft, ChevronRight, Package, Grid, List, Book, Info } from "lucide-react"
 import { getProducts, getCompanyById, Product } from "@/lib/mock-data"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/contexts/auth-context"
 import { useMediaQuery } from "@/lib/hooks/use-media-query"
+import { CatalogBadge } from "@/components/features/catalog-badge"
+import { loadPriceListForCompany } from "@/lib/pricing-helpers"
 import {
   Select,
   SelectContent,
@@ -44,6 +47,8 @@ export default function ProductCatalogPage() {
   const [sortBy, setSortBy] = useState('featured')
   const [maxPrice, setMaxPrice] = useState(1000)
   const [showFilters, setShowFilters] = useState(false)
+  const [catalogInfo, setCatalogInfo] = useState<any>(null)
+  const [priceList, setPriceList] = useState<any>(null)
   
   const [filters, setFilters] = useState<FilterState>({
     categories: [],
@@ -67,33 +72,73 @@ export default function ProductCatalogPage() {
           setPricingTier(company.pricingTier)
         }
 
-        // Load products
-        const data = await getProducts()
-        setProducts(data)
-        setFilteredProducts(data)
-        
-        // Extract unique categories and brands
-        const uniqueCategories = Array.from(
-          new Set(data.map((p: Product) => p.category))
-        ) as string[]
-        setCategories(uniqueCategories)
-        
-        // Extract unique brands (using category as fallback for brands)
-        const uniqueBrands = Array.from(
-          new Set(data.map((p: Product) => p.category || 'Generic').filter(Boolean))
-        ) as string[]
-        setBrands(uniqueBrands)
-        
-        // Calculate max price for slider
-        const prices = data.map((p: Product) => p.msrp)
-        const maxProductPrice = Math.max(...prices)
-        setMaxPrice(Math.ceil(maxProductPrice / 100) * 100) // Round up to nearest 100
-        
-        // Update filters with max price
-        setFilters(prev => ({
-          ...prev,
-          priceRange: { min: 0, max: Math.ceil(maxProductPrice / 100) * 100 }
-        }))
+        // Load price list for company
+        const companyPriceList = await loadPriceListForCompany(companyId)
+        setPriceList(companyPriceList)
+
+        // Fetch catalog and filtered products
+        try {
+          const catalogResponse = await fetch('/api/catalogs')
+          if (catalogResponse.ok) {
+            const catalogData = await catalogResponse.json()
+            setCatalogInfo(catalogData.catalog)
+            
+            // Use catalog-filtered products
+            const catalogProducts = catalogData.products
+            setProducts(catalogProducts)
+            setFilteredProducts(catalogProducts)
+            
+            // Extract unique categories from visible products
+            const uniqueCategories = Array.from(
+              new Set(catalogProducts.map((p: Product) => p.category))
+            ) as string[]
+            setCategories(uniqueCategories)
+            
+            // Extract unique brands
+            const uniqueBrands = Array.from(
+              new Set(catalogProducts.map((p: Product) => p.category || 'Generic').filter(Boolean))
+            ) as string[]
+            setBrands(uniqueBrands)
+            
+            // Calculate max price for slider
+            const prices = catalogProducts.map((p: Product) => p.msrp)
+            const maxProductPrice = prices.length > 0 ? Math.max(...prices) : 1000
+            setMaxPrice(Math.ceil(maxProductPrice / 100) * 100)
+            
+            // Update filters with max price
+            setFilters(prev => ({
+              ...prev,
+              priceRange: { min: 0, max: Math.ceil(maxProductPrice / 100) * 100 }
+            }))
+          } else {
+            throw new Error('Catalog API failed')
+          }
+        } catch (catalogError) {
+          // Fallback to all products if catalog API fails
+          console.warn('Falling back to all products:', catalogError)
+          const data = await getProducts()
+          setProducts(data)
+          setFilteredProducts(data)
+          
+          const uniqueCategories = Array.from(
+            new Set(data.map((p: Product) => p.category))
+          ) as string[]
+          setCategories(uniqueCategories)
+          
+          const uniqueBrands = Array.from(
+            new Set(data.map((p: Product) => p.category || 'Generic').filter(Boolean))
+          ) as string[]
+          setBrands(uniqueBrands)
+          
+          const prices = data.map((p: Product) => p.msrp)
+          const maxProductPrice = prices.length > 0 ? Math.max(...prices) : 1000
+          setMaxPrice(Math.ceil(maxProductPrice / 100) * 100)
+          
+          setFilters(prev => ({
+            ...prev,
+            priceRange: { min: 0, max: Math.ceil(maxProductPrice / 100) * 100 }
+          }))
+        }
         
         setIsLoading(false)
       } catch (error) {
@@ -251,6 +296,17 @@ export default function ProductCatalogPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Product Catalog</h1>
+            {catalogInfo && (
+              <div className="mt-2 flex items-center gap-3">
+                <CatalogBadge 
+                  catalogName={catalogInfo.name}
+                  features={catalogInfo.features}
+                />
+                {catalogInfo.description && (
+                  <p className="text-sm text-gray-600">{catalogInfo.description}</p>
+                )}
+              </div>
+            )}
             <p className="text-gray-600 mt-2">
               Showing your {pricingTier.replace('-', ' ').toUpperCase()} pricing
             </p>

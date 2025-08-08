@@ -9,3 +9,15 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+/**
+ * @description Format a number as USD currency (or generic currency with locale)
+ */
+export function formatCurrency(value: number, locale: string = 'en-US', currency: string = 'USD') {
+  if (typeof value !== 'number' || Number.isNaN(value)) return '$0.00'
+  try {
+    return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(value)
+  } catch {
+    return `$${value.toFixed(2)}`
+  }
+}
