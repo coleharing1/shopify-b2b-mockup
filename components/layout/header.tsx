@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, ChevronDown, User, LogOut, Settings, ShoppingCart, Zap, Users, UserCheck, Shield, Check } from "lucide-react"
+import { Menu, X, ChevronDown, ChevronRight, User, LogOut, Settings, ShoppingCart, Zap, Users, UserCheck, Shield, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,11 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "sonner"
 import { useCart } from "@/lib/cart-context"
@@ -41,12 +36,16 @@ const retailerNavItems = [
 const repNavItems = [
   { href: "/rep/dashboard", label: "Dashboard" },
   { href: "/rep/customers", label: "Customers" },
+  { href: "/rep/products", label: "Products" },
   { href: "/rep/orders", label: "Orders" },
   { href: "/rep/resources", label: "Resources" },
 ]
 
 const adminNavItems = [
   { href: "/admin/dashboard", label: "Dashboard" },
+  { href: "/admin/products", label: "Products" },
+  { href: "/admin/catalogs", label: "Catalogs" },
+  { href: "/admin/pricing", label: "Pricing" },
   { href: "/admin/applications", label: "Applications" },
   { href: "/admin/order-settings", label: "Order Settings" },
 ]
@@ -268,53 +267,51 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                   
                   <DropdownMenuLabel className="text-xs text-gray-500">Switch Demo Role</DropdownMenuLabel>
                   
-                  <Collapsible>
-                    <CollapsibleTrigger className="w-full">
-                      <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer">
-                        <Users className="h-4 w-4 mr-2" />
-                        <span className="font-medium">Retailer Accounts</span>
-                        <ChevronDown className="h-4 w-4 ml-auto" />
-                      </DropdownMenuItem>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="pl-4">
-                      <DropdownMenuItem 
-                        onClick={() => quickDemoLogin('john@outdoorretailers.com', 'John', 'Retailer')}
-                        className="cursor-pointer"
-                      >
-                        <div className="flex-1 ml-4">
-                          <div className="font-medium">John @ Outdoor Co</div>
-                          <div className="text-xs text-gray-500">Premium Account (Tier 3)</div>
-                        </div>
-                        {user?.email === 'john@outdoorretailers.com' && (
-                          <Check className="h-4 w-4 text-primary" />
-                        )}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => quickDemoLogin('sarah@urbanstyle.com', 'Sarah', 'Retailer')}
-                        className="cursor-pointer"
-                      >
-                        <div className="flex-1 ml-4">
-                          <div className="font-medium">Sarah @ Urban Style</div>
-                          <div className="text-xs text-gray-500">Silver Account (Tier 2)</div>
-                        </div>
-                        {user?.email === 'sarah@urbanstyle.com' && (
-                          <Check className="h-4 w-4 text-primary" />
-                        )}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => quickDemoLogin('mike@westcoastsports.com', 'Mike', 'Retailer')}
-                        className="cursor-pointer"
-                      >
-                        <div className="flex-1 ml-4">
-                          <div className="font-medium">Mike @ West Coast</div>
-                          <div className="text-xs text-gray-500">Bronze Account (Tier 1)</div>
-                        </div>
-                        {user?.email === 'mike@westcoastsports.com' && (
-                          <Check className="h-4 w-4 text-primary" />
-                        )}
-                      </DropdownMenuItem>
-                    </CollapsibleContent>
-                  </Collapsible>
+                  <DropdownMenuLabel className="text-xs text-gray-500 font-normal">
+                    <Users className="h-3 w-3 inline mr-1" />
+                    Retailer Accounts
+                  </DropdownMenuLabel>
+                  
+                  <DropdownMenuItem 
+                    onClick={() => quickDemoLogin('john@outdoorretailers.com', 'John', 'Retailer')}
+                    className="cursor-pointer pl-6"
+                  >
+                    <div className="flex-1">
+                      <div className="font-medium">John @ Outdoor Co</div>
+                      <div className="text-xs text-gray-500">Gold Tier • Premium Account</div>
+                    </div>
+                    {user?.email === 'john@outdoorretailers.com' && (
+                      <Check className="h-4 w-4 text-primary ml-2" />
+                    )}
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem 
+                    onClick={() => quickDemoLogin('sarah@urbanstyle.com', 'Sarah', 'Retailer')}
+                    className="cursor-pointer pl-6"
+                  >
+                    <div className="flex-1">
+                      <div className="font-medium">Sarah @ Urban Style</div>
+                      <div className="text-xs text-gray-500">Silver Tier • Standard Account</div>
+                    </div>
+                    {user?.email === 'sarah@urbanstyle.com' && (
+                      <Check className="h-4 w-4 text-primary ml-2" />
+                    )}
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem 
+                    onClick={() => quickDemoLogin('mike@westcoastsports.com', 'Mike', 'Retailer')}
+                    className="cursor-pointer pl-6"
+                  >
+                    <div className="flex-1">
+                      <div className="font-medium">Mike @ West Coast</div>
+                      <div className="text-xs text-gray-500">Bronze Tier • Basic Account</div>
+                    </div>
+                    {user?.email === 'mike@westcoastsports.com' && (
+                      <Check className="h-4 w-4 text-primary ml-2" />
+                    )}
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuSeparator />
                   
                   <DropdownMenuItem 
                     onClick={() => quickDemoLogin('rep@company.com', 'Sales Rep', 'Sales Rep')}

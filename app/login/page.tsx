@@ -93,7 +93,7 @@ export default function LoginPage() {
                     className="cursor-pointer hover:shadow-md transition-all border-2 hover:border-primary"
                     onClick={() => {
                       setIsLoading(true)
-                      login('john@outdoorco.com', 'demo').then(() => {
+                      login('john@outdoorretailers.com', 'demo').then(() => {
                         setIsLoading(false)
                       })
                     }}
@@ -143,7 +143,7 @@ export default function LoginPage() {
                     className="cursor-pointer hover:shadow-md transition-all border-2 hover:border-primary"
                     onClick={() => {
                       setIsLoading(true)
-                      login('alex@b2b.com', 'demo').then(() => {
+                      login('rep@company.com', 'demo').then(() => {
                         setIsLoading(false)
                       })
                     }}
@@ -168,7 +168,7 @@ export default function LoginPage() {
                     className="cursor-pointer hover:shadow-md transition-all border-2 hover:border-primary"
                     onClick={() => {
                       setIsLoading(true)
-                      login('admin@b2b.com', 'demo').then(() => {
+                      login('admin@company.com', 'demo').then(() => {
                         setIsLoading(false)
                       })
                     }}
@@ -229,10 +229,10 @@ export default function LoginPage() {
             <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
               <h4 className="text-sm font-medium text-blue-900 mb-2">Demo Credentials</h4>
               <div className="space-y-1 text-sm text-blue-700">
-                <p><strong>Retailer 1:</strong> john@outdoorco.com</p>
+                <p><strong>Retailer 1:</strong> john@outdoorretailers.com</p>
                 <p><strong>Retailer 2:</strong> sarah@urbanstyle.com</p>
-                <p><strong>Sales Rep:</strong> alex@b2b.com</p>
-                <p><strong>Admin:</strong> admin@b2b.com</p>
+                <p><strong>Sales Rep:</strong> rep@company.com</p>
+                <p><strong>Admin:</strong> admin@company.com</p>
                 <p className="text-xs pt-1">Password: any (demo mode)</p>
               </div>
             </div>

@@ -1,11 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+// Jest is configured globally, no need to import describe, it, expect, beforeEach
 import { AnalyticsService } from '@/lib/services/analytics-service'
 import { ReportingService } from '@/lib/services/reporting-service'
 import { cache, debounce, throttle, memoize } from '@/lib/utils/performance'
 
 describe('Analytics Service', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    jest.clearAllMocks()
   })
 
   describe('getSalesMetrics', () => {
@@ -193,7 +193,7 @@ describe('Performance Utilities', () => {
 
   describe('debounce', () => {
     it('should debounce function calls', async () => {
-      const fn = vi.fn()
+      const fn = jest.fn()
       const debounced = debounce(fn, 100)
 
       debounced('a')
@@ -204,21 +204,21 @@ describe('Performance Utilities', () => {
 
       await new Promise(resolve => setTimeout(resolve, 150))
 
-      expect(fn).toHaveBeenCalledOnce()
+      expect(fn).toHaveBeenCalledTimes(1)
       expect(fn).toHaveBeenCalledWith('c')
     })
   })
 
   describe('throttle', () => {
     it('should throttle function calls', async () => {
-      const fn = vi.fn()
+      const fn = jest.fn()
       const throttled = throttle(fn, 100)
 
       throttled('a')
       throttled('b')
       throttled('c')
 
-      expect(fn).toHaveBeenCalledOnce()
+      expect(fn).toHaveBeenCalledTimes(1)
       expect(fn).toHaveBeenCalledWith('a')
 
       await new Promise(resolve => setTimeout(resolve, 150))
@@ -231,21 +231,21 @@ describe('Performance Utilities', () => {
 
   describe('memoize', () => {
     it('should memoize function results', () => {
-      const expensiveFn = vi.fn((x: number) => x * 2)
+      const expensiveFn = jest.fn((x: number) => x * 2)
       const memoized = memoize(expensiveFn)
 
       expect(memoized(5)).toBe(10)
       expect(memoized(5)).toBe(10)
       expect(memoized(5)).toBe(10)
 
-      expect(expensiveFn).toHaveBeenCalledOnce()
+      expect(expensiveFn).toHaveBeenCalledTimes(1)
 
       expect(memoized(10)).toBe(20)
       expect(expensiveFn).toHaveBeenCalledTimes(2)
     })
 
     it('should use custom resolver', () => {
-      const fn = vi.fn((a: number, b: number) => a + b)
+      const fn = jest.fn((a: number, b: number) => a + b)
       const memoized = memoize(fn, (a, b) => `${a}-${b}`)
 
       memoized(1, 2)

@@ -46,6 +46,12 @@ export function Sidebar({ isOpen }: { isOpen: boolean; toggleSidebar: () => void
                 </Link>
               </li>
               <li>
+                <Link href="/rep/products" className="flex items-center p-4 text-gray-600 hover:bg-gray-50 hover:text-primary">
+                  <Package className="h-6 w-6" />
+                  <span className={`ml-4 ${!isOpen && 'hidden'}`}>All Products</span>
+                </Link>
+              </li>
+              <li>
                 <Link href="/rep/resources" className="flex items-center p-4 text-gray-600 hover:bg-gray-50 hover:text-primary">
                   <BarChart2 className="h-6 w-6" />
                   <span className={`ml-4 ${!isOpen && 'hidden'}`}>Resources</span>
@@ -64,6 +70,12 @@ export function Sidebar({ isOpen }: { isOpen: boolean; toggleSidebar: () => void
                 <Link href="/admin/applications" className="flex items-center p-4 text-gray-600 hover:bg-gray-50 hover:text-primary">
                   <Package className="h-6 w-6" />
                   <span className={`ml-4 ${!isOpen && 'hidden'}`}>Applications</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/products" className="flex items-center p-4 text-gray-600 hover:bg-gray-50 hover:text-primary">
+                  <Package className="h-6 w-6" />
+                  <span className={`ml-4 ${!isOpen && 'hidden'}`}>All Products</span>
                 </Link>
               </li>
               <li>

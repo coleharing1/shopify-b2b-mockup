@@ -18,8 +18,7 @@ export const metadata: Metadata = {
 const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Applications", href: "/admin/applications", icon: FileText },
-  { name: "Dealers", href: "/admin/dealers", icon: Users },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
+  { name: "Order Settings", href: "/admin/order-settings", icon: Settings },
 ]
 
 export default function AdminLayout({

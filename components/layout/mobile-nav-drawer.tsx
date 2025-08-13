@@ -31,6 +31,7 @@ export function MobileNavDrawer({ isOpen, onClose, isRepPortal = false }: Mobile
   const repNavItems = [
     { href: "/rep/dashboard", label: "Dashboard", icon: Home },
     { href: "/rep/customers", label: "Customers", icon: Users },
+    { href: "/rep/products", label: "Products", icon: Package },
     { href: "/rep/orders", label: "Orders", icon: FileText },
     { href: "/rep/resources", label: "Resources", icon: FileText },
   ]

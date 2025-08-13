@@ -19,6 +19,7 @@ import { toast } from 'sonner'
 import Link from 'next/link'
 import { Catalog } from '@/types/catalog-types'
 import { getProducts, getCompanies, Product } from '@/lib/mock-data'
+import { Input as UiInput } from '@/components/ui/input'
 
 interface CatalogDetail extends Catalog {
   assignedCompanies: any[]
@@ -41,6 +42,8 @@ export default function CatalogDetailPage() {
   })
   const [searchProduct, setSearchProduct] = useState('')
   const [searchCompany, setSearchCompany] = useState('')
+  const [productQuery, setProductQuery] = useState('')
+  const [companyQuery, setCompanyQuery] = useState('')
 
   useEffect(() => {
     loadCatalog()
@@ -274,6 +277,32 @@ export default function CatalogDetailPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Product picker */}
+                <div className="space-y-2">
+                  <Label>Add products by ID or search</Label>
+                  <div className="flex gap-2">
+                    <UiInput
+                      placeholder="Search products..."
+                      value={productQuery}
+                      onChange={(e) => setProductQuery(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        const found = catalog.availableProducts.find(p => p.id === productQuery || p.sku === productQuery)
+                        if (found) {
+                          addProductInclusion(found.id)
+                          setProductQuery('')
+                        } else {
+                          toast.info('Enter an exact Product ID or SKU; type-ahead coming next.')
+                        }
+                      }}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                </div>
                 <div>
                   <Label>Inclusion Rules</Label>
                   <div className="mt-2 p-4 border rounded-lg bg-gray-50">
@@ -358,6 +387,26 @@ export default function CatalogDetailPage() {
                       onChange={(e) => setSearchCompany(e.target.value)}
                       className="pl-10"
                     />
+                  </div>
+
+                  {/* Company picker */}
+                  <div className="flex gap-2">
+                    <UiInput
+                      placeholder="Enter Company ID to assign"
+                      value={companyQuery}
+                      onChange={(e) => setCompanyQuery(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        if (!companyQuery) return
+                        addCompanyAssignment(companyQuery)
+                        setCompanyQuery('')
+                      }}
+                    >
+                      Assign
+                    </Button>
                   </div>
                   
                   <div className="space-y-2">

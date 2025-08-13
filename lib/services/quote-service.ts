@@ -10,6 +10,7 @@ import {
   QuoteTemplate
 } from '@/types/quote-types'
 import { ProductService } from './product-service'
+import { resolveDataUrl } from '@/lib/mock-data'
 import { MOCK_USERS, MOCK_USERS_BY_ID } from '@/config/auth.config'
 
 export class QuoteService {
@@ -21,7 +22,7 @@ export class QuoteService {
     if (this.initialized) return
 
     try {
-      const response = await fetch('/mockdata/quotes.json')
+      const response = await fetch(resolveDataUrl('/mockdata/quotes.json'))
       const data = await response.json()
       this.quotes = data.quotes.map((q: any) => ({
         ...q,

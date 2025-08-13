@@ -74,6 +74,8 @@ export interface Product {
   subcategory: string
   description: string
   msrp: number
+  /** Cost of goods sold (for admin reporting/pricing) */
+  cogs?: number
   images: string[]
   features?: string[]
   variants?: Array<{
@@ -158,7 +160,7 @@ export interface Resource {
   updatedAt: string
 }
 
-function getServerBaseUrl(): string {
+export function getServerBaseUrl(): string {
   // Prefer explicit base URL when provided
   if (process.env.NEXT_PUBLIC_BASE_URL) {
     return process.env.NEXT_PUBLIC_BASE_URL
@@ -168,14 +170,12 @@ function getServerBaseUrl(): string {
     return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
   }
   // Local dev fallback; Next exposes PORT
-  const devDefaultPort = process.env.NODE_ENV === 'development' 
-    ? (process.env.NEXT_PUBLIC_DEV_PORT || '3002')
-    : '3000'
-  const port = process.env.PORT || devDefaultPort
+  // Use PORT env var (3100) as primary, fallback to NEXT_PUBLIC_DEV_PORT or 3000
+  const port = process.env.PORT || process.env.NEXT_PUBLIC_DEV_PORT || '3100'
   return `http://localhost:${port}`
 }
 
-function resolveDataUrl(pathOrUrl: string): string {
+export function resolveDataUrl(pathOrUrl: string): string {
   // In the browser, relative paths are fine
   if (typeof window !== 'undefined') {
     return pathOrUrl
@@ -191,8 +191,19 @@ function resolveDataUrl(pathOrUrl: string): string {
 async function fetchData(url: string, key: string) {
   try {
     const response = await fetch(resolveDataUrl(url))
+    if (!response.ok) {
+      console.warn(`Non-OK response for ${url}: ${response.status}`)
+      return []
+    }
+    const contentType = response.headers.get('content-type') || ''
+    if (!contentType.includes('application/json')) {
+      console.warn(`Expected JSON but received '${contentType}' for ${url}`)
+      return []
+    }
     const data = await response.json()
-    return data[key]
+    // Guard against unexpected shapes
+    if (!data || typeof data !== 'object') return []
+    return (data as any)[key] ?? []
   } catch (error) {
     console.error(`Error fetching data from ${url}:`, error)
     return []
@@ -220,6 +231,9 @@ export async function getRetailerMetrics(companyId: string) {
 }
 
 export async function getProducts(): Promise<Product[]> {
+  // Prefer scraped products when available
+  const scraped = await fetchData('/mockdata/scraped-products.json', 'products')
+  if (Array.isArray(scraped) && scraped.length > 0) return scraped
   return fetchData('/mockdata/products.json', 'products')
 }
 

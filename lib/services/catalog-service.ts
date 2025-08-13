@@ -11,7 +11,7 @@ import {
   ProductVisibility,
   CategoryVisibility
 } from '@/types/catalog-types'
-import { type Product } from '@/lib/mock-data'
+import { type Product, resolveDataUrl } from '@/lib/mock-data'
 
 /**
  * Service for managing product catalogs
@@ -28,8 +28,8 @@ export class CatalogService {
     if (this.initialized) return
 
     try {
-      // Load catalogs from mock data
-      const catalogResponse = await fetch('/mockdata/company-catalogs.json')
+      // Load catalogs from mock data (absolute URL on server)
+      const catalogResponse = await fetch(resolveDataUrl('/mockdata/company-catalogs.json'))
       const catalogData = await catalogResponse.json()
       
       // Store catalogs
@@ -129,9 +129,9 @@ export class CatalogService {
     }
 
     if (catalog.productInclusions.includes('closeout')) {
-      // Only include closeout products
+      // Include products tagged as closeout or with closeout order type
       return products.filter(product => 
-        product.orderTypes?.includes('closeout') &&
+        (product.orderTypes?.includes('closeout') || product.tags?.includes('closeout')) &&
         !catalog.productExclusions.includes(product.id) &&
         this.isCategoryAllowed(product.category, catalog)
       )

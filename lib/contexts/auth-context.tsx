@@ -40,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const isDemoMode = (process.env.NEXT_PUBLIC_DEMO_MODE === 'true') || process.env.NODE_ENV !== 'production'
 
   // Load user from localStorage on mount and check for URL params
   useEffect(() => {
@@ -54,13 +55,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         let email = ''
         switch(role) {
           case 'retailer':
-            email = company === 'urban' ? 'sarah@urbanstyle.com' : 'john@outdoorco.com'
+            email = company === 'urban' ? 'sarah@urbanstyle.com' : 'john@outdoorretailers.com'
             break
           case 'rep':
-            email = 'alex@b2b.com'
+            email = 'rep@company.com'
             break
           case 'admin':
-            email = 'admin@b2b.com'
+            email = 'admin@company.com'
             break
         }
         
@@ -85,6 +86,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // Failed to parse stored user, clear invalid data
           localStorage.removeItem('b2b-user')
         }
+      } else if (isDemoMode) {
+        // Auto-select default user in demo mode
+        const defaultEmail = 'john@outdoorretailers.com'
+        const defaultUser = MOCK_USERS[defaultEmail]
+        if (defaultUser) {
+          const mappedUser: User = {
+            id: defaultUser.id,
+            email: defaultUser.email,
+            name: defaultUser.name,
+            role: defaultUser.role,
+            companyId: defaultUser.companyId,
+            companyName: defaultUser.companyName
+          }
+          setUser(mappedUser)
+          localStorage.setItem('b2b-user', JSON.stringify(mappedUser))
+          document.cookie = createSessionCookie(mappedUser.id) + '; path=/'
+        }
       }
       setIsLoading(false)
     }
@@ -95,6 +113,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Protect routes based on authentication
   useEffect(() => {
     if (!isLoading) {
+      // In demo mode, bypass route protection
+      if (isDemoMode) {
+        return
+      }
       const publicRoutes = [
         '/',
         '/login',

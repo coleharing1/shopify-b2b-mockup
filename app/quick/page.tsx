@@ -68,9 +68,21 @@ export default function QuickAccessPage() {
   const [copiedPath, setCopiedPath] = useState<string | null>(null)
   const [selectedUserType, setSelectedUserType] = useState<'all' | 'public' | 'retailer' | 'rep' | 'admin'>('all')
 
-  const copyToClipboard = (path: string) => {
-    navigator.clipboard.writeText(`http://localhost:3002${path}`)
-    setCopiedPath(path)
+  const appendRoleQuery = (path: string): string => {
+    const isRetailer = path.startsWith('/retailer')
+    const isRep = path.startsWith('/rep')
+    const isAdmin = path.startsWith('/admin')
+    const role = isRetailer ? 'retailer' : isRep ? 'rep' : isAdmin ? 'admin' : null
+    if (!role) return path
+    const hasQuery = path.includes('?')
+    return `${path}${hasQuery ? '&' : '?'}role=${role}`
+  }
+
+  const copyToClipboard = (value: string, isPath: boolean = false) => {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const finalValue = isPath ? `${baseUrl}${appendRoleQuery(value)}` : value
+    navigator.clipboard.writeText(finalValue)
+    setCopiedPath(value)
     setTimeout(() => setCopiedPath(null), 2000)
   }
 
@@ -111,6 +123,8 @@ export default function QuickAccessPage() {
       routes: [
         { path: "/search", label: "Global Search", icon: <Search className="h-4 w-4" />, status: 'complete' },
         { path: "/quick", label: "Quick Access (This Page)", icon: <ArrowRight className="h-4 w-4" />, status: 'complete' },
+        { path: "/playground", label: "Component Playground", icon: <Briefcase className="h-4 w-4" />, status: 'complete', description: "Test components" },
+        { path: "/layout-test", label: "Layout Test", icon: <Briefcase className="h-4 w-4" />, status: 'complete', description: "Test layouts" },
       ]
     }
   ]
@@ -129,6 +143,8 @@ export default function QuickAccessPage() {
       routes: [
         { path: "/retailer/products", label: "Product Catalog", icon: <Package className="h-4 w-4" />, status: 'complete', requiresAuth: true },
         { path: "/retailer/products/PROD-001", label: "Product Detail", params: "productId", icon: <Eye className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/retailer/analytics", label: "Purchasing Analytics", icon: <BarChart className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/retailer/reports", label: "Reports", icon: <FileText className="h-4 w-4" />, status: 'complete', requiresAuth: true },
       ]
     },
     {
@@ -162,10 +178,12 @@ export default function QuickAccessPage() {
       ]
     },
     {
-      title: "Future Features",
+      title: "Quotes & Documents",
       icon: <Star className="h-5 w-5" />,
       routes: [
-        { path: "/retailer/quotes", label: "Quote Requests", icon: <FileText className="h-4 w-4" />, status: 'pending', requiresAuth: true },
+        { path: "/retailer/quotes", label: "Quotes", icon: <FileText className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/retailer/quotes/request", label: "Request Quote", icon: <PlusCircle className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/retailer/quotes/QUOTE-001", label: "Quote Detail", params: "id", icon: <Eye className="h-4 w-4" />, status: 'complete', requiresAuth: true },
         { path: "/retailer/invoices", label: "Invoices", icon: <DollarSign className="h-4 w-4" />, status: 'pending', requiresAuth: true },
         { path: "/retailer/statements", label: "Statements", icon: <FileText className="h-4 w-4" />, status: 'pending', requiresAuth: true },
         { path: "/retailer/line-sheets", label: "Line Sheets", icon: <FileText className="h-4 w-4" />, status: 'pending', requiresAuth: true, description: "Downloadable product catalogs" },
@@ -188,6 +206,13 @@ export default function QuickAccessPage() {
         { path: "/rep/customers", label: "Customer List", icon: <Users className="h-4 w-4" />, status: 'complete', requiresAuth: true },
         { path: "/rep/customers/company-1", label: "Customer Detail", params: "customerId", icon: <Building className="h-4 w-4" />, status: 'complete', requiresAuth: true },
         { path: "/rep/order-for/company-1", label: "Order on Behalf", params: "customerId", icon: <ShoppingCart className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+      ]
+    },
+    {
+      title: "Product Catalog",
+      icon: <Package className="h-5 w-5" />,
+      routes: [
+        { path: "/rep/products", label: "Products", icon: <Package className="h-4 w-4" />, status: 'complete', requiresAuth: true },
       ]
     },
     {
@@ -218,10 +243,16 @@ export default function QuickAccessPage() {
       title: "Future Features",
       icon: <Star className="h-5 w-5" />,
       routes: [
-        { path: "/rep/quotes", label: "Quote Builder", icon: <FileText className="h-4 w-4" />, status: 'pending', requiresAuth: true },
+        { path: "/rep/quotes", label: "Quotes Dashboard", icon: <FileText className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/rep/quotes/new", label: "Create Quote", icon: <PlusCircle className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/rep/quotes/QUOTE-001", label: "Quote Detail", params: "id", icon: <Eye className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/rep/quotes/QUOTE-001/edit", label: "Edit Quote", params: "id", icon: <Edit className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/rep/quotes/templates", label: "Quote Templates", icon: <FileText className="h-4 w-4" />, status: 'complete', requiresAuth: true },
         { path: "/rep/commission", label: "Commission Tracker", icon: <DollarSign className="h-4 w-4" />, status: 'pending', requiresAuth: true },
         { path: "/rep/leads", label: "Lead Management", icon: <UserCheck className="h-4 w-4" />, status: 'pending', requiresAuth: true },
-        { path: "/rep/analytics", label: "Sales Analytics", icon: <TrendingUp className="h-4 w-4" />, status: 'pending', requiresAuth: true },
+        { path: "/rep/analytics", label: "Sales Analytics", icon: <TrendingUp className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/rep/insights", label: "Customer Insights", icon: <TrendingUp className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/rep/reports", label: "Reports", icon: <FileText className="h-4 w-4" />, status: 'complete', requiresAuth: true },
       ]
     }
   ]
@@ -251,19 +282,25 @@ export default function QuickAccessPage() {
       routes: [
         { path: "/admin/users", label: "User Management", icon: <Users className="h-4 w-4" />, status: 'complete', requiresAuth: true },
         { path: "/admin/products", label: "Product Management", icon: <Package className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/admin/products/PROD-001", label: "Product Detail", params: "id", icon: <Eye className="h-4 w-4" />, status: 'complete', requiresAuth: true },
         { path: "/admin/pricing", label: "Pricing Rules", icon: <DollarSign className="h-4 w-4" />, status: 'complete', requiresAuth: true },
         { path: "/admin/catalogs", label: "Catalog Management", icon: <FileText className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/admin/price-lists", label: "Price Lists", icon: <DollarSign className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/admin/price-lists/PL-001", label: "Price List Detail", params: "id", icon: <Eye className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/admin/assignments", label: "Assignments", icon: <ClipboardList className="h-4 w-4" />, status: 'complete', requiresAuth: true },
         { path: "/admin/analytics", label: "Platform Analytics", icon: <BarChart className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/admin/forecasting", label: "Forecasting", icon: <TrendingUp className="h-4 w-4" />, status: 'complete', requiresAuth: true },
+        { path: "/admin/reports", label: "Reports", icon: <FileText className="h-4 w-4" />, status: 'complete', requiresAuth: true },
       ]
     }
   ]
 
   const testCredentials = [
     { email: "john@outdoorretailers.com", role: "Retailer", company: "Outdoor Retailers Co.", tier: "Gold" },
-    { email: "sarah@sportinggoods.com", role: "Retailer", company: "Sporting Goods Plus", tier: "Silver" },
-    { email: "mike@adventuregear.com", role: "Retailer", company: "Adventure Gear Shop", tier: "Bronze" },
-    { email: "tom@company.com", role: "Sales Rep", company: "B2B Company", tier: "N/A" },
-    { email: "admin@company.com", role: "Admin", company: "B2B Company", tier: "N/A" },
+    { email: "sarah@urbanstyle.com", role: "Retailer", company: "Urban Style Boutique", tier: "Silver" },
+    { email: "mike@westcoastsports.com", role: "Retailer", company: "West Coast Sports", tier: "Bronze" },
+    { email: "rep@company.com", role: "Sales Rep", company: "B2B Portal", tier: "N/A" },
+    { email: "admin@company.com", role: "Admin", company: "B2B Portal", tier: "N/A" },
   ]
 
   const getAllRoutes = () => {
@@ -399,7 +436,7 @@ export default function QuickAccessPage() {
                         <div className="flex items-center gap-2">
                           {route.icon}
                           <Link 
-                            href={route.path}
+                            href={appendRoleQuery(route.path)}
                             className="font-medium text-sm hover:text-primary transition-colors"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -431,7 +468,7 @@ export default function QuickAccessPage() {
                           size="sm"
                           variant="ghost"
                           className="h-8 w-8 p-0"
-                          onClick={() => copyToClipboard(route.path)}
+                          onClick={() => copyToClipboard(route.path, true)}
                         >
                           {copiedPath === route.path ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                         </Button>
@@ -441,7 +478,7 @@ export default function QuickAccessPage() {
                           className="h-8 w-8 p-0"
                           asChild
                         >
-                          <Link href={route.path} target="_blank" rel="noopener noreferrer">
+                          <Link href={appendRoleQuery(route.path)} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="h-4 w-4" />
                           </Link>
                         </Button>
@@ -464,16 +501,44 @@ export default function QuickAccessPage() {
             <CardDescription>Server-side endpoints (require authentication)</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <h3 className="font-medium text-sm mb-2">Authentication</h3>
+                <h3 className="font-medium text-sm mb-2">Core</h3>
                 <code className="block text-xs bg-gray-100 p-2 rounded">/api/auth</code>
-              </div>
-              <div className="space-y-2">
-                <h3 className="font-medium text-sm mb-2">Data Endpoints</h3>
-                <code className="block text-xs bg-gray-100 p-2 rounded">/api/products</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/applications</code>
                 <code className="block text-xs bg-gray-100 p-2 rounded">/api/orders</code>
                 <code className="block text-xs bg-gray-100 p-2 rounded">/api/placeholder/[width]/[height]</code>
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-medium text-sm mb-2">Products</h3>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/products</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/products/at-once</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/products/prebook</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/products/closeout</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/products/tags</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/products/bulk</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/products/variants</code>
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-medium text-sm mb-2">Catalogs & Pricing</h3>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/catalogs</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/pricing/calculate</code>
+                <h3 className="font-medium text-sm mb-2 mt-3">Quotes</h3>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/quotes</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/quotes/[id]</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/quotes/[id]/convert</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/quotes/[id]/pdf</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/quotes/templates</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/quotes/check-expiration</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/quotes/expiring</code>
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <h3 className="font-medium text-sm mb-2">Analytics & Reports</h3>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/analytics/sales</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/analytics/inventory</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/analytics/customers</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/analytics/kpi</code>
+                <code className="block text-xs bg-gray-100 p-2 rounded">/api/reports/generate</code>
               </div>
             </div>
           </CardContent>
@@ -765,7 +830,7 @@ export default function QuickAccessPage() {
           <div className="mt-2 flex justify-center gap-4">
             <Link href="/" className="hover:text-primary" target="_blank" rel="noopener noreferrer">Go to Home</Link>
             <Link href="/login" className="hover:text-primary" target="_blank" rel="noopener noreferrer">Go to Login</Link>
-            <a href="http://localhost:3002" className="hover:text-primary" target="_blank" rel="noopener noreferrer">Open in Browser</a>
+            <a href={process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'} className="hover:text-primary" target="_blank" rel="noopener noreferrer">Open in Browser</a>
           </div>
           <p className="mt-4 text-xs">
             This is a visual demonstration prototype. No actual data is processed or stored.

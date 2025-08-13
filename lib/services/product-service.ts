@@ -4,6 +4,8 @@
  */
 
 import { Product, getProducts } from '@/lib/mock-data'
+import { applyTagOverrides } from '@/lib/services/tag-service'
+import { applyProductOverrides } from '@/lib/services/product-override-service'
 import { 
   EnhancedProduct, 
   AtOnceMetadata, 
@@ -39,7 +41,7 @@ export class ProductService {
     orderType: OrderTypeValue,
     filters?: AtOnceFilters | PrebookFilters | CloseoutFilters
   ): Promise<EnhancedProduct[]> {
-    const allProducts = await getProducts()
+    const allProducts = applyProductOverrides(applyTagOverrides(await getProducts()))
     
     // Filter products that support this order type
     let filteredProducts = allProducts.filter(product => 
@@ -351,7 +353,7 @@ export class ProductService {
     productId: string,
     orderType?: OrderTypeValue
   ): Promise<EnhancedProduct | null> {
-    const products = await getProducts()
+    const products = applyProductOverrides(applyTagOverrides(await getProducts()))
     const product = products.find(p => p.id === productId)
     
     if (!product) return null
@@ -411,7 +413,7 @@ export class ProductService {
    * Get all products (for catalog filtering)
    */
   static async getAllProducts(): Promise<Product[]> {
-    return await getProducts()
+    return applyProductOverrides(applyTagOverrides(await getProducts()))
   }
 
   /**
@@ -426,7 +428,7 @@ export class ProductService {
     const catalogContext = await CatalogService.getCompanyCatalog(companyId)
     
     // Get all products
-    const allProducts = await getProducts()
+    const allProducts = applyProductOverrides(applyTagOverrides(await getProducts()))
     
     // Filter by catalog
     const catalogFiltered = await CatalogService.filterProductsByCatalog(
@@ -489,7 +491,7 @@ export class ProductService {
     if (!isVisible) return null
     
     // Get product
-    const products = await getProducts()
+    const products = applyProductOverrides(applyTagOverrides(await getProducts()))
     const product = products.find(p => p.id === productId)
     if (!product) return null
     

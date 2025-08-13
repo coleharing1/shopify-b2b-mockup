@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+// Jest is configured globally, no need to import describe, it, expect, beforeEach
 import { CatalogService } from '../catalog-service'
 import { Catalog } from '@/types/catalog-types'
 import { Product } from '@/lib/mock-data'

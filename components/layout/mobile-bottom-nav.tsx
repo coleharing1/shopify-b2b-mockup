@@ -30,15 +30,14 @@ export function MobileBottomNav({ isRepPortal = false, onMenuClick }: MobileBott
   const repNavItems = [
     { href: "/rep/dashboard", label: "Home", icon: Home, badge: 0 },
     { href: "/rep/customers", label: "Customers", icon: Users, badge: 0 },
+    { href: "/rep/products", label: "Products", icon: Package, badge: 0 },
     { href: "/rep/orders", label: "Orders", icon: FileText, badge: 0 },
-    { href: "/rep/resources", label: "Resources", icon: FileText, badge: 0 },
   ]
 
   const adminNavItems = [
     { href: "/admin/dashboard", label: "Home", icon: Home, badge: 0 },
     { href: "/admin/applications", label: "Apps", icon: FileText, badge: 0 },
     { href: "/admin/order-settings", label: "Settings", icon: Settings, badge: 0 },
-    { href: "/admin/dashboard", label: "More", icon: FileText, badge: 0 },
   ]
 
   const isAdminPortal = pathname.startsWith('/admin')

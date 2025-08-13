@@ -258,14 +258,22 @@ function generateTrendData(period: string) {
   return data
 }
 
+function getBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_BASE_URL) return process.env.NEXT_PUBLIC_BASE_URL
+  if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL
+  if (process.env.NEXT_PUBLIC_VERCEL_URL) return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  const devPort = process.env.PORT || process.env.NEXT_PUBLIC_DEV_PORT || '3100'
+  return `http://localhost:${devPort}`
+}
+
 async function fetchMockProducts(): Promise<Product[]> {
-  const response = await fetch('/mockdata/products.json')
+  const response = await fetch(`${getBaseUrl()}/mockdata/products.json`)
   const data = await response.json()
   return data.products || []
 }
 
 async function fetchMockCompanies(): Promise<Company[]> {
-  const response = await fetch('/mockdata/companies.json')
+  const response = await fetch(`${getBaseUrl()}/mockdata/companies.json`)
   const data = await response.json()
   return data.companies || []
 }

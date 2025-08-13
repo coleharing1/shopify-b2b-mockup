@@ -1,16 +1,70 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Package, Plus, Search, Filter, Upload, Download } from "lucide-react"
+import ProductBulkEditor from './bulk-editor'
+import { Checkbox } from '@/components/ui/checkbox'
 import { AuthenticatedLayout } from "@/components/layout/authenticated-layout"
+import { getProducts, type Product } from "@/lib/mock-data"
+import { formatCurrency } from "@/lib/utils"
+import TagBulkEditor from "./tag-bulk"
 
 export default function AdminProductsPage() {
   const [searchQuery, setSearchQuery] = useState('')
+  const [category, setCategory] = useState<string>('all')
+  const [orderType, setOrderType] = useState<string>('all')
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [bulkOpen, setBulkOpen] = useState(false)
+
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true)
+      const data = await getProducts()
+      setProducts(data)
+      setLoading(false)
+    }
+    load()
+  }, [])
+
+  const categories = useMemo(() => Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort(), [products])
+
+  const filtered = useMemo(() => {
+    let list = [...products]
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase()
+      list = list.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.sku.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q)
+      )
+    }
+    if (category !== 'all') list = list.filter(p => p.category === category)
+    if (orderType !== 'all') list = list.filter(p => p.orderTypes?.includes(orderType as any))
+    return list
+  }, [products, searchQuery, category, orderType])
+
+  const allVisibleSelected = useMemo(() => filtered.length > 0 && filtered.every(p => selected.has(p.id)), [filtered, selected])
+  const toggleSelectAllVisible = () => {
+    const next = new Set(selected)
+    if (allVisibleSelected) {
+      filtered.forEach(p => next.delete(p.id))
+    } else {
+      filtered.forEach(p => next.add(p.id))
+    }
+    setSelected(next)
+  }
+  const toggleOne = (id: string) => {
+    const next = new Set(selected)
+    next.has(id) ? next.delete(id) : next.add(id)
+    setSelected(next)
+  }
 
   return (
     <AuthenticatedLayout>
@@ -22,7 +76,7 @@ export default function AdminProductsPage() {
               Product Management
             </h1>
             <p className="text-sm text-muted-foreground">
-              Manage product catalog and inventory
+              Using scraped products when available (falls back to products.json)
             </p>
           </div>
           <div className="flex gap-2">
@@ -47,6 +101,7 @@ export default function AdminProductsPage() {
               <Filter className="h-4 w-4" />
               Filters
             </CardTitle>
+            <CardDescription>{filtered.length} of {products.length} products</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -59,29 +114,18 @@ export default function AdminProductsPage() {
                   className="pl-9"
                 />
               </div>
-              <Select>
+              <Select value={category} onValueChange={setCategory}>
                 <SelectTrigger>
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="apparel">Apparel</SelectItem>
-                  <SelectItem value="footwear">Footwear</SelectItem>
-                  <SelectItem value="accessories">Accessories</SelectItem>
+                  {categories.map(c => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="archived">Archived</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select>
+              <Select value={orderType} onValueChange={setOrderType}>
                 <SelectTrigger>
                   <SelectValue placeholder="Order Type" />
                 </SelectTrigger>
@@ -92,6 +136,14 @@ export default function AdminProductsPage() {
                   <SelectItem value="closeout">Closeout</SelectItem>
                 </SelectContent>
               </Select>
+              <div className="flex items-center gap-2">
+                <Button variant="secondary" disabled={selected.size === 0} onClick={() => setBulkOpen(true)}>
+                  Bulk Edit ({selected.size})
+                </Button>
+                {selected.size > 0 && (
+                  <Button variant="ghost" onClick={() => setSelected(new Set())}>Clear</Button>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -102,70 +154,88 @@ export default function AdminProductsPage() {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
+                    <th className="text-left px-4 py-3 text-sm font-medium w-10">
+                      <input type="checkbox" checked={allVisibleSelected} onChange={toggleSelectAllVisible} />
+                    </th>
                     <th className="text-left px-4 py-3 text-sm font-medium">Product</th>
                     <th className="text-left px-4 py-3 text-sm font-medium">SKU</th>
                     <th className="text-left px-4 py-3 text-sm font-medium">Category</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium">Price</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium">Stock</th>
-                    <th className="text-left px-4 py-3 text-sm font-medium">Status</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium">MSRP</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium">COGS</th>
+                    <th className="text-left px-4 py-3 text-sm font-medium">Order Types</th>
                     <th className="text-right px-4 py-3 text-sm font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 bg-gray-200 rounded" />
-                        <div>
-                          <p className="font-medium">Trail Runner Pro</p>
-                          <p className="text-sm text-muted-foreground">Running Shoes</p>
+                  {loading ? (
+                    <tr><td className="px-4 py-6" colSpan={8}>Loading...</td></tr>
+                  ) : filtered.map(p => (
+                    <tr className="hover:bg-gray-50" key={p.id}>
+                      <td className="px-4 py-3 align-top">
+                        <input type="checkbox" checked={selected.has(p.id)} onChange={() => toggleOne(p.id)} />
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 bg-gray-200 rounded overflow-hidden">
+                            {p.images?.[0] && (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={p.images[0]} alt="" className="h-10 w-10 object-cover" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-medium">{p.name}</p>
+                            <p className="text-sm text-muted-foreground">{p.description?.slice(0, 60)}</p>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-sm">TRP-001</td>
-                    <td className="px-4 py-3 text-sm">Footwear</td>
-                    <td className="px-4 py-3 text-sm">$189.99</td>
-                    <td className="px-4 py-3 text-sm">245</td>
-                    <td className="px-4 py-3">
-                      <Badge variant="secondary">Active</Badge>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <Button size="sm" variant="outline">Edit</Button>
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 bg-gray-200 rounded" />
-                        <div>
-                          <p className="font-medium">Summit Jacket</p>
-                          <p className="text-sm text-muted-foreground">Outerwear</p>
+                      </td>
+                      <td className="px-4 py-3 text-sm">{p.sku}</td>
+                      <td className="px-4 py-3 text-sm">{p.category}</td>
+                      <td className="px-4 py-3 text-sm">{formatCurrency(p.msrp)}</td>
+                      <td className="px-4 py-3 text-sm">{p.cogs ? formatCurrency(p.cogs) : '-'}</td>
+                      <td className="px-4 py-3 text-sm">
+                        <div className="flex gap-1 flex-wrap">
+                          {(p.orderTypes || ['at-once']).map(ot => (
+                            <Badge key={ot} variant="secondary">{ot}</Badge>
+                          ))}
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-sm">SJ-002</td>
-                    <td className="px-4 py-3 text-sm">Apparel</td>
-                    <td className="px-4 py-3 text-sm">$299.99</td>
-                    <td className="px-4 py-3 text-sm">123</td>
-                    <td className="px-4 py-3">
-                      <Badge variant="secondary">Active</Badge>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <Button size="sm" variant="outline">Edit</Button>
-                    </td>
-                  </tr>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <Button size="sm" variant="outline" onClick={() => window.location.href = `/admin/products/${p.id}`}>Edit</Button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
 
-            <div className="p-6 border-t">
-              <p className="text-sm text-muted-foreground text-center">
-                Full product management interface coming in Phase 5, including bulk editing, 
-                variant management, and advanced inventory controls.
-              </p>
-            </div>
+            {selected.size > 0 && (
+              <div className="p-4 border-t bg-muted/40 flex items-center justify-between">
+                <p className="text-sm">{selected.size} selected</p>
+                <div className="flex gap-2">
+                  <Button variant="secondary" onClick={() => setBulkOpen(true)}>Bulk Edit</Button>
+                  <Button variant="ghost" onClick={() => setSelected(new Set())}>Clear Selection</Button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
+
+        {/* Bulk tags */}
+        <TagBulkEditor />
+
+        {/* Bulk editor modal */}
+        <ProductBulkEditor
+          isOpen={bulkOpen}
+          onClose={() => setBulkOpen(false)}
+          selectedIds={Array.from(selected)}
+          onApplied={async () => {
+            // Reload products after bulk apply
+            setLoading(true)
+            const data = await getProducts()
+            setProducts(data)
+            setLoading(false)
+          }}
+        />
       </div>
     </AuthenticatedLayout>
   )

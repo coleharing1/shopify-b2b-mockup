@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+// Jest is configured globally, no need to import describe, it, expect, beforeEach
 import { 
   calculateCustomerPrice, 
   applyTierDiscount, 
