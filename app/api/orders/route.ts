@@ -132,7 +132,9 @@ export async function POST(request: NextRequest) {
 
     // Calculate order total
     const subtotal = body.items.reduce((sum: number, item: any) => {
-      return sum + (item.price * item.quantity)
+      // Support both unitPrice (preferred) and price (legacy) fields
+      const price = item.unitPrice || item.price || 0
+      return sum + (price * item.quantity)
     }, 0)
 
     const tax = subtotal * 0.08 // 8% tax rate
